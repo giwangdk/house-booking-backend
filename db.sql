@@ -8,20 +8,13 @@ CREATE TABLE cities (
    	deleted_at TIMESTAMPTZ
 );
 
-CREATE TABLE categories (
-   	id BIGSERIAL PRIMARY KEY,
-	name varchar(50) NOT NULL,
-   	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  	updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-   	deleted_at TIMESTAMPTZ
-);
-
 CREATE TABLE users (
    	id BIGSERIAL PRIMARY KEY,
    	email VARCHAR(50) UNIQUE NOT NULL,
-	fullname varchar(50) NOT NULL,
+	  fullname varchar(50) NOT NULL,
    	password VARCHAR(225) NOT NULL,
     address VARCHAR(100),
+    photo VARCHAR(200),
     role VARCHAR(20) NOT NULL,
   	city_id INT,
    	FOREIGN KEY (city_id)
@@ -66,7 +59,7 @@ CREATE TABLE houses (
 CREATE TABLE houses_photos(
     id BIGSERIAL PRIMARY KEY,
     house_id INT,
-    photo VARCHAR(100),
+    photo VARCHAR,
     FOREIGN KEY (house_id)
      REFERENCES houses (id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
