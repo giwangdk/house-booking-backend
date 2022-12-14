@@ -4,10 +4,12 @@ import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/helper"
+	"final-project-backend/httperror"
 )
 
 type AuthUsecase interface {
 	Register(request dto.RegisterRequest) (*dto.RegisterResponse, error)
+	Login(request dto.LoginRequest) (*dto.LoginResponse, error)
 }
 
 type AuthUsecaseImplementation struct {
@@ -56,5 +58,27 @@ func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.Regist
 	}
 
 	return &user, nil
+}
 
+func (a *AuthUsecaseImplementation) Login(u dto.LoginRequest) (*dto.LoginResponse, error) {
+	user, err := a.userUsecase.GetUserByEmail(u.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	isAuth := a.authUsecase.ComparePassword(user.Password, u.Password)
+	if !isAuth {
+		return nil, httperror.UnauthorizedError()
+	}
+
+	token, err := a.authUsecase.GenerateAccessToken(user)
+	if err != nil {
+		return nil, err
+	}
+
+	userResponse := dto.LoginResponse{
+		AccessToken: token,
+	}
+
+	return &userResponse, nil
 }
