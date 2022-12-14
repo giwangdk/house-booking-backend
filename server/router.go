@@ -20,6 +20,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 
 	r := gin.Default()
 	r.POST("/register", h.Register)
+	r.POST("/login", h.Login)
 
 	return r
 }
