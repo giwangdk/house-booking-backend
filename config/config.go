@@ -1,7 +1,10 @@
 package config
 
 import (
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type dbConfig struct {
@@ -24,6 +27,12 @@ type AppConfig struct {
 }
 
 func getENV(key, defaultVal string) string {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	env := os.Getenv(key)
 	if env == "" {
 		return defaultVal
@@ -34,10 +43,14 @@ func getENV(key, defaultVal string) string {
 var Config = AppConfig{
 	ENV: getENV("ENV", "development"),
 	DBConfig: dbConfig{
-		Host:     getENV("DB_HOST", "localhost"),
-		User:     getENV("DB_USER", "giwang"),
-		Password: getENV("DB_PASSWORD", "admin"),
-		DBName:   getENV("DB_NAME", "house_booking_giwang"),
-		Port:     getENV("DB_PORT", "5432"),
+		Host:     getENV("DB_HOST", ""),
+		User:     getENV("DB_USER", ""),
+		Password: getENV("DB_PASSWORD", ""),
+		DBName:   getENV("DB_NAME", ""),
+		Port:     getENV("DB_PORT", ""),
+	},
+	AuthConfig: authConfig{
+		HmacSampleSecret: getENV("HMAC_SAMPLE_SECRET", ""),
+		Duration:         getENV("DURATION", ""),
 	},
 }
