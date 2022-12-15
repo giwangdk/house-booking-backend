@@ -13,6 +13,7 @@ type UserRepository interface {
 	CreateUser(user entity.User) (*entity.User, error)
 	GetUserByEmail(email string) (*entity.User, error)
 	GetUser(userID int) (*entity.User, error)
+	EditUser(u entity.User, userId int) (*entity.User, error)
 }
 
 type postgresUserRepository struct {
@@ -63,5 +64,17 @@ func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
 		return nil, httperror.NotFoundError("user not found")
 	}
 	return &u, nil
+}
 
+func (r *postgresUserRepository) EditUser(u entity.User, userId int) (*entity.User, error) {
+	res := r.db.Where("id = ?", userId).Updates(&u)
+
+	if res.RowsAffected == 0 && res.Error == nil {
+		return nil, httperror.BadRequestError("Email already exist", "EMAIL_ALREADY_EXIST")
+	}
+	if res.Error != nil {
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+	}
+
+	return &u, nil
 }

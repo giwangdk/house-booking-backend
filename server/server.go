@@ -24,10 +24,6 @@ func initRouter() *gin.Engine {
 		DB: db.Get(),
 	})
 
-	userUsecase := usecase.NewUserUseCase(usecase.UserUsecaseImplementationConfig{
-		Repository: userRepo,
-	})
-
 	duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 	if err != nil {
 		fmt.Println("error while parsing duration", err)
@@ -37,6 +33,11 @@ func initRouter() *gin.Engine {
 	auth := helper.NewAuthUtil(helper.AuthUtilImplConfig{
 		HmacSampleSecret: config.Config.AuthConfig.HmacSampleSecret,
 		Duration:         jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(duration) * time.Minute)),
+	})
+
+	userUsecase := usecase.NewUserUseCase(usecase.UserUsecaseImplementationConfig{
+		Repository:  userRepo,
+		AuthUsecase: auth,
 	})
 
 	authUsecase := usecase.NewAuthUsecase(usecase.AuthUsecaseImplementationConfig{

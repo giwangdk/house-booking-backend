@@ -3,26 +3,32 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/helper"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 )
 
 type UserUsecase interface {
 	GetUserByEmail(email string) (*entity.User, error)
 	CreateUser(r entity.User) (*entity.User, error)
-	GetUser(userID int) (*dto.DetailUser, error)
+	GetUser(userID int) (*entity.User, error)
+	EditUser(u dto.EditUserRequest, userId int) (*dto.EditUserResponse, error)
 }
 
 type userUsecaseImplementation struct {
-	repository repository.UserRepository
+	repository  repository.UserRepository
+	authUsecase helper.AuthUtil
 }
 
 type UserUsecaseImplementationConfig struct {
-	Repository repository.UserRepository
+	Repository  repository.UserRepository
+	AuthUsecase helper.AuthUtil
 }
 
 func NewUserUseCase(c UserUsecaseImplementationConfig) UserUsecase {
 	return &userUsecaseImplementation{
-		repository: c.Repository,
+		repository:  c.Repository,
+		authUsecase: c.AuthUsecase,
 	}
 }
 
@@ -53,20 +59,46 @@ func (u *userUsecaseImplementation) GetUserByEmail(email string) (*entity.User, 
 	return user, nil
 }
 
-func (u *userUsecaseImplementation) GetUser(userID int) (*dto.DetailUser, error) {
+func (u *userUsecaseImplementation) GetUser(userID int) (*entity.User, error) {
 	user, err := u.repository.GetUser(userID)
-
-	res := dto.DetailUser{
-		Fullname: user.Fullname,
-		Email:    user.Email,
-		Address:  user.Address,
-		CityID:   user.CityID,
-		City:     user.City,
-		Role:     user.Role,
-	}
 
 	if err != nil {
 		return nil, err
+	}
+
+	return user, nil
+}
+
+func (u *userUsecaseImplementation) EditUser(r dto.EditUserRequest, userId int) (*dto.EditUserResponse, error) {
+	user, err := u.GetUser(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	isValid := u.authUsecase.ComparePassword(user.Password, r.OldPassword)
+	if !isValid {
+		return nil, httperror.BadRequestError("Password is not valid", "BAD_REQUEST")
+	}
+
+	hashedPass, err := u.authUsecase.HashAndSalt(r.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	reqUser := entity.User{
+		Fullname: r.Fullname,
+		Address:  r.Address,
+		Password: hashedPass,
+	}
+
+	updatedUser, err := u.repository.EditUser(reqUser, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	res := dto.EditUserResponse{
+		Fullname: updatedUser.Fullname,
+		Address:  updatedUser.Address,
 	}
 
 	return &res, nil

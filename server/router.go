@@ -30,6 +30,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.Use(middleware.Authorize)
 	r.GET("/user", h.GetUser)
 	r.GET("/cities", h.GetCities)
+	r.PUT("/user", h.EditUser)
 
 	return r
 }

@@ -53,10 +53,8 @@ func (a *authUtilImpl) GenerateAccessToken(user *entity.User) (string, error) {
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		User: &dto.UserJWT{
-			ID:       int(user.ID),
-			Fullname: user.Fullname,
-			Email:    user.Email,
-			Role:     user.Role,
+			ID:   int(user.ID),
+			Role: user.Role,
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
