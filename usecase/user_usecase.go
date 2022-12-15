@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/repository"
 )
@@ -8,6 +9,7 @@ import (
 type UserUsecase interface {
 	GetUserByEmail(email string) (*entity.User, error)
 	CreateUser(r entity.User) (*entity.User, error)
+	GetUser(userID int) (*dto.DetailUser, error)
 }
 
 type userUsecaseImplementation struct {
@@ -49,4 +51,23 @@ func (u *userUsecaseImplementation) GetUserByEmail(email string) (*entity.User, 
 	}
 
 	return user, nil
+}
+
+func (u *userUsecaseImplementation) GetUser(userID int) (*dto.DetailUser, error) {
+	user, err := u.repository.GetUser(userID)
+
+	res := dto.DetailUser{
+		Fullname: user.Fullname,
+		Email:    user.Email,
+		Address:  user.Address,
+		CityID:   user.CityID,
+		City:     user.City,
+		Role:     user.Role,
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }

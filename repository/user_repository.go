@@ -12,6 +12,7 @@ import (
 type UserRepository interface {
 	CreateUser(user entity.User) (*entity.User, error)
 	GetUserByEmail(email string) (*entity.User, error)
+	GetUser(userID int) (*entity.User, error)
 }
 
 type postgresUserRepository struct {
@@ -52,4 +53,15 @@ func (r *postgresUserRepository) CreateUser(u entity.User) (*entity.User, error)
 	}
 
 	return &u, nil
+}
+
+func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
+	var u entity.User
+	err := r.db.Where("id = ?", userID).Preload("Wallet").First(&u).Error
+
+	if notFound := errors.Is(err, gorm.ErrRecordNotFound); notFound {
+		return nil, httperror.NotFoundError("user not found")
+	}
+	return &u, nil
+
 }
