@@ -4,7 +4,7 @@ type RegisterRequest struct {
 	Fullname string `binding:"required"`
 	Email    string `binding:"required,email"`
 	Address  string `binding:"required"`
-	Password string `binding:"required, min=8, max=12"`
+	Password string `binding:"required"`
 	CityId   int    `binding:"required" json:"city_id"`
 }
 

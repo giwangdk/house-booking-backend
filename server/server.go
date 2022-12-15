@@ -10,8 +10,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gin-contrib/cors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -46,12 +44,6 @@ func initRouter() *gin.Engine {
 		AuthUsecase: authUsecase,
 		UserUsecase: userUsecase,
 	})
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
-	// config.AllowOrigins = []string{"http://google.com", "http://facebook.com"}
-	// config.AllowAllOrigins = true
-
-	r.Use(cors.New(config))
 	return r
 }
 
