@@ -28,7 +28,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"statusCode": http.StatusOK,
-		"data":       user,
+		"status_code": http.StatusOK,
+		"data":        user,
 	})
 }

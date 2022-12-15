@@ -28,8 +28,8 @@ func (h *Handler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"statusCode": http.StatusCreated,
-		"data":       user,
+		"status_code": http.StatusCreated,
+		"data":        user,
 	})
 }
 
@@ -61,7 +61,7 @@ func (h *Handler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"statusCode": http.StatusOK,
+		"status_code": http.StatusOK,
 		"data": dto.LoginResponse{
 			AccessToken: user.AccessToken,
 		},

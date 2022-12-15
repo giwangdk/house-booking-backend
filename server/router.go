@@ -25,5 +25,8 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/login", h.Login)
 	r.POST("/register", h.Register)
 
+	r.Use(middleware.Authorize)
+	r.GET("/user", h.GetUser)
+
 	return r
 }
