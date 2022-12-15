@@ -11,12 +11,14 @@ import (
 type RouterConfig struct {
 	AuthUsecase usecase.AuthUsecase
 	UserUsecase usecase.UserUsecase
+	CityUsecase usecase.CityUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
 	h := handler.NewHandler(handler.HandlerConfig{
 		UserUsecase: c.UserUsecase,
 		AuthUsecase: c.AuthUsecase,
+		CityUsecase: c.CityUsecase,
 	})
 
 	r := gin.Default()
@@ -27,6 +29,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 
 	r.Use(middleware.Authorize)
 	r.GET("/user", h.GetUser)
+	r.GET("/cities", h.GetCities)
 
 	return r
 }

@@ -20,6 +20,10 @@ func initRouter() *gin.Engine {
 		DB: db.Get(),
 	})
 
+	cityRepo := repository.NewPostgresCityRepository(repository.PostgresCityRepositoryConfig{
+		DB: db.Get(),
+	})
+
 	userUsecase := usecase.NewUserUseCase(usecase.UserUsecaseImplementationConfig{
 		Repository: userRepo,
 	})
@@ -40,9 +44,14 @@ func initRouter() *gin.Engine {
 		UserUsecase: userUsecase,
 	})
 
+	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
+		Repository: cityRepo,
+	})
+
 	r := CreateRouter(&RouterConfig{
 		AuthUsecase: authUsecase,
 		UserUsecase: userUsecase,
+		CityUsecase: cityUsecase,
 	})
 	return r
 }

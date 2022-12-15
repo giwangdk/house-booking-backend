@@ -57,7 +57,7 @@ func (r *postgresUserRepository) CreateUser(u entity.User) (*entity.User, error)
 
 func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
 	var u entity.User
-	err := r.db.Where("id = ?", userID).Preload("Wallet").First(&u).Error
+	err := r.db.Where("id = ?", userID).Preload("City").First(&u).Error
 
 	if notFound := errors.Is(err, gorm.ErrRecordNotFound); notFound {
 		return nil, httperror.NotFoundError("user not found")
