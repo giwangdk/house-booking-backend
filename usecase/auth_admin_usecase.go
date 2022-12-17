@@ -44,8 +44,9 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 		Address:  u.Address,
 		Password: hashedPassword,
 		CityID:   u.CityId,
-		Role:     "role",
+		Role:     "admin",
 	}
+	
 
 	userCreated, err := a.userUsecase.CreateUser(entityUser)
 	if err != nil {
