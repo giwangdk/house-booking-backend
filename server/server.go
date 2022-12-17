@@ -49,14 +49,22 @@ func initRouter() *gin.Engine {
 		WalletUsecase: walletUsecase,
 	})
 
+	authAdminUsecase := usecase.NewAuthAdminUsecase(usecase.AuthAdminUsecaseImplementationConfig{
+		AuthAdminUsecase: auth,
+		UserUsecase: userUsecase,
+		WalletUsecase: walletUsecase,
+	})
+
 	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
 		Repository: cityRepo,
 	})
 
 	r := CreateRouter(&RouterConfig{
 		AuthUsecase: authUsecase,
+		AuthAdminUsecase: authAdminUsecase,
 		UserUsecase: userUsecase,
 		CityUsecase: cityUsecase,
+		
 	})
 	return r
 }
