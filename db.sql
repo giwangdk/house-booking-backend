@@ -39,6 +39,7 @@ CREATE TABLE wallets (
    deleted_at TIMESTAMPTZ
 );
 
+
 CREATE TABLE games(
     id BIGSERIAL PRIMARY KEY,
     user_id INT,

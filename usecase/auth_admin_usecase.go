@@ -16,12 +16,14 @@ type AuthAdminUsecaseImplementation struct {
 	authAdminUsecase helper.AuthUtil
 	userUsecase UserUsecase
 	walletUsecase WalletUsecase
+	GameUsecase GameUsecase
 }
 
 type AuthAdminUsecaseImplementationConfig struct {
 	AuthAdminUsecase helper.AuthUtil
 	UserUsecase UserUsecase
 	WalletUsecase WalletUsecase
+	GameUsecase GameUsecase
 }
 
 func NewAuthAdminUsecase(a AuthAdminUsecaseImplementationConfig) AuthAdminUsecase {
@@ -29,6 +31,7 @@ func NewAuthAdminUsecase(a AuthAdminUsecaseImplementationConfig) AuthAdminUsecas
 		authAdminUsecase: a.AuthAdminUsecase,
 		userUsecase: a.UserUsecase,
 		walletUsecase: a.WalletUsecase,
+		GameUsecase: a.GameUsecase,
 	}
 }
 
@@ -73,6 +76,10 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 		return nil, err
 	}
 
+	_, err = a.GameUsecase.CreateGame(int(userCreated.ID))
+	if err != nil {
+		return nil, err
+	}
 
 	_, err = a.walletUsecase.CreateWallet(int(userCreated.ID))
 	if err != nil {

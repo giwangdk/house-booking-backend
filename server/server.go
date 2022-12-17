@@ -25,6 +25,9 @@ func initRouter() *gin.Engine {
 	walletRepo:= repository.NewPostgresWalletRepository(repository.PostgresWalletRepositoryConfig{
 		DB:db.Get(),
 	})
+	gameRepo:= repository.NewPostgresGameRepository(repository.PostgresGameRepositoryConfig{
+		DB:db.Get(),
+	})
 
 
 	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
@@ -43,16 +46,22 @@ func initRouter() *gin.Engine {
 		Repository: walletRepo,
 	})
 
+	gameUsecase := usecase.NewGameUseCase(usecase.GameUsecaseImplementationConfig{
+		Repository: gameRepo,
+	})
+
 	authUsecase := usecase.NewAuthUsecase(usecase.AuthUsecaseImplementationConfig{
 		AuthUsecase: auth,
 		UserUsecase: userUsecase,
 		WalletUsecase: walletUsecase,
+		GameUsecase: gameUsecase,
 	})
 
 	authAdminUsecase := usecase.NewAuthAdminUsecase(usecase.AuthAdminUsecaseImplementationConfig{
 		AuthAdminUsecase: auth,
 		UserUsecase: userUsecase,
 		WalletUsecase: walletUsecase,
+		GameUsecase:gameUsecase ,
 	})
 
 	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
