@@ -24,6 +24,21 @@ CREATE TABLE users (
    	deleted_at TIMESTAMPTZ
 );
 
+CREATE SEQUENCE wallet_sequence
+  start 990000
+  increment 1;
+
+CREATE TABLE wallets (
+   id integer PRIMARY KEY DEFAULT nextval('wallet_sequence'),
+   balance NUMERIC NOT NULL,
+   user_id  INT,
+   	FOREIGN KEY (user_id)
+     REFERENCES users (id),
+   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   deleted_at TIMESTAMPTZ
+);
+
 CREATE TABLE games(
     id BIGSERIAL PRIMARY KEY,
     user_id INT,
