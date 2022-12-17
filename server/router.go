@@ -34,5 +34,8 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.GET("/cities", h.GetCities)
 	r.PUT("/user", h.EditUser)
 
+	r.Use(middleware.IsAdmin)
+
+
 	return r
 }
