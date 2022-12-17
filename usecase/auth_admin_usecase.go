@@ -47,11 +47,32 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 		Role:     "admin",
 	}
 	
+	user, isExist := a.userUsecase.IsUserExist(u.Email)
+	
+	if user.Role == "admin" {
+		return nil, httperror.BadRequestError("Email already exist", "FAILED_REGISTER")
+	}
+
+	if isExist{
+		userCreated, err:= a.userUsecase.UpdateRole(entityUser, "admin")	
+		if err != nil {
+			return nil, err
+		}
+		res := dto.RegisterResponse{
+			Fullname: userCreated.Fullname,
+			Email:    userCreated.Email,
+			Address:  userCreated.Address,
+			City:     userCreated.CityID,
+			Role:     userCreated.Role,
+		}
+		return &res, nil
+	}
 
 	userCreated, err := a.userUsecase.CreateUser(entityUser)
 	if err != nil {
 		return nil, err
 	}
+
 
 	_, err = a.walletUsecase.CreateWallet(int(userCreated.ID))
 	if err != nil {
@@ -59,7 +80,7 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 	}
 
 
-	user := dto.RegisterResponse{
+	res := dto.RegisterResponse{
 		Fullname: userCreated.Fullname,
 		Email:    userCreated.Email,
 		Address:  userCreated.Address,
@@ -67,7 +88,7 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 		Role:     userCreated.Role,
 	}
 
-	return &user, nil
+	return &res, nil
 }
 
 func (a *AuthAdminUsecaseImplementation) Login(u dto.LoginRequest) (*dto.LoginResponse, error) {

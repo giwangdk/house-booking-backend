@@ -10,9 +10,11 @@ import (
 
 type UserUsecase interface {
 	GetUserByEmail(email string) (*entity.User, error)
+	IsUserExist(email string) (*entity.User, bool)
 	CreateUser(r entity.User) (*entity.User, error)
 	GetUser(userID int) (*entity.User, error)
 	EditUser(u dto.EditUserRequest, userId int) (*dto.EditUserResponse, error)
+	UpdateRole(u entity.User, role string) (*entity.User, error)
 }
 
 type userUsecaseImplementation struct {
@@ -41,12 +43,44 @@ func (u *userUsecaseImplementation) CreateUser(r entity.User) (*entity.User, err
 		CityID:   r.CityID,
 		Role:     r.Role,
 	}
+
+	if r.Role == "admin" {
+		user, err := u.repository.CreateUserAdmin(entityUser)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+	}
+
 	user, err := u.repository.CreateUser(entityUser)
 	if err != nil {
 		return nil, err
 	}
 
 	return user, nil
+}
+
+func (u *userUsecaseImplementation) UpdateRole(r entity.User, role string) (*entity.User, error) {
+	user, err := u.repository.UpdateRole(r, role)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (u *userUsecaseImplementation)IsUserExist(email string) (*entity.User, bool) {
+	user, err := u.repository.GetUserByEmail(email)
+
+	if err != nil {
+		return nil, false
+	}
+
+	if user.Email == email {
+		return user, true
+	}
+
+	return nil,false
 }
 
 func (u *userUsecaseImplementation) GetUserByEmail(email string) (*entity.User, error) {
