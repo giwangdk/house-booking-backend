@@ -12,6 +12,7 @@ type RouterConfig struct {
 	AuthUsecase usecase.AuthUsecase
 	UserUsecase usecase.UserUsecase
 	CityUsecase usecase.CityUsecase
+	WalletUsecase usecase.WalletUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -19,6 +20,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		UserUsecase: c.UserUsecase,
 		AuthUsecase: c.AuthUsecase,
 		CityUsecase: c.CityUsecase,
+		WalletUsecase: c.WalletUsecase,
 	})
 
 	r := gin.Default()

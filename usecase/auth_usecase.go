@@ -15,17 +15,20 @@ type AuthUsecase interface {
 type AuthUsecaseImplementation struct {
 	authUsecase helper.AuthUtil
 	userUsecase UserUsecase
+	walletUsecase WalletUsecase
 }
 
 type AuthUsecaseImplementationConfig struct {
 	AuthUsecase helper.AuthUtil
 	UserUsecase UserUsecase
+	WalletUsecase WalletUsecase
 }
 
 func NewAuthUsecase(a AuthUsecaseImplementationConfig) AuthUsecase {
 	return &AuthUsecaseImplementation{
 		authUsecase: a.AuthUsecase,
 		userUsecase: a.UserUsecase,
+		walletUsecase: a.WalletUsecase,
 	}
 }
 
@@ -48,6 +51,12 @@ func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.Regist
 	if err != nil {
 		return nil, err
 	}
+
+	_, err = a.walletUsecase.CreateWallet(int(userCreated.ID))
+	if err != nil {
+		return nil, err
+	}
+
 
 	user := dto.RegisterResponse{
 		Fullname: userCreated.Fullname,

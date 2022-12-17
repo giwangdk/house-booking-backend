@@ -7,7 +7,6 @@ import (
 	"final-project-backend/repository"
 	"final-project-backend/usecase"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,16 +22,16 @@ func initRouter() *gin.Engine {
 	cityRepo := repository.NewPostgresCityRepository(repository.PostgresCityRepositoryConfig{
 		DB: db.Get(),
 	})
+	walletRepo:= repository.NewPostgresWalletRepository(repository.PostgresWalletRepositoryConfig{
+		DB:db.Get(),
+	})
 
-	duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
-	if err != nil {
-		fmt.Println("error while parsing duration", err)
-		return nil
-	}
+
+	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 
 	auth := helper.NewAuthUtil(helper.AuthUtilImplConfig{
 		HmacSampleSecret: config.Config.AuthConfig.HmacSampleSecret,
-		Duration:         jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(duration) * time.Minute)),
+		Duration:         jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(15) * time.Minute)),
 	})
 
 	userUsecase := usecase.NewUserUseCase(usecase.UserUsecaseImplementationConfig{
@@ -40,9 +39,14 @@ func initRouter() *gin.Engine {
 		AuthUsecase: auth,
 	})
 
+	walletUsecase := usecase.NewWalletUseCase(usecase.WalletUsecaseImplementationConfig{
+		Repository: walletRepo,
+	})
+
 	authUsecase := usecase.NewAuthUsecase(usecase.AuthUsecaseImplementationConfig{
 		AuthUsecase: auth,
 		UserUsecase: userUsecase,
+		WalletUsecase: walletUsecase,
 	})
 
 	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
