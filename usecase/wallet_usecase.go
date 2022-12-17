@@ -11,7 +11,7 @@ type WalletUsecase interface {
 	CreateWallet(userID int) (*entity.Wallet, error)
 	IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
 	DecreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
-	GetWalletByID(id int) (*entity.Wallet, error)
+	GetWalletByUserID(userId int) (*entity.Wallet, error)
 	IsValidBalance(amount decimal.Decimal, wallet entity.Wallet) bool
 }
 
@@ -42,8 +42,8 @@ func (u *walletUsecaseImplementation) IsValidBalance(amount decimal.Decimal, wal
 	return u.repository.IsValidBalance(amount, wallet)
 }
 
-func (u *walletUsecaseImplementation) GetWalletByID(id int) (*entity.Wallet, error) {
-	w, err := u.repository.GetWalletByID(id)
+func (u *walletUsecaseImplementation) GetWalletByUserID(userId int) (*entity.Wallet, error) {
+	w, err := u.repository.GetWalletByUserID(userId)
 	if err != nil {
 		return nil, err
 	}

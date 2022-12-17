@@ -13,7 +13,7 @@ type WalletRepository interface {
 	IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
 	DecreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
 	IsValidBalance(amount decimal.Decimal, wallet entity.Wallet) bool
-	GetWalletByID(id int) (*entity.Wallet, error)
+	GetWalletByUserID(userId int) (*entity.Wallet, error)
 }
 
 type postgresWalletRepository struct {
@@ -43,10 +43,11 @@ func (r *postgresWalletRepository) CreateWallet(userId int) (*entity.Wallet, err
 	return &u, nil
 }
 
-func (r *postgresWalletRepository) GetWalletByID(id int) (*entity.Wallet, error) {
+func (r *postgresWalletRepository) GetWalletByUserID(userId int) (*entity.Wallet, error) {
 	var u entity.Wallet
 
-	err := r.db.Debug().Where("id = ?", id).Take(&u).Error
+
+	err := r.db.Debug().Where("user_id = ?", userId).Take(&u).Error
 	if err != nil {
 		return nil, err
 	}

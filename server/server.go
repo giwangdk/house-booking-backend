@@ -73,7 +73,7 @@ func initRouter() *gin.Engine {
 		AuthAdminUsecase: authAdminUsecase,
 		UserUsecase: userUsecase,
 		CityUsecase: cityUsecase,
-		
+		WalletUsecase: walletUsecase,
 	})
 	return r
 }

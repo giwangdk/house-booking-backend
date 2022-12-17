@@ -39,6 +39,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.GET("/user", h.GetUser)
 	r.GET("/cities", h.GetCities)
 	r.PUT("/user", h.EditUser)
+	r.GET("/wallet", h.GetWalletByUserID)
 
 	r.Use(middleware.IsAdmin)
 
