@@ -13,7 +13,7 @@ type GameRepository interface {
 	IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
 	DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
 	IsValidChance(amount decimal.Decimal, Game entity.Game) bool
-	GetGameByID(id int) (*entity.Game, error)
+	GetGameByUserID(userId int) (*entity.Game, error)
 }
 
 type postgresGameRepository struct {
@@ -43,10 +43,11 @@ func (r *postgresGameRepository) CreateGame(userId int) (*entity.Game, error) {
 	return &u, nil
 }
 
-func (r *postgresGameRepository) GetGameByID(id int) (*entity.Game, error) {
+func (r *postgresGameRepository) GetGameByUserID(userId int) (*entity.Game, error) {
 	var u entity.Game
 
-	err := r.db.Debug().Where("id = ?", id).Take(&u).Error
+
+	err := r.db.Debug().Where("user_id = ?", userId).Take(&u).Error
 	if err != nil {
 		return nil, err
 	}
