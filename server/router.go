@@ -15,6 +15,7 @@ type RouterConfig struct {
 	CityUsecase usecase.CityUsecase
 	WalletUsecase usecase.WalletUsecase
 	GameUsecase usecase.GameUsecase
+	HouseUsecase usecase.HouseUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -25,6 +26,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		CityUsecase: c.CityUsecase,
 		WalletUsecase: c.WalletUsecase,
 		GameUsecase: c.GameUsecase,
+		HouseUsecase: c.HouseUsecase,
 	})
 
 	r := gin.Default()
@@ -41,6 +43,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.PUT("/user", h.EditUser)
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
+	r.GET("/houses", h.GetHouses)
 
 	r.Use(middleware.IsAdmin)
 
