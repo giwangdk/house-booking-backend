@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/repository"
 
@@ -11,7 +12,7 @@ type GameUsecase interface {
 	CreateGame(userID int) (*entity.Game, error)
 	IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
 	DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
-	GetGameByUserID(userId int) (*entity.Game, error)
+	GetGameByUserID(userId int) (*dto.GameDetail, error)
 }
 
 type GameUsecaseImplementation struct {
@@ -40,13 +41,15 @@ func (u *GameUsecaseImplementation) CreateGame(userId int) (*entity.Game, error)
 
 
 
-func (u *GameUsecaseImplementation) GetGameByUserID(userId int) (*entity.Game, error) {
+func (u *GameUsecaseImplementation) GetGameByUserID(userId int) (*dto.GameDetail, error) {
 	w, err := u.repository.GetGameByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	return w, nil
+	res:= (&dto.GameDetail{}).BuildResponse(*w)
+
+	return res, nil
 }
 
 func (u *GameUsecaseImplementation) IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error) {

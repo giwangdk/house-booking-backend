@@ -24,7 +24,7 @@ func (r *RegisterRequest) BuildRequest(user RegisterRequest) *entity.User {
 		Fullname: user.Fullname,
 		Email:    user.Email,
 		Address:  user.Address,
-		Password: user.Password,
+	Password: user.Password,
 	}
 	}
 
