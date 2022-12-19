@@ -81,6 +81,7 @@ func initRouter() *gin.Engine {
 		UserUsecase: userUsecase,
 		CityUsecase: cityUsecase,
 		WalletUsecase: walletUsecase,
+		GameUsecase: gameUsecase,
 		HouseUsecase: houseUsecase,
 	})
 	return r
