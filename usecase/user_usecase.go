@@ -12,9 +12,9 @@ type UserUsecase interface {
 	GetUserByEmail(email string) (*entity.User, error)
 	IsUserExist(email string) (*entity.User, bool)
 	CreateUser(r entity.User) (*entity.User, error)
-	GetUser(userID int) (*entity.User, error)
+	GetUser(userID int) (*dto.UserDetail, error)
 	EditUser(u dto.EditUserRequest, userId int) (*dto.EditUserResponse, error)
-	UpdateRole(u entity.User, role string) (*entity.User, error)
+	UpdateRole(email string, role string) (*entity.User, error)
 }
 
 type userUsecaseImplementation struct {
@@ -35,24 +35,18 @@ func NewUserUseCase(c UserUsecaseImplementationConfig) UserUsecase {
 }
 
 func (u *userUsecaseImplementation) CreateUser(r entity.User) (*entity.User, error) {
-	entityUser := entity.User{
-		Fullname: r.Fullname,
-		Email:    r.Email,
-		Address:  r.Address,
-		Password: r.Password,
-		CityID:   r.CityID,
-		Role:     r.Role,
-	}
+
 
 	if r.Role == "admin" {
-		user, err := u.repository.CreateUserAdmin(entityUser)
+		user, err := u.repository.CreateUserAdmin(r)
 	if err != nil {
 		return nil, err
 	}
+
 	return user, nil
 	}
 
-	user, err := u.repository.CreateUser(entityUser)
+	user, err := u.repository.CreateUser(r)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +54,8 @@ func (u *userUsecaseImplementation) CreateUser(r entity.User) (*entity.User, err
 	return user, nil
 }
 
-func (u *userUsecaseImplementation) UpdateRole(r entity.User, role string) (*entity.User, error) {
-	user, err := u.repository.UpdateRole(r, role)
+func (u *userUsecaseImplementation) UpdateRole(email string, role string) (*entity.User, error) {
+	user, err := u.repository.UpdateRole(email, role)
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +65,7 @@ func (u *userUsecaseImplementation) UpdateRole(r entity.User, role string) (*ent
 
 func (u *userUsecaseImplementation)IsUserExist(email string) (*entity.User, bool) {
 	user, err := u.repository.GetUserByEmail(email)
+
 
 	if err != nil {
 		return nil, false
@@ -93,18 +88,20 @@ func (u *userUsecaseImplementation) GetUserByEmail(email string) (*entity.User, 
 	return user, nil
 }
 
-func (u *userUsecaseImplementation) GetUser(userID int) (*entity.User, error) {
+func (u *userUsecaseImplementation) GetUser(userID int) (*dto.UserDetail, error) {
 	user, err := u.repository.GetUser(userID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	res:= (&dto.UserDetail{}).BuildResponse(*user)
+
+	return res, nil
 }
 
 func (u *userUsecaseImplementation) EditUser(r dto.EditUserRequest, userId int) (*dto.EditUserResponse, error) {
-	user, err := u.GetUser(userId)
+	user, err := u.repository.GetUser(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -130,10 +127,7 @@ func (u *userUsecaseImplementation) EditUser(r dto.EditUserRequest, userId int) 
 		return nil, err
 	}
 
-	res := dto.EditUserResponse{
-		Fullname: updatedUser.Fullname,
-		Address:  updatedUser.Address,
-	}
+	res := (&dto.EditUserResponse{}).BuildResponse(*updatedUser)
 
-	return &res, nil
+	return res, nil
 }

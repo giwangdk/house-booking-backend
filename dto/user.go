@@ -7,24 +7,35 @@ type UserJWT struct {
 	Role string `json:"role"`
 }
 
+type UserDetail struct {
+	ID       uint    `json:"id"`
+	Fullname string `json:"fullname"`
+	Email    string `json:"email"`
+	Address  string `json:"address"`
+	Role     string `json:"role"`
+	City    City `json:"city"`
+}
+
 type DetailUser struct {
 	Fullname string      `json:"fullname"`
 	Email    string      `json:"email"`
 	Address  string      `json:"address"`
 	Role     string      `json:"role"`
 	CityID   int         `json:"city_id"`
-	City     entity.City `json:"city"`
-	Password string      `json:"password"`
+	City    City `json:"city"`
 }
 
-type EditUserRequest struct {
-	Fullname    string `binding:"required" json:"fullname"`
-	Address     string `binding:"required" json:"address"`
-	OldPassword string `binding:"required" json:"old_password"`
-	NewPassword string `binding:"required" json:"new_password"`
-}
 
-type EditUserResponse struct {
-	Fullname string `json:"fullname"`
-	Address  string `json:"address"`
+
+func (c *UserDetail) BuildResponse(user entity.User) *UserDetail {
+	city:= *(&City{}).BuildResponse(user.City)
+
+	return &UserDetail{
+		ID:       user.ID,
+		Fullname: user.Fullname,
+		Email:    user.Email,
+		Address:  user.Address,
+		Role:     user.Role,
+		City: city,		
+	}
 }
