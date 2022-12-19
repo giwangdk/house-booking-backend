@@ -56,11 +56,10 @@ CREATE TABLE houses (
    	id BIGSERIAL PRIMARY KEY,
     name varchar(50) NOT NULL,
    	city_id INT,
-   	category_id INT,
     user_id INT,
    	price INT,
     description VARCHAR(100),
-    max_guest INT NOT NULL,
+    location VARCHAR(100),
    	FOREIGN KEY (city_id)
      REFERENCES cities (id),
    	FOREIGN KEY (user_id)
@@ -70,6 +69,24 @@ CREATE TABLE houses (
    	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   	updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
    	deleted_at TIMESTAMPTZ
+);
+
+CREATE TABLE houses_details(
+    id BIGSERIAL PRIMARY KEY,
+    max_guest INT NOT NULL,
+    beddroms INT NOT NULL,
+    beds INT NOT NULL,
+    baths INT NOT NULL,
+    house_facilities VARCHAR(200),
+    house_servies VARCHAR(200),
+    house_rules VARCHAR(200),
+    bathrooms_facilities VARCHAR(200),
+    house_id INT,
+    FOREIGN KEY (house_id)
+     REFERENCES houses (id),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMPTZ
 );
 
 CREATE TABLE houses_photos(

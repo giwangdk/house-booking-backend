@@ -39,3 +39,14 @@ INSERT INTO cities VALUES
 (38, 'Karawang'),
 (39, 'Bekasi');
 
+INSERT INTO houses VALUES 
+('Aura House 2bds Eco Bamboo House, Pool, River View', 
+3600000, 
+'Aura house is a beautiful & unique eco bamboo house built on the west bank of the River Ayung facing east to catch sunrise. Aura House is situated 25min away from Ubud, and 35min away from Canggu.',
+'Canggu',
+1,
+11 )
+
+
+INSERT INTO houses_details VALUES
+()
