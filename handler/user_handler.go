@@ -32,8 +32,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 		Email:    user.Email,
 		Address:  user.Address,
 		Role:     user.Role,
-		CityID:   user.CityID,
-		City:     user.City,
+		City:    user.City,
 	}
 
 	c.JSON(http.StatusOK, gin.H{

@@ -13,3 +13,5 @@ type User struct {
 	CityID   int    `json:"city_id"`
 	City     City   `json:"city"`
 }
+
+

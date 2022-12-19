@@ -15,7 +15,7 @@ type UserRepository interface {
 	GetUser(userID int) (*entity.User, error)
 	EditUser(u entity.User, userId int) (*entity.User, error)
 	CreateUserAdmin(u entity.User) (*entity.User, error)
-	UpdateRole(u entity.User, role string) (*entity.User, error)
+	UpdateRole(email string, role string) (*entity.User, error)
 }
 
 type postgresUserRepository struct {
@@ -77,8 +77,9 @@ func (r *postgresUserRepository) CreateUserAdmin(u entity.User) (*entity.User, e
 	return &u, nil
 }
 
-func (r *postgresUserRepository) UpdateRole(u entity.User, role string) (*entity.User, error) {
-	res := r.db.Model(&u).Where("email = ?", u.Email).Update("role", role)
+func (r *postgresUserRepository) UpdateRole(email string, role string) (*entity.User, error) {
+	var u entity.User
+	res := r.db.Model(&u).Where("email = ?", email).Update("role", role)
 
 	if res.RowsAffected == 0 && res.Error == nil {
 		return nil, httperror.BadRequestError("Email already exist", "EMAIL_ALREADY_EXIST")

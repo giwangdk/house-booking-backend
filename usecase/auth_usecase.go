@@ -50,6 +50,7 @@ func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.Regist
 		Role:     "user",
 	}
 
+
 	userCreated, err := a.userUsecase.CreateUser(entityUser)
 	if err != nil {
 		return nil, err
@@ -65,16 +66,9 @@ func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.Regist
 		return nil, err
 	}
 
+	res:= (&dto.RegisterResponse{}).BuildResponse(*userCreated)
 
-	user := dto.RegisterResponse{
-		Fullname: userCreated.Fullname,
-		Email:    userCreated.Email,
-		Address:  userCreated.Address,
-		City:     userCreated.CityID,
-		Role:     userCreated.Role,
-	}
-
-	return &user, nil
+	return res, nil
 }
 
 func (a *AuthUsecaseImplementation) Login(u dto.LoginRequest) (*dto.LoginResponse, error) {

@@ -57,18 +57,12 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 	}
 
 	if isExist{
-		userCreated, err:= a.userUsecase.UpdateRole(entityUser, "admin")	
+		userCreated, err:= a.userUsecase.UpdateRole(u.Email, "admin")	
 		if err != nil {
 			return nil, err
 		}
-		res := dto.RegisterResponse{
-			Fullname: userCreated.Fullname,
-			Email:    userCreated.Email,
-			Address:  userCreated.Address,
-			City:     userCreated.CityID,
-			Role:     userCreated.Role,
-		}
-		return &res, nil
+		res := (&dto.RegisterResponse{}).BuildResponse(*userCreated)
+		return res, nil
 	}
 
 	userCreated, err := a.userUsecase.CreateUser(entityUser)
@@ -87,15 +81,9 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 	}
 
 
-	res := dto.RegisterResponse{
-		Fullname: userCreated.Fullname,
-		Email:    userCreated.Email,
-		Address:  userCreated.Address,
-		City:     userCreated.CityID,
-		Role:     userCreated.Role,
-	}
+	res := (&dto.RegisterResponse{}).BuildResponse(*userCreated)
 
-	return &res, nil
+	return res, nil
 }
 
 func (a *AuthAdminUsecaseImplementation) Login(u dto.LoginRequest) (*dto.LoginResponse, error) {
