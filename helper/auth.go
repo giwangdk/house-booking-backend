@@ -17,18 +17,18 @@ type AuthUtil interface {
 
 type authUtilImpl struct {
 	hmacSampleSecret string
-	duration         *jwt.NumericDate
+	duration         jwt.NumericDate
 }
 
 type AuthUtilImplConfig struct {
 	HmacSampleSecret string
-	Duration         *jwt.NumericDate
+	Duration         jwt.NumericDate
 }
 
 func NewAuthUtil(a AuthUtilImplConfig) AuthUtil {
 	return &authUtilImpl{
 		hmacSampleSecret: a.HmacSampleSecret,
-		duration:         a.Duration,
+		duration:         *jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(1) * time.Minute)),
 	}
 }
 
@@ -48,7 +48,7 @@ func (a *authUtilImpl) HashAndSalt(pwd string) (string, error) {
 func (a *authUtilImpl) GenerateAccessToken(user *entity.User) (string, error) {
 	claims := &customClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: a.duration,
+			ExpiresAt: jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(15) * time.Minute)),
 			Issuer:    "assignment-golang-backend",
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},

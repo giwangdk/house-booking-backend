@@ -7,10 +7,8 @@ import (
 	"final-project-backend/repository"
 	"final-project-backend/usecase"
 	"fmt"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 func initRouter() *gin.Engine {
@@ -37,7 +35,8 @@ func initRouter() *gin.Engine {
 
 	auth := helper.NewAuthUtil(helper.AuthUtilImplConfig{
 		HmacSampleSecret: config.Config.AuthConfig.HmacSampleSecret,
-		Duration:         jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(15) * time.Minute)),
+		//Duration:         *jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(1) * time.Minute)),
+		//Duration: jwt.NewNumericDate( time.Now().Add(time.Duration(1) * time.Minute)),
 	})
 
 	userUsecase := usecase.NewUserUseCase(usecase.UserUsecaseImplementationConfig{

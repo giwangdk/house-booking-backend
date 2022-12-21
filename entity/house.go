@@ -11,6 +11,7 @@ type House struct {
 	UserID int `json:"user_id"`
 	CityID int `json:"city_id"`
 	City    City `json:"city"`
+	User    User `json:"user"`
 }
 
 type HouseDetail struct {

@@ -8,7 +8,7 @@ type UserJWT struct {
 }
 
 type UserDetail struct {
-	ID       uint    `json:"id"`
+	ID       int    `json:"id"`
 	Fullname string `json:"fullname"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`
@@ -31,7 +31,7 @@ func (c *UserDetail) BuildResponse(user entity.User) *UserDetail {
 	city:= *(&City{}).BuildResponse(user.City)
 
 	return &UserDetail{
-		ID:       user.ID,
+		ID:       int(user.ID),
 		Fullname: user.Fullname,
 		Email:    user.Email,
 		Address:  user.Address,
