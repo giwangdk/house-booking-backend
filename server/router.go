@@ -17,6 +17,7 @@ type RouterConfig struct {
 	GameUsecase        usecase.GameUsecase
 	HouseUsecase       usecase.HouseUsecase
 	HouseDetailUsecase usecase.HouseDetailUsecase
+	HousePhotoUsecase  usecase.HousePhotoUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -29,6 +30,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		GameUsecase:        c.GameUsecase,
 		HouseUsecase:       c.HouseUsecase,
 		HouseDetailUsecase: c.HouseDetailUsecase,
+		HousePhotoUsecase:  c.HousePhotoUsecase,
 	})
 
 	r := gin.Default()
@@ -53,6 +55,8 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/house-detail/:id", h.CreateHouseDetail)
 	r.PUT("/house/:id", h.UpdateHouse)
 	r.PUT("/house-detail/:id", h.UpdateHouseDetail)
+	r.POST("/house-photo/:id", h.CreateHousePhoto)
+	r.DELETE("/house-photo/:id", h.DeleteHousePhoto)
 
 	r.Use(middleware.IsAdmin)
 

@@ -11,7 +11,6 @@ type HouseUsecase interface {
 	CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error)
 	GetHouseById(houseId int) (*dto.House, error)
 	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
-	UpdateHouseDetail(r dto.UpdateHouseDetailRequest, houseId int) (*dto.UpdateHouseDetailResponse, error)
 }
 
 type HouseUsecaseImplementation struct {
@@ -94,32 +93,5 @@ func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, house
 	}
 
 	res := (&dto.UpdateHouseResponse{}).BuildResponse(*updatedUser)
-	return res, nil
-}
-
-func (u *HouseUsecaseImplementation) UpdateHouseDetail(r dto.UpdateHouseDetailRequest, houseId int) (*dto.UpdateHouseDetailResponse, error) {
-	house, err := u.GetHouseById(houseId)
-	if err != nil {
-		return nil, err
-	}
-
-	entity := entity.HouseDetail{
-		Bedrooms:            house.Bedrooms,
-		Beds:                house.Beds,
-		Baths:               house.Baths,
-		HouseFacilities:     house.HouseFacilities,
-		HouseRules:          house.HouseRules,
-		HouseServices:       house.HouseServices,
-		BathroomsFacilities: house.BathroomsFacilities,
-		HouseID:             int(house.ID),
-	}
-
-	updatedHouse, err := u.repository.UpdateHouseDetail(entity)
-	if err != nil {
-		return nil, err
-	}
-
-	res := (&dto.UpdateHouseDetailResponse{}).BuildResponse(*updatedHouse)
-
 	return res, nil
 }
