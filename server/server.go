@@ -20,16 +20,18 @@ func initRouter() *gin.Engine {
 	cityRepo := repository.NewPostgresCityRepository(repository.PostgresCityRepositoryConfig{
 		DB: db.Get(),
 	})
-	walletRepo:= repository.NewPostgresWalletRepository(repository.PostgresWalletRepositoryConfig{
-		DB:db.Get(),
+	walletRepo := repository.NewPostgresWalletRepository(repository.PostgresWalletRepositoryConfig{
+		DB: db.Get(),
 	})
-	gameRepo:= repository.NewPostgresGameRepository(repository.PostgresGameRepositoryConfig{
-		DB:db.Get(),
+	gameRepo := repository.NewPostgresGameRepository(repository.PostgresGameRepositoryConfig{
+		DB: db.Get(),
 	})
 	houseRepo := repository.NewPostgresHouseRepository(repository.PostgresHouseRepositoryConfig{
 		DB: db.Get(),
 	})
-
+	houseDetailRepo := repository.NewPostgresHouseDetailRepository(repository.PostgresHouseDetailRepositoryConfig{
+		DB: db.Get(),
+	})
 
 	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 
@@ -56,18 +58,22 @@ func initRouter() *gin.Engine {
 		Repository: houseRepo,
 	})
 
+	houseDetailUsecase := usecase.NewHouseDetailUseCase(usecase.HouseDetailUsecaseImplementationConfig{
+		Repository: houseDetailRepo,
+	})
+
 	authUsecase := usecase.NewAuthUsecase(usecase.AuthUsecaseImplementationConfig{
-		AuthUsecase: auth,
-		UserUsecase: userUsecase,
+		AuthUsecase:   auth,
+		UserUsecase:   userUsecase,
 		WalletUsecase: walletUsecase,
-		GameUsecase: gameUsecase,
+		GameUsecase:   gameUsecase,
 	})
 
 	authAdminUsecase := usecase.NewAuthAdminUsecase(usecase.AuthAdminUsecaseImplementationConfig{
 		AuthAdminUsecase: auth,
-		UserUsecase: userUsecase,
-		WalletUsecase: walletUsecase,
-		GameUsecase:gameUsecase ,
+		UserUsecase:      userUsecase,
+		WalletUsecase:    walletUsecase,
+		GameUsecase:      gameUsecase,
 	})
 
 	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
@@ -75,13 +81,14 @@ func initRouter() *gin.Engine {
 	})
 
 	r := CreateRouter(&RouterConfig{
-		AuthUsecase: authUsecase,
-		AuthAdminUsecase: authAdminUsecase,
-		UserUsecase: userUsecase,
-		CityUsecase: cityUsecase,
-		WalletUsecase: walletUsecase,
-		GameUsecase: gameUsecase,
-		HouseUsecase: houseUsecase,
+		AuthUsecase:        authUsecase,
+		AuthAdminUsecase:   authAdminUsecase,
+		UserUsecase:        userUsecase,
+		CityUsecase:        cityUsecase,
+		WalletUsecase:      walletUsecase,
+		GameUsecase:        gameUsecase,
+		HouseUsecase:       houseUsecase,
+		HouseDetailUsecase: houseDetailUsecase,
 	})
 	return r
 }
