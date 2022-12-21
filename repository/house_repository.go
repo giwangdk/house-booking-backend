@@ -59,7 +59,9 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 
 func (r *postgresHouseRepository) GetHouseById(id int) (*entity.House, error) {
 	var house entity.House
-	res := r.db.Debug().Model(entity.House{}).Preload("City").Preload("User").Where("id", id)
+	res := r.db.Model(entity.House{}).Preload("Photos").Select("houses.*, house_details.*").Where("houses.id", id)
+
+	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
 
 	if err := res.First(&house).Error; err != nil {
 		return nil, httperror.NotFoundError(err.Error())
