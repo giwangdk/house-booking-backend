@@ -13,7 +13,7 @@ type UserRepository interface {
 	CreateUser(user entity.User) (*entity.User, error)
 	GetUserByEmail(email string) (*entity.User, error)
 	GetUser(userID int) (*entity.User, error)
-	EditUser(u entity.User, userId int) (*entity.User, error)
+	UpdateUser(u entity.User, userId int) (*entity.User, error)
 	CreateUserAdmin(u entity.User) (*entity.User, error)
 	UpdateRole(email string, role string) (*entity.User, error)
 }
@@ -101,7 +101,7 @@ func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
 	return &u, nil
 }
 
-func (r *postgresUserRepository) EditUser(u entity.User, userId int) (*entity.User, error) {
+func (r *postgresUserRepository) UpdateUser(u entity.User, userId int) (*entity.User, error) {
 	res := r.db.Where("id = ?", userId).Updates(&u)
 
 	if res.RowsAffected == 0 && res.Error == nil {

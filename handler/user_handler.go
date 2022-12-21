@@ -31,8 +31,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 		Fullname: user.Fullname,
 		Email:    user.Email,
 		Address:  user.Address,
-		Role:     user.Role,
-		City:    user.City,
+		City:     user.City,
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -41,7 +40,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 	})
 }
 
-func (h *Handler) EditUser(c *gin.Context) {
+func (h *Handler) UpdateUser(c *gin.Context) {
 	userCtx, ok := c.Get("user")
 	if !ok {
 		err := httperror.UnauthorizedError()
@@ -50,14 +49,14 @@ func (h *Handler) EditUser(c *gin.Context) {
 	}
 	userId := userCtx.(dto.UserJWT).ID
 
-	var editUserRequest = new(dto.EditUserRequest)
+	var editUserRequest = new(dto.UpdateUserRequest)
 	if err := c.ShouldBindJSON(&editUserRequest); err != nil {
 		err := httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
 	}
 
-	user, err := h.userUsecase.EditUser(*editUserRequest, userId)
+	user, err := h.userUsecase.UpdateUser(*editUserRequest, userId)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)

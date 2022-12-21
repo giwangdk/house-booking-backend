@@ -9,24 +9,24 @@ import (
 )
 
 type RouterConfig struct {
-	AuthUsecase usecase.AuthUsecase
+	AuthUsecase      usecase.AuthUsecase
 	AuthAdminUsecase usecase.AuthAdminUsecase
-	UserUsecase usecase.UserUsecase
-	CityUsecase usecase.CityUsecase
-	WalletUsecase usecase.WalletUsecase
-	GameUsecase usecase.GameUsecase
-	HouseUsecase usecase.HouseUsecase
+	UserUsecase      usecase.UserUsecase
+	CityUsecase      usecase.CityUsecase
+	WalletUsecase    usecase.WalletUsecase
+	GameUsecase      usecase.GameUsecase
+	HouseUsecase     usecase.HouseUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
 	h := handler.NewHandler(handler.HandlerConfig{
-		UserUsecase: c.UserUsecase,
-		AuthUsecase: c.AuthUsecase,
+		UserUsecase:      c.UserUsecase,
+		AuthUsecase:      c.AuthUsecase,
 		AuthAdminUsecase: c.AuthAdminUsecase,
-		CityUsecase: c.CityUsecase,
-		WalletUsecase: c.WalletUsecase,
-		GameUsecase: c.GameUsecase,
-		HouseUsecase: c.HouseUsecase,
+		CityUsecase:      c.CityUsecase,
+		WalletUsecase:    c.WalletUsecase,
+		GameUsecase:      c.GameUsecase,
+		HouseUsecase:     c.HouseUsecase,
 	})
 
 	r := gin.Default()
@@ -40,13 +40,16 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.Use(middleware.Authorize)
 	r.GET("/user", h.GetUser)
 	r.GET("/cities", h.GetCities)
-	r.PUT("/user", h.EditUser)
+	r.PUT("/user", h.UpdateUser)
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
 	r.GET("/houses", h.GetHouses)
+	r.GET("/house/:id", h.GetHouseById)
+
+	r.Use(middleware.IsHost)
+	r.POST("/house", h.CreateHouse)
 
 	r.Use(middleware.IsAdmin)
-
 
 	return r
 }
