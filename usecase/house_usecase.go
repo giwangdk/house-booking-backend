@@ -10,6 +10,8 @@ type HouseUsecase interface {
 	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*dto.HouseLists, error)
 	CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error)
 	GetHouseById(houseId int) (*dto.House, error)
+	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
+	UpdateHouseDetail(r dto.UpdateHouseDetailRequest, houseId int) (*dto.UpdateHouseDetailResponse, error)
 }
 
 type HouseUsecaseImplementation struct {
@@ -71,34 +73,53 @@ func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, erro
 	return res, nil
 }
 
-// func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error) {
-// 	user, err := u.repository.GetUser(userId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error) {
+	house, err := u.GetHouseById(houseId)
+	if err != nil {
+		return nil, err
+	}
 
-// 	isValid := u.authUsecase.ComparePassword(user.Password, r.OldPassword)
-// 	if !isValid {
-// 		return nil, httperror.BadRequestError("Password is not valid", "BAD_REQUEST")
-// 	}
+	entity := entity.House{
+		Name:        house.Name,
+		Price:       house.Price,
+		Description: house.Description,
+		CityID:      house.City.ID,
+		UserID:      house.User.ID,
+		Location:    house.Location,
+	}
 
-// 	hashedPass, err := u.authUsecase.HashAndSalt(r.NewPassword)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	updatedUser, err := u.repository.UpdateHouse(entity)
+	if err != nil {
+		return nil, err
+	}
 
-// 	reqUser := entity.User{
-// 		Fullname: r.Fullname,
-// 		Address:  r.Address,
-// 		Password: hashedPass,
-// 	}
+	res := (&dto.UpdateHouseResponse{}).BuildResponse(*updatedUser)
+	return res, nil
+}
 
-// 	updatedUser, err := u.repository.EditUser(reqUser, userId)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func (u *HouseUsecaseImplementation) UpdateHouseDetail(r dto.UpdateHouseDetailRequest, houseId int) (*dto.UpdateHouseDetailResponse, error) {
+	house, err := u.GetHouseById(houseId)
+	if err != nil {
+		return nil, err
+	}
 
-// 	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
+	entity := entity.HouseDetail{
+		Bedrooms:            house.Bedrooms,
+		Beds:                house.Beds,
+		Baths:               house.Baths,
+		HouseFacilities:     house.HouseFacilities,
+		HouseRules:          house.HouseRules,
+		HouseServices:       house.HouseServices,
+		BathroomsFacilities: house.BathroomsFacilities,
+		HouseID:             int(house.ID),
+	}
 
-// 	return res, nil
-// }
+	updatedHouse, err := u.repository.UpdateHouseDetail(entity)
+	if err != nil {
+		return nil, err
+	}
+
+	res := (&dto.UpdateHouseDetailResponse{}).BuildResponse(*updatedHouse)
+
+	return res, nil
+}

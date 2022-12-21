@@ -36,18 +36,20 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/admin/login", h.LoginAdmin)
 	r.POST("/register", h.Register)
 	r.POST("/admin/register", h.RegisterAdmin)
+	r.GET("/houses", h.GetHouses)
+	r.GET("/house/:id", h.GetHouseById)
+	r.GET("/cities", h.GetCities)
 
 	r.Use(middleware.Authorize)
 	r.GET("/user", h.GetUser)
-	r.GET("/cities", h.GetCities)
 	r.PUT("/user", h.UpdateUser)
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
-	r.GET("/houses", h.GetHouses)
-	r.GET("/house/:id", h.GetHouseById)
 
 	r.Use(middleware.IsHost)
 	r.POST("/house", h.CreateHouse)
+	r.PUT("/house/:id", h.UpdateHouse)
+	r.PUT("/house/:id/detail", h.UpdateHouseDetail)
 
 	r.Use(middleware.IsAdmin)
 

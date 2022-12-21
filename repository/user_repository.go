@@ -65,7 +65,7 @@ func (r *postgresUserRepository) CreateUserAdmin(u entity.User) (*entity.User, e
 	}).Create(&u)
 
 	if res.RowsAffected == 0 && res.Error == nil {
-		err:= r.db.Model(&u).Where("email = ?", u.Email).Update("role", "admin").Error
+		err := r.db.Model(&u).Where("email = ?", u.Email).Update("role", "admin").Error
 		if err != nil {
 			return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_USER_ADMIN")
 		}
@@ -102,13 +102,10 @@ func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
 }
 
 func (r *postgresUserRepository) UpdateUser(u entity.User, userId int) (*entity.User, error) {
-	res := r.db.Where("id = ?", userId).Updates(&u)
+	err := r.db.Where("id = ?", userId).Updates(&u).Error
 
-	if res.RowsAffected == 0 && res.Error == nil {
-		return nil, httperror.BadRequestError("Email already exist", "EMAIL_ALREADY_EXIST")
-	}
-	if res.Error != nil {
-		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+	if err != nil {
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_USER")
 	}
 
 	return &u, nil

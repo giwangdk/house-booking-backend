@@ -121,3 +121,79 @@ func (h *Handler) GetHouseById(c *gin.Context) {
 		"data":        house,
 	})
 }
+
+func (h *Handler) UpdateHouse(c *gin.Context) {
+	id := c.Param("id")
+
+	houseId, err := strconv.Atoi(id)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	house := new(dto.UpdateHouseRequest)
+	if err := c.ShouldBindJSON(house); err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	req := dto.UpdateHouseRequest{
+		Name:        house.Name,
+		Price:       house.Price,
+		Location:    house.Location,
+		Description: house.Description,
+		CityID:      house.CityID,
+	}
+
+	houseRes, err := h.houseUsecase.UpdateHouse(req, houseId)
+	if err != nil {
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": http.StatusOK,
+		"data":        houseRes,
+	})
+}
+
+func (h *Handler) UpdateHouseDetail(c *gin.Context) {
+	id := c.Param("id")
+
+	houseId, err := strconv.Atoi(id)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	house := new(dto.UpdateHouseDetailRequest)
+	if err := c.ShouldBindJSON(house); err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	req := dto.UpdateHouseDetailRequest{
+		Bedrooms:            house.Bedrooms,
+		Beds:                house.Beds,
+		Baths:               house.Baths,
+		HouseFacilities:     house.HouseFacilities,
+		HouseRules:          house.HouseRules,
+		HouseServices:       house.HouseServices,
+		BathroomsFacilities: house.BathroomsFacilities,
+	}
+
+	houseRes, err := h.houseUsecase.UpdateHouseDetail(req, houseId)
+	if err != nil {
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": http.StatusOK,
+		"data":        houseRes,
+	})
+}

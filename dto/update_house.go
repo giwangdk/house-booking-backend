@@ -1,17 +1,28 @@
 package dto
 
+import "final-project-backend/entity"
+
 type UpdateHouseRequest struct {
-	Fullname    string `binding:"required" json:"fullname"`
-	Address     string `binding:"required" json:"address"`
-	OldPassword string `binding:"required" json:"old_password"`
-	NewPassword string `binding:"required" json:"new_password"`
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Description string `json:"description"`
+	Location    string `json:"location"`
+	UserID      int    `json:"user_id"`
+	CityID      int    `json:"city_id"`
 }
 
 type UpdateHouseResponse struct {
-	Fullname string `json:"fullname"`
-	Address  string `json:"address"`
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Description string `json:"description"`
+	Location    string `json:"location"`
 }
 
-
-
-
+func (r *UpdateHouseResponse) BuildResponse(entity entity.House) *UpdateHouseResponse {
+	return &UpdateHouseResponse{
+		Name:        entity.Name,
+		Price:       entity.Price,
+		Description: entity.Description,
+		Location:    entity.Location,
+	}
+}

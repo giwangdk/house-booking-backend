@@ -12,6 +12,8 @@ type HouseRepository interface {
 	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*[]entity.House, int, error)
 	CreateHouse(u entity.House) (*entity.House, error)
 	GetHouseById(id int) (*entity.House, error)
+	UpdateHouse(u entity.House) (*entity.House, error)
+	UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error)
 }
 
 type postgresHouseRepository struct {
@@ -79,6 +81,26 @@ func (r *postgresHouseRepository) CreateHouse(u entity.House) (*entity.House, er
 	}
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_HOUSE")
+	}
+
+	return &u, nil
+}
+
+func (r *postgresHouseRepository) UpdateHouse(u entity.House) (*entity.House, error) {
+	err := r.db.Where("id = ?", u.ID).Updates(&u).Error
+
+	if err != nil {
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")
+	}
+
+	return &u, nil
+}
+
+func (r *postgresHouseRepository) UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error) {
+	err := r.db.Where("id = ?", u.ID).Updates(&u).Error
+
+	if err != nil {
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")
 	}
 
 	return &u, nil
