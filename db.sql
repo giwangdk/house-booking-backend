@@ -72,14 +72,14 @@ CREATE TABLE houses (
    	deleted_at TIMESTAMPTZ
 );
 
-CREATE TABLE houses_details(
+CREATE TABLE house_details(
     id BIGSERIAL PRIMARY KEY,
     max_guest INT NOT NULL,
     beddroms INT NOT NULL,
     beds INT NOT NULL,
     baths INT NOT NULL,
     house_facilities VARCHAR(200),
-    house_servies VARCHAR(200),
+    house_services VARCHAR(200),
     house_rules VARCHAR(200),
     bathrooms_facilities VARCHAR(200),
     house_id INT,
@@ -90,7 +90,10 @@ CREATE TABLE houses_details(
     deleted_at TIMESTAMPTZ
 );
 
-CREATE TABLE houses_photos(
+INSERT INTO house_details VALUES
+(1, 10, 3, 4, "dasdasda, dasdasda", "", "", "", 1)
+
+CREATE TABLE house_photos(
     id BIGSERIAL PRIMARY KEY,
     house_id INT,
     photo VARCHAR,
