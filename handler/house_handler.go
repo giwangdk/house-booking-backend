@@ -11,13 +11,12 @@ import (
 
 func (h *Handler) GetHouses(c *gin.Context) {
 
-	sortBy:= c.Query("sortBy")
-	sort:= c.Query("sort")
-	searchBy:= c.Query("searchBy")
-	filterBycity:= c.Query("filterByCity")
-	page:= c.Query("page")
-	limit:= c.Query("limit")
-
+	sortBy := c.Query("sortBy")
+	sort := c.Query("sort")
+	searchBy := c.Query("searchBy")
+	filterBycity := c.Query("filterByCity")
+	page := c.Query("page")
+	limit := c.Query("limit")
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
@@ -62,7 +61,7 @@ func (h *Handler) GetHouses(c *gin.Context) {
 }
 
 func (h *Handler) CreateHouse(c *gin.Context) {
-	 house := new(dto.CreateHouseRequest)
+	house := new(dto.CreateHouseRequest)
 	if err := c.ShouldBindJSON(house); err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
@@ -75,14 +74,13 @@ func (h *Handler) CreateHouse(c *gin.Context) {
 	}
 	userId := userCtx.(dto.UserJWT).ID
 
-
-	req:= dto.CreateHouseRequest{
-		Name: house.Name,
-		Price: house.Price,
-		Location: house.Location,
+	req := dto.CreateHouseRequest{
+		Name:        house.Name,
+		Price:       house.Price,
+		Location:    house.Location,
 		Description: house.Description,
-		CityID: house.CityID,
-		UserID: userId,
+		CityID:      house.CityID,
+		UserID:      userId,
 	}
 
 	houseRes, err := h.houseUsecase.CreateHouse(req)
@@ -98,5 +96,28 @@ func (h *Handler) CreateHouse(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": http.StatusOK,
 		"data":        houseRes,
+	})
+}
+
+func (h *Handler) GetHouseById(c *gin.Context) {
+	id := c.Param("id")
+
+	houseId, err := strconv.Atoi(id)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+	house, err := h.houseUsecase.GetHouseById(houseId)
+	if err != nil {
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": http.StatusOK,
+		"data":        house,
 	})
 }

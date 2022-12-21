@@ -3,32 +3,38 @@ package dto
 import "final-project-backend/entity"
 
 type House struct {
-	ID uint `json:"id"`
-	Name string `json:"name"`
-	Price int `json:"price"`
-	Description string `json:"description"`
-	Location string `json:"location"`
-	User UserDetail `json:"user"`
-	City City `json:"city"`
+	ID          uint               `json:"id"`
+	Name        string             `json:"name"`
+	Price       int                `json:"price"`
+	Description string             `json:"description"`
+	Location    string             `json:"location"`
+	User        UserDetail         `json:"user"`
+	City        City               `json:"city"`
+	Photos      []HousePhotoDetail `json:"photos"`
+	HouseDetail `json:"detail"`
 }
 
 type HouseLists struct {
 	Houses []House `json:"houses"`
-	Page int `json:"page"`
-	Limit int `json:"limit"`
-	Total int `json:"total"`
+	Page   int     `json:"page"`
+	Limit  int     `json:"limit"`
+	Total  int     `json:"total"`
 }
+
 func (c *House) BuildResponse(house entity.House) *House {
 	user := *(&UserDetail{}).BuildResponse(house.User)
-	city:= *(&City{}).BuildResponse(house.City)
+	city := *(&City{}).BuildResponse(house.City)
+	photos := *(&HousePhotoLists{}).BuildResponse(house.Photos)
 	return &House{
-		ID:   house.ID,
-		Name: house.Name,
-		Price: house.Price,
+		ID:          house.ID,
+		Name:        house.Name,
+		Price:       house.Price,
 		Description: house.Description,
-		Location: house.Location,
-		User: user,
-		City: city,	
+		Location:    house.Location,
+		User:        user,
+		City:        city,
+		Photos:      photos,
+		HouseDetail: *(&HouseDetail{}).BuildResponse(house.HouseDetail),
 	}
 }
 
@@ -39,8 +45,8 @@ func (c *HouseLists) BuildResponse(houses []entity.House, page int, limit int, t
 	}
 	return &HouseLists{
 		Houses: res,
-		Page: page,
-		Limit: limit,
-		Total: total,
+		Page:   page,
+		Limit:  limit,
+		Total:  total,
 	}
 }

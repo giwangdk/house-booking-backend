@@ -12,30 +12,26 @@ type UserDetail struct {
 	Fullname string `json:"fullname"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`
-	Role     string `json:"role"`
-	City    City `json:"city"`
+	City     City   `json:"city"`
 }
 
 type DetailUser struct {
-	Fullname string      `json:"fullname"`
-	Email    string      `json:"email"`
-	Address  string      `json:"address"`
-	Role     string      `json:"role"`
-	CityID   int         `json:"city_id"`
-	City    City `json:"city"`
+	Fullname string `json:"fullname"`
+	Email    string `json:"email"`
+	Address  string `json:"address"`
+	Role     string `json:"role"`
+	CityID   int    `json:"city_id"`
+	City     City   `json:"city"`
 }
 
-
-
 func (c *UserDetail) BuildResponse(user entity.User) *UserDetail {
-	city:= *(&City{}).BuildResponse(user.City)
+	city := *(&City{}).BuildResponse(user.City)
 
 	return &UserDetail{
 		ID:       int(user.ID),
 		Fullname: user.Fullname,
 		Email:    user.Email,
 		Address:  user.Address,
-		Role:     user.Role,
-		City: city,		
+		City:     city,
 	}
 }
