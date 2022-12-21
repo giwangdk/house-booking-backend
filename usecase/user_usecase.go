@@ -13,7 +13,7 @@ type UserUsecase interface {
 	IsUserExist(email string) (*entity.User, bool)
 	CreateUser(r entity.User) (*entity.User, error)
 	GetUser(userID int) (*dto.UserDetail, error)
-	EditUser(u dto.EditUserRequest, userId int) (*dto.EditUserResponse, error)
+	UpdateUser(u dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error)
 	UpdateRole(email string, role string) (*entity.User, error)
 }
 
@@ -100,7 +100,7 @@ func (u *userUsecaseImplementation) GetUser(userID int) (*dto.UserDetail, error)
 	return res, nil
 }
 
-func (u *userUsecaseImplementation) EditUser(r dto.EditUserRequest, userId int) (*dto.EditUserResponse, error) {
+func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error) {
 	user, err := u.repository.GetUser(userId)
 	if err != nil {
 		return nil, err
@@ -122,12 +122,12 @@ func (u *userUsecaseImplementation) EditUser(r dto.EditUserRequest, userId int) 
 		Password: hashedPass,
 	}
 
-	updatedUser, err := u.repository.EditUser(reqUser, userId)
+	updatedUser, err := u.repository.UpdateUser(reqUser, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	res := (&dto.EditUserResponse{}).BuildResponse(*updatedUser)
+	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
 
 	return res, nil
 }
