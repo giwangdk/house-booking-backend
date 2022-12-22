@@ -55,7 +55,7 @@ CREATE TABLE games(
 
 CREATE TABLE houses (
    	id BIGSERIAL PRIMARY KEY,
-    name varchar(50) NOT NULL,
+    name varchar(50) UNIQUE NOT NULL,
    	city_id INT,
     user_id INT,
    	price INT,

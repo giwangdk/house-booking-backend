@@ -10,16 +10,14 @@ import (
 )
 
 func (h *Handler) CreateHousePhoto(c *gin.Context) {
-
+	house := new(dto.CreateHousePhotoRequest)
+	if err := c.ShouldBindJSON(house); err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
 	id := c.Param("id")
 
 	houseId, err := strconv.Atoi(id)
 	if err != nil {
-		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
-	}
-
-	house := new(dto.CreateHousePhotoRequest)
-	if err := c.ShouldBindJSON(house); err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 

@@ -4,7 +4,7 @@ import "final-project-backend/entity"
 
 type CreateHousePhotoRequest struct {
 	HouseID int    `json:"house_id"`
-	Photo   string `json:"photo"`
+	Photo   string `json:"photo" binding:"required"`
 }
 
 type CreateHousePhotoResponse struct {

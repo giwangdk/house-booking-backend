@@ -32,6 +32,9 @@ func initRouter() *gin.Engine {
 	houseDetailRepo := repository.NewPostgresHouseDetailRepository(repository.PostgresHouseDetailRepositoryConfig{
 		DB: db.Get(),
 	})
+	housePhotoRepo := repository.NewPostgresHousePhotoRepository(repository.PostgresHousePhotoRepositoryConfig{
+		DB: db.Get(),
+	})
 
 	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 
@@ -62,6 +65,10 @@ func initRouter() *gin.Engine {
 		Repository: houseDetailRepo,
 	})
 
+	housePhotoUsecase := usecase.NewHousePhotoUseCase(usecase.HousePhotoUsecaseImplementationConfig{
+		Repository: housePhotoRepo,
+	})
+
 	authUsecase := usecase.NewAuthUsecase(usecase.AuthUsecaseImplementationConfig{
 		AuthUsecase:   auth,
 		UserUsecase:   userUsecase,
@@ -89,6 +96,7 @@ func initRouter() *gin.Engine {
 		GameUsecase:        gameUsecase,
 		HouseUsecase:       houseUsecase,
 		HouseDetailUsecase: houseDetailUsecase,
+		HousePhotoUsecase:  housePhotoUsecase,
 	})
 	return r
 }

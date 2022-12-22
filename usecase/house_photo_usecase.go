@@ -4,6 +4,7 @@ import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/repository"
+	"fmt"
 )
 
 type HousePhotoUsecase interface {
@@ -26,6 +27,8 @@ func NewHousePhotoUseCase(c HousePhotoUsecaseImplementationConfig) HousePhotoUse
 }
 
 func (u *HousePhotoUsecaseImplementation) CreateHousePhoto(r dto.CreateHousePhotoRequest) (*dto.CreateHousePhotoResponse, error) {
+
+	fmt.Println(r)
 
 	entityHousePhoto := entity.HousePhoto{
 		HouseID: r.HouseID,

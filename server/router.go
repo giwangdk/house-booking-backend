@@ -50,10 +50,10 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
 
-	r.Use(middleware.IsHost)
+	//	r.Use(middleware.IsHost)
 	r.POST("/house", h.CreateHouse)
-	r.POST("/house-detail/:id", h.CreateHouseDetail)
 	r.PUT("/house/:id", h.UpdateHouse)
+	r.POST("/house-detail/:id", h.CreateHouseDetail)
 	r.PUT("/house-detail/:id", h.UpdateHouseDetail)
 	r.POST("/house-photo/:id", h.CreateHousePhoto)
 	r.DELETE("/house-photo/:id", h.DeleteHousePhoto)
