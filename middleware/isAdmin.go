@@ -6,9 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-func IsAdmin (c *gin.Context) {
+
+func IsAdmin(c *gin.Context) {
 	user, _ := c.Get("user")
-	if user.(*dto.UserJWT).Role != "admin"{
+	if user.(dto.UserJWT).Role != "admin" {
 		err := httperror.UnauthorizedError()
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
