@@ -3,6 +3,7 @@ package dto
 import "final-project-backend/entity"
 
 type HouseDetail struct {
+	MaxGuest            int    `json:"max_guest"`
 	Bedrooms            int    `json:"bedrooms"`
 	Beds                int    `json:"beds"`
 	Baths               int    `json:"baths"`

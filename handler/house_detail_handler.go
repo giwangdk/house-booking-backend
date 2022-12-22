@@ -3,6 +3,7 @@ package handler
 import (
 	"final-project-backend/dto"
 	"final-project-backend/httperror"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,6 +11,13 @@ import (
 )
 
 func (h *Handler) CreateHouseDetail(c *gin.Context) {
+	house := new(dto.CreateHouseDetailRequest)
+	if err := c.ShouldBindJSON(house); err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	fmt.Println(house)
+
 	id := c.Param("id")
 
 	houseId, err := strconv.Atoi(id)
@@ -17,12 +25,8 @@ func (h *Handler) CreateHouseDetail(c *gin.Context) {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
-	house := new(dto.CreateHouseDetailRequest)
-	if err := c.ShouldBindJSON(house); err != nil {
-		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
-	}
-
 	req := dto.CreateHouseDetailRequest{
+		MaxGuest:            house.MaxGuest,
 		Bedrooms:            house.Bedrooms,
 		Beds:                house.Beds,
 		Baths:               house.Baths,
@@ -50,19 +54,22 @@ func (h *Handler) CreateHouseDetail(c *gin.Context) {
 }
 
 func (h *Handler) UpdateHouseDetail(c *gin.Context) {
+
+	house := new(dto.UpdateHouseDetailRequest)
+	if err := c.ShouldBindJSON(house); err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
 	id := c.Param("id")
+
+	fmt.Println(house)
 
 	houseId, err := strconv.Atoi(id)
 	if err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
-	house := new(dto.UpdateHouseDetailRequest)
-	if err := c.ShouldBindJSON(house); err != nil {
-		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
-	}
-
 	req := dto.UpdateHouseDetailRequest{
+		MaxGuest:            house.MaxGuest,
 		Bedrooms:            house.Bedrooms,
 		Beds:                house.Beds,
 		Baths:               house.Baths,

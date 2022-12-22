@@ -62,19 +62,20 @@ func (u *HouseDetailUsecaseImplementation) GetHouseDetailById(houseDetailId int)
 }
 
 func (u *HouseDetailUsecaseImplementation) UpdateHouseDetail(r dto.UpdateHouseDetailRequest, houseDetailId int) (*dto.UpdateHouseDetailResponse, error) {
-	houseDetail, err := u.GetHouseDetailById(houseDetailId)
+	_, err := u.GetHouseDetailById(houseDetailId)
 	if err != nil {
 		return nil, err
 	}
 
 	entity := entity.HouseDetail{
-		Bedrooms:            houseDetail.Bedrooms,
-		Beds:                houseDetail.Beds,
-		Baths:               houseDetail.Baths,
-		HouseFacilities:     houseDetail.HouseFacilities,
-		HouseRules:          houseDetail.HouseRules,
-		HouseServices:       houseDetail.HouseServices,
-		BathroomsFacilities: houseDetail.BathroomsFacilities,
+		MaxGuest:            r.MaxGuest,
+		Bedrooms:            r.Bedrooms,
+		Beds:                r.Beds,
+		Baths:               r.Baths,
+		HouseFacilities:     r.HouseFacilities,
+		HouseRules:          r.HouseRules,
+		HouseServices:       r.HouseServices,
+		BathroomsFacilities: r.BathroomsFacilities,
 	}
 
 	updatedUser, err := u.repository.UpdateHouseDetail(entity)
