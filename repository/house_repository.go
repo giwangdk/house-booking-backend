@@ -10,10 +10,9 @@ import (
 
 type HouseRepository interface {
 	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*[]entity.House, int, error)
-	CreateHouse(u entity.House) (*entity.House, error)
+	CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error)
 	GetHouseById(id int) (*entity.House, error)
-	UpdateHouse(u entity.House) (*entity.House, error)
-	UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error)
+	UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error)
 }
 
 type postgresHouseRepository struct {
@@ -71,13 +70,13 @@ func (r *postgresHouseRepository) GetHouseById(id int) (*entity.House, error) {
 	return &house, nil
 }
 
-func (r *postgresHouseRepository) CreateHouse(u entity.House) (*entity.House, error) {
+func (r *postgresHouseRepository) CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error) {
 	res := r.db.Clauses(clause.OnConflict{
 		DoNothing: true,
 	}).Create(&u)
 
 	if res.RowsAffected == 0 && res.Error == nil {
-		return nil, httperror.BadRequestError("House name already exist", "HOUSE_ALREADY_EXIST")
+		return nil, httperror.BadRequestError("House Name already Exist!", "HOUSE_ALREADY_EXIST")
 	}
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_HOUSE")
@@ -86,18 +85,8 @@ func (r *postgresHouseRepository) CreateHouse(u entity.House) (*entity.House, er
 	return &u, nil
 }
 
-func (r *postgresHouseRepository) UpdateHouse(u entity.House) (*entity.House, error) {
-	err := r.db.Where("id = ?", u.ID).Updates(&u).Error
-
-	if err != nil {
-		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")
-	}
-
-	return &u, nil
-}
-
-func (r *postgresHouseRepository) UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error) {
-	err := r.db.Where("id = ?", u.ID).Updates(&u).Error
+func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error) {
+	err := r.db.Where("id = ?", userId).Updates(&u).Error
 
 	if err != nil {
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")

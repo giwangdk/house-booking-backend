@@ -41,7 +41,7 @@ func (u *HouseUsecaseImplementation) GetHouses(page int, limit int, sortBy strin
 
 func (u *HouseUsecaseImplementation) CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error) {
 
-	entityHouse := entity.House{
+	entityHouse := entity.HouseProfile{
 		Name:        r.Name,
 		Price:       r.Price,
 		Description: r.Description,
@@ -73,21 +73,20 @@ func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, erro
 }
 
 func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error) {
-	house, err := u.GetHouseById(houseId)
+	_, err := u.GetHouseById(houseId)
 	if err != nil {
 		return nil, err
 	}
 
-	entity := entity.House{
-		Name:        house.Name,
-		Price:       house.Price,
-		Description: house.Description,
-		CityID:      house.City.ID,
-		UserID:      house.User.ID,
-		Location:    house.Location,
+	entity := entity.HouseProfile{
+		Name:        r.Name,
+		Price:       r.Price,
+		Description: r.Description,
+		CityID:      r.CityID,
+		Location:    r.Location,
 	}
 
-	updatedUser, err := u.repository.UpdateHouse(entity)
+	updatedUser, err := u.repository.UpdateHouse(entity, houseId)
 	if err != nil {
 		return nil, err
 	}
