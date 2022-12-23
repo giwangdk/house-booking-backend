@@ -9,7 +9,7 @@ import (
 )
 
 type HouseRepository interface {
-	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*[]entity.House, int, error)
+	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error)
 	CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error)
 	GetHouseById(id int) (*entity.House, error)
 	UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error)
@@ -29,14 +29,14 @@ func NewPostgresHouseRepository(c PostgresHouseRepositoryConfig) HouseRepository
 	}
 }
 
-func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*[]entity.House, int, error) {
+func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error) {
 	var houses []entity.House
 
 	var total int64
 
 	subQuery := r.db.Debug().Select("id").Table("cities").Where("name LIKE ?", "%"+searchBy+"%")
 
-	//	subQuery2 := r.db.Select("id").Table("reservations").Where("status = ?", "approved")
+		subQuery2 := r.db.Select("id").Table("reservations").Where("check_in <= ? AND check_out >= ?", checkIn, checkOut)
 
 	res := r.db.Model(entity.House{}).Preload("Photos").Select("houses.*, house_details.*")
 	if sortBy != "" || sort != "" {
@@ -48,7 +48,7 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 	}
 
 	res.Limit(limit).Offset(page)
-	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Count(&total)
+	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Or("id NOT IN (?)", subQuery2).Count(&total)
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
 
 	if err := res.Find(&houses).Error; err != nil {

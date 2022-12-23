@@ -17,6 +17,8 @@ func (h *Handler) GetHouses(c *gin.Context) {
 	filterBycity := c.Query("filterByCity")
 	page := c.Query("page")
 	limit := c.Query("limit")
+	checkin := c.Query("checkin_date")
+	checkout := c.Query("checkout_date")
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
@@ -44,7 +46,7 @@ func (h *Handler) GetHouses(c *gin.Context) {
 		filterBycityInt = 0
 	}
 
-	houses, err := h.houseUsecase.GetHouses(pageInt, limitInt, sortBy, sort, searchBy, filterBycityInt)
+	houses, err := h.houseUsecase.GetHouses(pageInt, limitInt, sortBy, sort, searchBy, filterBycityInt, checkin, checkout)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)

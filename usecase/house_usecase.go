@@ -7,7 +7,7 @@ import (
 )
 
 type HouseUsecase interface {
-	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*dto.HouseLists, error)
+	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int,checkin string, checkout string) (*dto.HouseLists, error)
 	CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error)
 	GetHouseById(houseId int) (*dto.House, error)
 	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
@@ -27,8 +27,8 @@ func NewHouseUseCase(c HouseUsecaseImplementationConfig) HouseUsecase {
 	}
 }
 
-func (u *HouseUsecaseImplementation) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int) (*dto.HouseLists, error) {
-	houses, total, err := u.repository.GetHouses(page, limit, sortBy, sort, searchBy, filterByCity)
+func (u *HouseUsecaseImplementation) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkin string, checkout string) (*dto.HouseLists, error) {
+	houses, total, err := u.repository.GetHouses(page, limit, sortBy, sort, searchBy, filterByCity, checkin, checkout)
 
 	if err != nil {
 		return nil, err
