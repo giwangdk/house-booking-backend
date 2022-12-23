@@ -104,6 +104,14 @@ CREATE TABLE house_photos(
     deleted_at TIMESTAMPTZ
 );
 
+CREATE TABLE reservation_status(
+    id BIGSERIAL PRIMARY KEY,
+    status VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMPTZ
+)
+
 CREATE TABLE reservations(
     id BIGSERIAL PRIMARY KEY,
     house_id INT,
@@ -111,10 +119,14 @@ CREATE TABLE reservations(
     check_in DATE,
     check_out DATE,
     total_price INT,
+    status_id INT,
+    expired TIMESTAMPTZ NOT NULL,
     FOREIGN KEY (house_id)
      REFERENCES houses (id),
     FOREIGN KEY (user_id)
      REFERENCES users (id),
+    FOREIGN KEY (status_id)
+      REFERENCES reservation_status (id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMPTZ
@@ -125,7 +137,6 @@ CREATE TABLE transactions(
     reservation_id INT,
     user_id INT,
     house_id INT,
-    payment_method VARCHAR(50),
     FOREIGN KEY (reservation_id)
      REFERENCES reservations (id),
     FOREIGN KEY (user_id)
