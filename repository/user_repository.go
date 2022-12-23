@@ -81,9 +81,6 @@ func (r *postgresUserRepository) UpdateRole(email string, role string) (*entity.
 	var u entity.User
 	res := r.db.Model(&u).Where("email = ?", email).Update("role", role)
 
-	if res.RowsAffected == 0 && res.Error == nil {
-		return nil, httperror.BadRequestError("Email already exist", "EMAIL_ALREADY_EXIST")
-	}
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
 	}

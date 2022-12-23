@@ -10,6 +10,8 @@ import (
 type ReservationRepository interface {
 	CreateReservation(u entity.Reservation) (*entity.Reservation, error)
 	IsHouseAvailable(checkinDate string, checkoutDate string, houseID int) (bool, error)
+	GetReservationById(id int) (*entity.Reservation, error)
+	UpdateStatus(id int, status int) (*entity.Reservation, error)
 }
 
 type postgresReservationRepository struct {
@@ -25,6 +27,8 @@ func NewPostgresReservationRepository(c PostgresReservationRepositoryConfig) Res
 		db: c.DB,
 	}
 }
+
+
 
 func (r *postgresReservationRepository) CreateReservation(u entity.Reservation) (*entity.Reservation, error) {
 	res := r.db.Create(&u)
@@ -45,5 +49,26 @@ func (r *postgresReservationRepository) IsHouseAvailable(checkinDate string, che
 	return count == 0, nil
 }
 
+func (r *postgresReservationRepository) GetReservationById(id int) (*entity.Reservation, error) {
+	var u entity.Reservation
+	res := r.db.Model(&u).Where("id = ?", id).First(&u)
+	if res.Error != nil {
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
+	}
+
+	return &u, nil
+}
+
+
+func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entity.Reservation, error) {
+	var u entity.Reservation
+	res := r.db.Model(&u).Where("id = ?", id).Update("status", status)
+
+	if res.Error != nil {
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+	}
+
+	return &u, nil
+}
 
 

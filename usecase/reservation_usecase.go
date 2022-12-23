@@ -10,8 +10,10 @@ import (
 )
 
 type ReservationUsecase interface {
-	CreateReservation (r entity.Reservation) (*dto.CreateReservationResponse, error)
+	CreateReservation(r entity.Reservation) (*dto.CreateReservationResponse, error)
 	CreateReservationWithUser(r dto.CreateReservationRequest) (*dto.CreateReservationResponse, error)
+	GetReservationById(id int) (*entity.Reservation, error)
+	UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error)
 }
 
 type ReservationUsecaseImplementation struct {
@@ -105,4 +107,20 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 		}
 	return res, nil
 
+}
+
+func (u *ReservationUsecaseImplementation) GetReservationById(id int) (*entity.Reservation, error) {
+	reservation, err := u.repository.GetReservationById(id)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
+}
+
+func (u *ReservationUsecaseImplementation) UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error) {
+	reservation, err := u.repository.UpdateStatus(id, statusID)
+	if err != nil {
+		return nil, err
+	}
+	return reservation, nil
 }
