@@ -36,7 +36,7 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 
 	subQuery := r.db.Debug().Select("id").Table("cities").Where("name LIKE ?", "%"+searchBy+"%")
 
-		subQuery2 := r.db.Select("id").Table("reservations").Where("check_in <= ? AND check_out >= ?", checkIn, checkOut)
+	subQuery2 := r.db.Select("id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ?", checkIn, checkOut, checkIn, checkOut)
 
 	res := r.db.Model(entity.House{}).Preload("Photos").Select("houses.*, house_details.*")
 	if sortBy != "" || sort != "" {

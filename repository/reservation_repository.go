@@ -41,7 +41,7 @@ func (r *postgresReservationRepository) CreateReservation(u entity.Reservation) 
 
 func (r *postgresReservationRepository) IsHouseAvailable(checkinDate string, checkoutDate string, houseID int) (bool, error) {
 	var count int64
-	res := r.db.Model(&entity.Reservation{}).Where("check_in <= ? AND check_out >= ? AND house_id = ?", checkinDate, checkoutDate, houseID).Count(&count)
+	res := r.db.Model(&entity.Reservation{}).Where("check_in between ? and ? or check_out between ? and ? and house_id = ?", checkinDate, checkoutDate, checkinDate, checkoutDate, houseID).Count(&count)
 	if res.Error != nil {
 		return false, httperror.BadRequestError(res.Error.Error(), "ERROR_CHECKING_RESERVATION")
 	}
