@@ -19,6 +19,7 @@ type RouterConfig struct {
 	HouseDetailUsecase usecase.HouseDetailUsecase
 	HousePhotoUsecase  usecase.HousePhotoUsecase
 	ReservationUsecase usecase.ReservationUsecase
+	TransactionUsecase usecase.TransactionUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -33,6 +34,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		HouseDetailUsecase: c.HouseDetailUsecase,
 		HousePhotoUsecase:  c.HousePhotoUsecase,
 		ReservationUsecase: c.ReservationUsecase,
+		TransactionUsecase: c.TransactionUsecase,
 	})
 
 	r := gin.Default()
@@ -41,6 +43,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/login", h.Login)
 
 	r.POST("/reservation", h.CreateReservation)
+	r.POST("/transaction", h.CreateTransaction)
 	r.POST("/admin/login", h.LoginAdmin)
 	r.POST("/register", h.Register)
 	r.POST("/admin/register", h.RegisterAdmin)

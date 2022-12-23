@@ -62,7 +62,7 @@ func (r *postgresReservationRepository) GetReservationById(id int) (*entity.Rese
 
 func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entity.Reservation, error) {
 	var u entity.Reservation
-	res := r.db.Model(&u).Where("id = ?", id).Update("status", status)
+	res := r.db.Model(&u).Where("id = ?", id).Update("status_id", status)
 
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")

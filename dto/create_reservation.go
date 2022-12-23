@@ -6,13 +6,13 @@ import (
 )
 
 type CreateReservationRequest struct {
-	CheckIn string `json:"check_in"`
-	CheckOut string `json:"check_out"`
-	TotalPrice int `json:"total_price"`
-	Fullname string `json:"fullname"`
-	Email string `json:"email"`
-	CityID int `json:"city_id"`
-	HouseID int `json:"house_id"`
+	CheckIn string `json:"check_in" binding:"required"`
+	CheckOut string `json:"check_out" binding:"required"`
+	TotalPrice int `json:"total_price" binding:"required"`
+	Fullname string `json:"fullname" binding:"required"`
+	Email string `json:"email" binding:"required"`
+	CityID int `json:"city_id" binding:"required"`
+	HouseID int `json:"house_id" binding:"required"`
 
 }
 
