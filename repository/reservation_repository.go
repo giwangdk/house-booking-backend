@@ -9,6 +9,7 @@ import (
 
 type ReservationRepository interface {
 	CreateReservation(u entity.Reservation) (*entity.Reservation, error)
+	IsHouseAvailable(checkinDate string, checkoutDate string, houseID int) (bool, error)
 }
 
 type postgresReservationRepository struct {
@@ -33,5 +34,16 @@ func (r *postgresReservationRepository) CreateReservation(u entity.Reservation) 
 
 	return &u, nil
 }
+
+func (r *postgresReservationRepository) IsHouseAvailable(checkinDate string, checkoutDate string, houseID int) (bool, error) {
+	var count int64
+	res := r.db.Model(&entity.Reservation{}).Where("check_in <= ? AND check_out >= ? AND house_id = ?", checkinDate, checkoutDate, houseID).Count(&count)
+	if res.Error != nil {
+		return false, httperror.BadRequestError(res.Error.Error(), "ERROR_CHECKING_RESERVATION")
+	}
+
+	return count == 0, nil
+}
+
 
 

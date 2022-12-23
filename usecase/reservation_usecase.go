@@ -3,6 +3,7 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 	"fmt"
 	"time"
@@ -33,6 +34,13 @@ func NewReservationUseCase(c ReservationUsecaseImplementationConfig) Reservation
 
 func (u *ReservationUsecaseImplementation) CreateReservation (r entity.Reservation) (*dto.CreateReservationResponse, error) {
 
+	isAvailable, err := u.repository.IsHouseAvailable(r.CheckIn, r.CheckOut, r.HouseID)
+	if !isAvailable && err == nil {
+		return nil, httperror.BadRequestError("House is not available", "ERROR_HOUSE_NOT_AVAILABLE")
+	}
+	if err != nil {
+		return nil, err
+	}
 
 	reservation, err := u.repository.CreateReservation(r)
 	if err != nil {
