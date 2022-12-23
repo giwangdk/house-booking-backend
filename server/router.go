@@ -18,6 +18,7 @@ type RouterConfig struct {
 	HouseUsecase       usecase.HouseUsecase
 	HouseDetailUsecase usecase.HouseDetailUsecase
 	HousePhotoUsecase  usecase.HousePhotoUsecase
+	ReservationUsecase usecase.ReservationUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -31,12 +32,15 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		HouseUsecase:       c.HouseUsecase,
 		HouseDetailUsecase: c.HouseDetailUsecase,
 		HousePhotoUsecase:  c.HousePhotoUsecase,
+		ReservationUsecase: c.ReservationUsecase,
 	})
 
 	r := gin.Default()
 
 	r.Use(middleware.ApplyCORS())
 	r.POST("/login", h.Login)
+
+	r.POST("/reservation", h.CreateReservation)
 	r.POST("/admin/login", h.LoginAdmin)
 	r.POST("/register", h.Register)
 	r.POST("/admin/register", h.RegisterAdmin)

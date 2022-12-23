@@ -15,6 +15,7 @@ type UserUsecase interface {
 	GetUser(userID int) (*dto.UserDetail, error)
 	UpdateUser(u dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error)
 	UpdateRole(email string, role string) (*entity.User, error)
+	IsUserExistByEmail(email string) (*entity.User, bool)
 }
 
 type userUsecaseImplementation struct {
@@ -130,4 +131,16 @@ func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId i
 	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
 
 	return res, nil
+}
+
+
+func (u *userUsecaseImplementation) IsUserExistByEmail(email string) (*entity.User, bool) {
+	user, err := u.repository.GetUserByEmail(email)
+
+	if err != nil {
+		return nil, false
+	}
+
+
+	return user,true
 }
