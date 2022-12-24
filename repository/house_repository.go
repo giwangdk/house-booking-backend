@@ -51,7 +51,7 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Count(&total)
 
 	if checkIn != "" && checkOut != "" {
-		res.Or("id NOT IN (?)", subQuery2)
+		res.Where("houses.id NOT IN (?)", subQuery2)
 	}
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
 
