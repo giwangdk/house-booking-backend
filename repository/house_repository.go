@@ -36,7 +36,7 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 
 	subQuery := r.db.Debug().Select("id").Table("cities").Where("name LIKE ?", "%"+searchBy+"%")
 
-	subQuery2 := r.db.Select("id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ? status_id != 3", checkIn, checkOut, checkIn, checkOut)
+	subQuery2 := r.db.Debug().Select("house_id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ? and status_id != 3", checkIn, checkOut, checkIn, checkOut)
 
 	res := r.db.Model(entity.House{}).Preload("Photos").Select("houses.*, house_details.*")
 	if sortBy != "" || sort != "" {
@@ -48,7 +48,11 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 	}
 
 	res.Limit(limit).Offset(page)
-	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Or("id NOT IN (?)", subQuery2).Count(&total)
+	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Count(&total)
+
+	if checkIn != "" && checkOut != "" {
+		res.Or("id NOT IN (?)", subQuery2)
+	}
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
 
 	if err := res.Find(&houses).Error; err != nil {

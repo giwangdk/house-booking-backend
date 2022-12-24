@@ -44,7 +44,7 @@ CREATE TABLE games(
     id BIGSERIAL PRIMARY KEY,
     user_id INT,
     chance INT,
-    games_played INT,
+    total_games_played INT,
     FOREIGN KEY (user_id)
      REFERENCES users (id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,

@@ -3,6 +3,7 @@ package repository
 import (
 	"final-project-backend/entity"
 	"final-project-backend/httperror"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -41,10 +42,15 @@ func (r *postgresReservationRepository) CreateReservation(u entity.Reservation) 
 
 func (r *postgresReservationRepository) IsHouseAvailable(checkinDate string, checkoutDate string, houseID int) (bool, error) {
 	var count int64
-	res := r.db.Model(&entity.Reservation{}).Where("check_in between ? and ? or check_out between ? and ? and house_id = ? and status_id != 3 ", checkinDate, checkoutDate, checkinDate, checkoutDate, houseID).Count(&count)
+
+	subQuery := r.db.Select("id").Model(&entity.Reservation{}).Where("house_id = ? ", houseID)
+
+	res := r.db.Model(&entity.Reservation{}).Where("id IN (?) AND ((check_in BETWEEN ? AND ?) OR (check_out BETWEEN ? AND ?) AND status_id != 3)", subQuery, checkinDate, checkoutDate, checkinDate, checkoutDate).Count(&count)
 	if res.Error != nil {
 		return false, httperror.BadRequestError(res.Error.Error(), "ERROR_CHECKING_RESERVATION")
 	}
+
+	fmt.Println(count)
 
 	return count == 0, nil
 }

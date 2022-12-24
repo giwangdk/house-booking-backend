@@ -37,6 +37,7 @@ func NewReservationUseCase(c ReservationUsecaseImplementationConfig) Reservation
 func (u *ReservationUsecaseImplementation) CreateReservation (r entity.Reservation) (*dto.CreateReservationResponse, error) {
 
 	isAvailable, err := u.repository.IsHouseAvailable(r.CheckIn, r.CheckOut, r.HouseID)
+	fmt.Println(isAvailable, err)
 	if !isAvailable && err == nil {
 		return nil, httperror.BadRequestError("House is not available", "ERROR_HOUSE_NOT_AVAILABLE")
 	}
