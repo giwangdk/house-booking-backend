@@ -38,7 +38,7 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 
 	subQuery2 := r.db.Debug().Select("house_id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ? and status_id != 3", checkIn, checkOut, checkIn, checkOut)
 
-	res := r.db.Model(entity.House{}).Preload("Photos").Select("houses.*, house_details.*")
+	res := r.db.Model(entity.House{}).Preload("Photos").Preload("City").Select("houses.*, house_details.*")
 	if sortBy != "" || sort != "" {
 		res = res.Order(sortBy + " " + sort)
 	}

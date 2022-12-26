@@ -7,13 +7,16 @@ import (
 	"final-project-backend/repository"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type ReservationUsecase interface {
 	CreateReservation(r entity.Reservation) (*dto.CreateReservationResponse, error)
 	CreateReservationWithUser(r dto.CreateReservationRequest) (*dto.CreateReservationResponse, error)
-	GetReservationById(id int) (*entity.Reservation, error)
+	GetReservationByBookingCode(code string) (*dto.ReservationDetail, error)
 	UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error)
+	GetReservationById(id int) (*entity.Reservation, error) 
 }
 
 type ReservationUsecaseImplementation struct {
@@ -58,7 +61,9 @@ func (u *ReservationUsecaseImplementation) CreateReservation (r entity.Reservati
 
 func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.CreateReservationRequest) (*dto.CreateReservationResponse, error) {
 
+    code:= uuid.New()
 
+	
 	user, isExist := u.userUsecase.IsUserExistByEmail(r.Email)
 	
 	fmt.Println(user, isExist)
@@ -82,7 +87,7 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 			Expired : time.Now().Add(1 * time.Hour),
 			StatusID: 1,
 			UserID: int(userCreated.ID),
-			
+			BookingCode: code.String(),
 		}
 
 		res, err:= u.CreateReservation(reservationUnregisteredAcc)
@@ -100,6 +105,7 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 		Expired : time.Now().Add(1 * time.Hour),
 		StatusID: 1,
 		UserID: int(user.ID),
+		BookingCode: code.String(),
 		
 	}
 	res, err:= u.CreateReservation(reservation)
@@ -110,6 +116,16 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 
 }
 
+func (u *ReservationUsecaseImplementation) GetReservationByBookingCode(code string) (*dto.ReservationDetail, error) {
+	reservation, err := u.repository.GetReservationByBookingCode(code)
+	if err != nil {
+		return nil, err
+	}
+
+	res:= (&dto.ReservationDetail{}).BuildResponse(*reservation)
+	return res, nil
+}
+
 func (u *ReservationUsecaseImplementation) GetReservationById(id int) (*entity.Reservation, error) {
 	reservation, err := u.repository.GetReservationById(id)
 	if err != nil {
@@ -117,7 +133,6 @@ func (u *ReservationUsecaseImplementation) GetReservationById(id int) (*entity.R
 	}
 	return reservation, nil
 }
-
 func (u *ReservationUsecaseImplementation) UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error) {
 	reservation, err := u.repository.UpdateStatus(id, statusID)
 	if err != nil {

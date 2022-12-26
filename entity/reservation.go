@@ -15,4 +15,5 @@ type Reservation struct{
 	HouseID int `json:"house_id"`
 	UserID int `json:"user_id"`
 	StatusID int `json:"status_id"`
+	BookingCode string `json:"booking_code"`
 }

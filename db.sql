@@ -112,6 +112,7 @@ CREATE TABLE reservation_status(
     deleted_at TIMESTAMPTZ
 )
 
+
 CREATE TABLE reservations(
     id BIGSERIAL PRIMARY KEY,
     house_id INT,
@@ -120,6 +121,7 @@ CREATE TABLE reservations(
     check_out DATE,
     total_price INT,
     status_id INT,
+    booking_code VARCHAR UNIQUE,
     expired TIMESTAMPTZ NOT NULL,
     FOREIGN KEY (house_id)
      REFERENCES houses (id),

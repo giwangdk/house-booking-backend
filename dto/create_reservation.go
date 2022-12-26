@@ -13,7 +13,7 @@ type CreateReservationRequest struct {
 	Email string `json:"email" binding:"required"`
 	CityID int `json:"city_id" binding:"required"`
 	HouseID int `json:"house_id" binding:"required"`
-
+	
 }
 
 type CreateReservationResponse struct {
@@ -24,6 +24,7 @@ type CreateReservationResponse struct {
 	StatusID int `json:"status_id"`
 	UserID int `json:"user_id"`
 	Expire time.Time `json:"expire"`
+	BookingCode string `json:"booking_code"`
 }
 
 func (r *CreateReservationResponse) BuildResponse(reservation entity.Reservation) *CreateReservationResponse {
@@ -35,5 +36,6 @@ func (r *CreateReservationResponse) BuildResponse(reservation entity.Reservation
 		StatusID: reservation.StatusID,
 		UserID: reservation.UserID,
 		Expire: reservation.Expired,
+		BookingCode: reservation.BookingCode,
 	}
 }

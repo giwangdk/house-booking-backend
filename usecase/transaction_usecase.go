@@ -30,13 +30,13 @@ func NewTransactionUseCase(c TransactionUsecaseImplementationConfig) Transaction
 
 func (u *TransactionUsecaseImplementation) CreateTransaction (r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error) {
 
-	reservation, err := u.reservationUsecase.GetReservationById(r.ReservationID)
+	reservation, err := u.reservationUsecase.GetReservationByBookingCode(r.BookingCode)
 	if err != nil {
 		return nil, err
 	}
 
 	transaction, err := u.repository.CreateTransaction(entity.Transaction{
-		ReservationID: r.ReservationID,
+		ReservationID: int(reservation.ID),
 		HouseID: reservation.HouseID,
 		UserID: reservation.UserID,
 	})
