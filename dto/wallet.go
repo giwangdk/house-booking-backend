@@ -7,13 +7,15 @@ import (
 )
 
 type WalletDetail struct{
-	ID uint `json:"id"`
+	ID int `json:"id"`
 	Balance decimal.Decimal `json:"balance"`
+	UserID int `json:"user_id"`
 }
 
 func (c *WalletDetail) BuildResponse(wallet entity.Wallet) *WalletDetail {
 	return &WalletDetail{
-		ID: wallet.ID,
+		ID: int(wallet.ID),
 		Balance: wallet.Balance,
+		UserID: wallet.UserId,
 	}
 }

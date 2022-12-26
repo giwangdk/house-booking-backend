@@ -15,6 +15,7 @@ type Handler struct {
 	reservationUsecase usecase.ReservationUsecase
 	transactionUsecase usecase.TransactionUsecase
 	pickupUsecase 	usecase.PickupUsecase
+	walletTransaction usecase.WalletTransactionUsecase
 }
 
 type HandlerConfig struct {
@@ -30,6 +31,7 @@ type HandlerConfig struct {
 	ReservationUsecase usecase.ReservationUsecase
 	TransactionUsecase usecase.TransactionUsecase
 	PickupUsecase 	usecase.PickupUsecase
+	WalletTransaction usecase.WalletTransactionUsecase
 }
 
 func NewHandler(c HandlerConfig) *Handler {
@@ -46,5 +48,6 @@ func NewHandler(c HandlerConfig) *Handler {
 		reservationUsecase: c.ReservationUsecase,
 		transactionUsecase: c.TransactionUsecase,
 		pickupUsecase: 	c.PickupUsecase,
+		walletTransaction : c.WalletTransaction,
 	}
 }

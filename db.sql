@@ -139,6 +139,7 @@ CREATE TABLE transactions(
     reservation_id INT,
     user_id INT,
     house_id INT,
+    transfer_slip VARCHAR,
     FOREIGN KEY (reservation_id)
      REFERENCES reservations (id),
     FOREIGN KEY (user_id)
@@ -176,3 +177,17 @@ CREATE TABLE pickups(
 
 
 
+CREATE TABLE wallet_transactions (
+   id BIGSERIAL PRIMARY KEY,
+   sender INT,
+   amount NUMERIC NOT NULL,
+   recipient INT NOT NULL,
+   description VARCHAR(35),
+   FOREIGN KEY (sender)
+     REFERENCES wallets (id),
+   FOREIGN KEY (recipient)
+     REFERENCES wallets (id),
+   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   deleted_at TIMESTAMPTZ
+);

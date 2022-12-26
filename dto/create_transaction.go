@@ -3,8 +3,8 @@ package dto
 import "final-project-backend/entity"
 
 type CreateTransactionRequest struct {
-	ReservationID int `json:"reservation_id"`
-	BookingCode string `json:"booking_code"`
+	BookingCode string `json:"booking_code", binding:"required"`
+	IsGuest bool `json:"is_guest"`
 }
 
 type CreateTransactionResponse struct {

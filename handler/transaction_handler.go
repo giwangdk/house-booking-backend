@@ -16,7 +16,7 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 
 
 	req := dto.CreateTransactionRequest{
-		ReservationID: transaction.ReservationID,
+		BookingCode:  transaction.BookingCode,
 	}
 
 	transactionRes, err := h.transactionUsecase.CreateTransaction(req)	

@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/repository"
 
@@ -12,7 +11,7 @@ type WalletUsecase interface {
 	CreateWallet(userID int) (*entity.Wallet, error)
 	IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
 	DecreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error)
-	GetWalletByUserID(userId int) (*dto.WalletDetail, error)
+	GetWalletByUserID(userId int) (*entity.Wallet, error)
 	IsValidBalance(amount decimal.Decimal, wallet entity.Wallet) bool
 }
 
@@ -43,14 +42,13 @@ func (u *walletUsecaseImplementation) IsValidBalance(amount decimal.Decimal, wal
 	return u.repository.IsValidBalance(amount, wallet)
 }
 
-func (u *walletUsecaseImplementation) GetWalletByUserID(userId int) (*dto.WalletDetail, error) {
+func (u *walletUsecaseImplementation) GetWalletByUserID(userId int) (*entity.Wallet, error) {
 	w, err := u.repository.GetWalletByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	res:= (&dto.WalletDetail{}).BuildResponse(*w)
-	return res, nil
+	return w, nil
 }
 
 func (u *walletUsecaseImplementation) IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error) {
