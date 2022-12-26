@@ -12,32 +12,34 @@ import (
 )
 
 type ReservationUsecase interface {
-	CreateReservation(r entity.Reservation) (*dto.CreateReservationResponse, error)
+	CreateReservation(r entity.Reservation) (*entity.Reservation, error)
 	CreateReservationWithUser(r dto.CreateReservationRequest) (*dto.CreateReservationResponse, error)
 	GetReservationByBookingCode(code string) (*dto.ReservationDetail, error)
 	UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error)
-	GetReservationById(id int) (*entity.Reservation, error) 
+	GetReservationById(id int) (*entity.Reservation, error)
 }
 
 type ReservationUsecaseImplementation struct {
-	repository repository.ReservationRepository
-	userUsecase UserUsecase
+	repository    repository.ReservationRepository
+	userUsecase   UserUsecase
+	pickupUsecase PickupUsecase
 }
 
 type ReservationUsecaseImplementationConfig struct {
-	Repository repository.ReservationRepository
-	UserUsecase UserUsecase
+	Repository    repository.ReservationRepository
+	UserUsecase   UserUsecase
+	PickupUsecase PickupUsecase
 }
 
 func NewReservationUseCase(c ReservationUsecaseImplementationConfig) ReservationUsecase {
 	return &ReservationUsecaseImplementation{
-		repository: c.Repository,
-		userUsecase: c.UserUsecase,
+		repository:    c.Repository,
+		userUsecase:   c.UserUsecase,
+		pickupUsecase: c.PickupUsecase,
 	}
 }
 
-
-func (u *ReservationUsecaseImplementation) CreateReservation (r entity.Reservation) (*dto.CreateReservationResponse, error) {
+func (u *ReservationUsecaseImplementation) CreateReservation(r entity.Reservation) (*entity.Reservation, error) {
 
 	isAvailable, err := u.repository.IsHouseAvailable(r.CheckIn, r.CheckOut, r.HouseID)
 	fmt.Println(isAvailable, err)
@@ -53,65 +55,91 @@ func (u *ReservationUsecaseImplementation) CreateReservation (r entity.Reservati
 		return nil, err
 	}
 
-
-	res := (&dto.CreateReservationResponse{}).BuildResponse(*reservation)
-
-	return res, nil
+	return reservation, nil
 }
 
 func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.CreateReservationRequest) (*dto.CreateReservationResponse, error) {
 
-    code:= uuid.New()
+	code := uuid.New()
 
-	
 	user, isExist := u.userUsecase.IsUserExistByEmail(r.Email)
-	
+
 	fmt.Println(user, isExist)
 
 	if !isExist {
 		userCreated, err := u.userUsecase.CreateUser(entity.User{
 			Fullname: r.Fullname,
-			Email: r.Email,
-			Role: "guest",
-			CityID: r.CityID,
+			Email:    r.Email,
+			Role:     "guest",
+			CityID:   r.CityID,
 		})
 		if err != nil {
 			return nil, err
 		}
 
 		reservationUnregisteredAcc := entity.Reservation{
-			CheckIn: r.CheckIn,
-			CheckOut: r.CheckOut,
-			TotalPrice: r.TotalPrice,
-			HouseID: r.HouseID,
-			Expired : time.Now().Add(1 * time.Hour),
-			StatusID: 1,
-			UserID: int(userCreated.ID),
+			CheckIn:     r.CheckIn,
+			CheckOut:    r.CheckOut,
+			TotalPrice:  r.TotalPrice,
+			HouseID:     r.HouseID,
+			Expired:     time.Now().Add(1 * time.Hour),
+			StatusID:    1,
+			UserID:      int(userCreated.ID),
 			BookingCode: code.String(),
 		}
 
-		res, err:= u.CreateReservation(reservationUnregisteredAcc)
+		reservation, err := u.CreateReservation(reservationUnregisteredAcc)
 		if err != nil {
 			return nil, err
 		}
+
+		res := (&dto.CreateReservationResponse{}).BuildResponse(*reservation)
+
+		fmt.Println("hihi")
+
+		if !r.IsRequestPickup {
+			return res, nil
+		}
+
+		_, err = u.pickupUsecase.CreatePickup(dto.CreatePickupRequest{
+			ReservationID: int(reservation.ID),
+			UserID:        int(userCreated.ID),
+		})
+		if err != nil {
+			return nil, err
+		}
+
 		return res, nil
 	}
 
 	reservation := entity.Reservation{
-		CheckIn: r.CheckIn,
-		CheckOut: r.CheckOut,
-		TotalPrice: r.TotalPrice,
-		HouseID: r.HouseID,
-		Expired : time.Now().Add(1 * time.Hour),
-		StatusID: 1,
-		UserID: int(user.ID),
+		CheckIn:     r.CheckIn,
+		CheckOut:    r.CheckOut,
+		TotalPrice:  r.TotalPrice,
+		HouseID:     r.HouseID,
+		Expired:     time.Now().Add(1 * time.Hour),
+		StatusID:    1,
+		UserID:      int(user.ID),
 		BookingCode: code.String(),
-		
 	}
-	res, err:= u.CreateReservation(reservation)
-		if err != nil {
-			return nil, err
-		}
+	reservationCreated, err := u.CreateReservation(reservation)
+	if err != nil {
+		return nil, err
+	}
+	res := (&dto.CreateReservationResponse{}).BuildResponse(*reservationCreated)
+
+	if !r.IsRequestPickup {
+		return res, nil
+	}
+
+	_, err = u.pickupUsecase.CreatePickup(dto.CreatePickupRequest{
+		ReservationID: int(reservationCreated.ID),
+		UserID:        int(user.ID),
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
 
 }
@@ -122,7 +150,7 @@ func (u *ReservationUsecaseImplementation) GetReservationByBookingCode(code stri
 		return nil, err
 	}
 
-	res:= (&dto.ReservationDetail{}).BuildResponse(*reservation)
+	res := (&dto.ReservationDetail{}).BuildResponse(*reservation)
 	return res, nil
 }
 

@@ -11,39 +11,37 @@ type PickupUsecase interface {
 }
 
 type PickupUsecaseImplementation struct {
-	repository repository.PickupRepository
+	repository         repository.PickupRepository
 	reservationUsecase ReservationUsecase
 }
 
 type PickupUsecaseImplementationConfig struct {
-	Repository repository.PickupRepository
+	Repository         repository.PickupRepository
 	ReservationUsecase ReservationUsecase
 }
 
 func NewPickupUseCase(c PickupUsecaseImplementationConfig) PickupUsecase {
 	return &PickupUsecaseImplementation{
-		repository: c.Repository,
+		repository:         c.Repository,
 		reservationUsecase: c.ReservationUsecase,
 	}
 }
 
-
-func (u *PickupUsecaseImplementation) CreatePickup (r dto.CreatePickupRequest) (*dto.CreatePickupResponse, error) {
+func (u *PickupUsecaseImplementation) CreatePickup(r dto.CreatePickupRequest) (*dto.CreatePickupResponse, error) {
 
 	pickup, err := u.repository.CreatePickup(entity.Pickup{
-		ReservationID: r.ReservationID,
-		UserID: r.UserID,
+		ReservationID:  r.ReservationID,
+		UserID:         r.UserID,
 		PickupStatusID: 1,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-
 	res := (&dto.CreatePickupResponse{}).BuildResponse(*pickup)
 
 	return res, nil
-	
+
 }
 
 func (u *PickupUsecaseImplementation) UpdateStatusPickup(id int, statusID int) (*entity.Pickup, error) {

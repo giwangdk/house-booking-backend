@@ -41,6 +41,9 @@ func initRouter() *gin.Engine {
 	transactionRepo := repository.NewPostgresTransactionRepository(repository.PostgresTransactionRepositoryConfig{
 		DB: db.Get(),
 	})
+	pickupRepo := repository.NewPostgresPickupRepository(repository.PostgresPickupRepositoryConfig{
+		DB: db.Get(),
+	})
 
 	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 
@@ -92,13 +95,17 @@ func initRouter() *gin.Engine {
 	cityUsecase := usecase.NewCityUseCase(usecase.CityUsecaseImplementationConfig{
 		Repository: cityRepo,
 	})
+	pickupUsecase := usecase.NewPickupUseCase(usecase.PickupUsecaseImplementationConfig{
+		Repository: pickupRepo,
+	})
 
-	reservationUsecase:= usecase.NewReservationUseCase(usecase.ReservationUsecaseImplementationConfig{
-		Repository: reservationRepo,
-		UserUsecase: userUsecase,
+	reservationUsecase := usecase.NewReservationUseCase(usecase.ReservationUsecaseImplementationConfig{
+		Repository:    reservationRepo,
+		UserUsecase:   userUsecase,
+		PickupUsecase: pickupUsecase,
 	})
 	transactionUsecase := usecase.NewTransactionUseCase(usecase.TransactionUsecaseImplementationConfig{
-		Repository: transactionRepo,
+		Repository:         transactionRepo,
 		ReservationUsecase: reservationUsecase,
 	})
 

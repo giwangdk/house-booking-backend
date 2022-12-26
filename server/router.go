@@ -45,6 +45,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/reservation", h.CreateReservation)
 	r.GET("/reservation/:id", h.GetReservationByBookingCode)
 	r.POST("/transaction", h.CreateTransaction)
+	r.POST("/pickup", h.CreatePickup)
 	r.POST("/admin/login", h.LoginAdmin)
 	r.POST("/register", h.Register)
 	r.POST("/admin/register", h.RegisterAdmin)
