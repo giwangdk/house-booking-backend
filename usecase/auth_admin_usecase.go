@@ -52,11 +52,12 @@ func (a *AuthAdminUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.R
 	
 	user, isExist := a.userUsecase.IsUserExist(u.Email)
 	
-	if user.Role == "admin" {
-		return nil, httperror.BadRequestError("Email already exist", "FAILED_REGISTER")
-	}
+	
 
 	if isExist{
+		if user.Role == "admin" {
+		return nil, httperror.BadRequestError("Email already exist", "FAILED_REGISTER")
+	}
 		userCreated, err:= a.userUsecase.UpdateRole(u.Email, "admin")	
 		if err != nil {
 			return nil, err
