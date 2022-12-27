@@ -3,6 +3,7 @@ package middleware
 import (
 	"final-project-backend/dto"
 	"final-project-backend/httperror"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,4 +16,6 @@ func IsHost(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("role", user.(dto.UserJWT).Role )
+	c.Next()
 }

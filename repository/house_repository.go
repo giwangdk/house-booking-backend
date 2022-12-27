@@ -9,7 +9,7 @@ import (
 )
 
 type HouseRepository interface {
-	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error)
+	GetHouses(userId int, page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error)
 	CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error)
 	GetHouseById(id int) (*entity.House, error)
 	UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error)
@@ -29,7 +29,7 @@ func NewPostgresHouseRepository(c PostgresHouseRepositoryConfig) HouseRepository
 	}
 }
 
-func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error) {
+func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkIn string, checkOut string) (*[]entity.House, int, error) {
 	var houses []entity.House
 
 	var total int64
@@ -45,6 +45,10 @@ func (r *postgresHouseRepository) GetHouses(page int, limit int, sortBy string, 
 
 	if filterByCity != 0 {
 		res = res.Where("city_id = ?", filterByCity)
+	}
+
+	if userId != 0 {
+		res = res.Where("user_id = ?", userId)
 	}
 
 	res.Limit(limit).Offset(page)
@@ -98,3 +102,6 @@ func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int)
 
 	return &u, nil
 }
+
+
+

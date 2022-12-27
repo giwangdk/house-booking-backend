@@ -64,6 +64,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.POST("/host", h.CreateHost)
 
 	r.Use(middleware.IsHost)
+	r.GET("/host/houses", h.GetHousesHost)
 	r.POST("/house", h.CreateHouse)
 	r.PUT("/house/:id", h.UpdateHouse)
 	r.POST("/house-detail/:id", h.CreateHouseDetail)

@@ -3,6 +3,7 @@ package handler
 import (
 	"final-project-backend/dto"
 	"final-project-backend/httperror"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -158,5 +159,55 @@ func (h *Handler) UpdateHouse(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": http.StatusOK,
 		"data":        houseRes,
+	})
+}
+
+func (h *Handler) GetHousesHost(c *gin.Context) {
+	fmt.Println("hihih")
+	userCtx, ok := c.Get("user")
+	if !ok {
+		err := httperror.UnauthorizedError()
+		c.AbortWithStatusJSON(err.StatusCode, err)
+		return
+	}
+
+	fmt.Println(userCtx)
+	userId := userCtx.(dto.UserJWT).ID
+	sortBy := c.Query("sortBy")
+	sort := c.Query("sort")
+	searchBy := c.Query("searchBy")
+	page := c.Query("page")
+	limit := c.Query("limit")
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	if limit == "" {
+		limitInt = 0
+	}
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	if page == "" {
+		pageInt = 0
+	}
+
+	houses, err := h.houseUsecase.GetHousesHost(userId, pageInt, limitInt, sortBy, sort, searchBy)
+	if err != nil {
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": http.StatusOK,
+		"data":        houses,
 	})
 }

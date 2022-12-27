@@ -11,6 +11,7 @@ type HouseUsecase interface {
 	CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error)
 	GetHouseById(houseId int) (*dto.House, error)
 	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
+	GetHousesHost(userId int, page int, limit int, sortBy string, sort string, searchBy string) (*dto.HouseLists, error)
 }
 
 type HouseUsecaseImplementation struct {
@@ -28,7 +29,7 @@ func NewHouseUseCase(c HouseUsecaseImplementationConfig) HouseUsecase {
 }
 
 func (u *HouseUsecaseImplementation) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkin string, checkout string) (*dto.HouseLists, error) {
-	houses, total, err := u.repository.GetHouses(page, limit, sortBy, sort, searchBy, filterByCity, checkin, checkout)
+	houses, total, err := u.repository.GetHouses(0,page, limit, sortBy, sort, searchBy, filterByCity, checkin, checkout)
 
 	if err != nil {
 		return nil, err
@@ -94,3 +95,16 @@ func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, house
 	res := (&dto.UpdateHouseResponse{}).BuildResponse(*updatedUser)
 	return res, nil
 }
+
+func (u *HouseUsecaseImplementation) GetHousesHost(userId int, page int, limit int, sortBy string, sort string, searchBy string) (*dto.HouseLists, error) {
+	houses, total, err := u.repository.GetHouses(userId, page, limit, sortBy, sort, searchBy, 0, "", "")
+
+	if err != nil {
+		return nil, err
+	}
+
+	resHouses := *(&dto.HouseLists{}).BuildResponse(*houses, page, limit, total)
+
+	return &resHouses, nil
+}
+
