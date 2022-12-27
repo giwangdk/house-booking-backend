@@ -68,7 +68,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-	walletRecipient, err := u.walletUsecase.GetWalletByUserID(house.User.ID)
+	walletRecipient, err := u.walletUsecase.GetWalletByUserID(16)
 	if err != nil {
 		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
 	}
