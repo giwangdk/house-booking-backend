@@ -30,6 +30,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 	res := dto.DetailUser{
 		Fullname: user.Fullname,
 		Email:    user.Email,
+		Role:     user.Role,
 		Address:  user.Address,
 		City:     user.City,
 	}

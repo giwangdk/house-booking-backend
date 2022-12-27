@@ -12,6 +12,7 @@ type UserDetail struct {
 	Fullname string `json:"fullname"`
 	Email    string `json:"email"`
 	Address  string `json:"address"`
+	Role    string `json:"role"`
 	City     City   `json:"city"`
 }
 
@@ -30,6 +31,7 @@ func (c *UserDetail) BuildResponse(user entity.User) *UserDetail {
 	return &UserDetail{
 		ID:       int(user.ID),
 		Fullname: user.Fullname,
+		Role:     user.Role,
 		Email:    user.Email,
 		Address:  user.Address,
 		City:     city,
