@@ -16,4 +16,6 @@ type Reservation struct{
 	UserID int `json:"user_id"`
 	StatusID int `json:"status_id"`
 	BookingCode string `json:"booking_code"`
+	House HouseProfile  `json:"house" gorm:"foreignKey:HouseID"`
+	User User  `json:"user" gorm:"foreignKey:UserID"`
 }

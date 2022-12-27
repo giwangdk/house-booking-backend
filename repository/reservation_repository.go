@@ -58,21 +58,20 @@ func (r *postgresReservationRepository) IsHouseAvailable(checkinDate string, che
 
 func (r *postgresReservationRepository) GetReservationByBookingCode(code string) (*entity.Reservation, error) {
 	var u entity.Reservation
-	res := r.db.Model(&u).Where("booking_code = ?", code).First(&u)
-	if res.Error != nil {
-		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
-	}
+	res := r.db.Model(entity.Reservation{}).Preload("User").Preload("House").Where("reservations.booking_code = ?", code)
 
+	if err := res.First(&u).Error; err != nil {
+		return nil, httperror.NotFoundError(err.Error())
+	}
 	return &u, nil
 }
 
 func (r *postgresReservationRepository) GetReservationById(id int) (*entity.Reservation, error) {
 	var u entity.Reservation
-	res := r.db.Model(&u).Where("id = ?", id).First(&u)
-	if res.Error != nil {
+	res := r.db.Model(entity.Reservation{}).Preload("User").Select("reservations.*, houses.*").Where("reservations.id = ?", id).Joins("LEFT JOIN houses ON reservations.house_id = houses.id")
+	if res.First(&u).Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
 	}
-
 	return &u, nil
 }
 

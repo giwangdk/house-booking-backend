@@ -9,17 +9,17 @@ import (
 )
 
 type RouterConfig struct {
-	AuthUsecase        usecase.AuthUsecase
-	AuthAdminUsecase   usecase.AuthAdminUsecase
-	UserUsecase        usecase.UserUsecase
-	CityUsecase        usecase.CityUsecase
-	WalletUsecase      usecase.WalletUsecase
-	GameUsecase        usecase.GameUsecase
-	HouseUsecase       usecase.HouseUsecase
-	HouseDetailUsecase usecase.HouseDetailUsecase
-	HousePhotoUsecase  usecase.HousePhotoUsecase
-	ReservationUsecase usecase.ReservationUsecase
-	TransactionUsecase usecase.TransactionUsecase
+	AuthUsecase              usecase.AuthUsecase
+	AuthAdminUsecase         usecase.AuthAdminUsecase
+	UserUsecase              usecase.UserUsecase
+	CityUsecase              usecase.CityUsecase
+	WalletUsecase            usecase.WalletUsecase
+	GameUsecase              usecase.GameUsecase
+	HouseUsecase             usecase.HouseUsecase
+	HouseDetailUsecase       usecase.HouseDetailUsecase
+	HousePhotoUsecase        usecase.HousePhotoUsecase
+	ReservationUsecase       usecase.ReservationUsecase
+	TransactionUsecase       usecase.TransactionUsecase
 	WalletTransactionUsecase usecase.WalletTransactionUsecase
 }
 
@@ -36,7 +36,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		HousePhotoUsecase:  c.HousePhotoUsecase,
 		ReservationUsecase: c.ReservationUsecase,
 		TransactionUsecase: c.TransactionUsecase,
-		WalletTransaction: c.WalletTransactionUsecase,
+		WalletTransaction:  c.WalletTransactionUsecase,
 	})
 
 	r := gin.Default()
@@ -60,9 +60,10 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.PUT("/user", h.UpdateUser)
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
-	r.GET("/topup", h.TopUp)
+	r.POST("/topup", h.TopUp)
+	r.POST("/host", h.CreateHost)
 
-	//	r.Use(middleware.IsHost)
+	r.Use(middleware.IsHost)
 	r.POST("/house", h.CreateHouse)
 	r.PUT("/house/:id", h.UpdateHouse)
 	r.POST("/house-detail/:id", h.CreateHouseDetail)

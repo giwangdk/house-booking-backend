@@ -14,6 +14,15 @@ type House struct {
 	HouseDetail `json:"detail"`
 }
 
+type HouseProfile struct {
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Description string `json:"description"`
+	Location    string `json:"location"`
+	UserID      int    `json:"user_id"`
+	CityID      int    `json:"city_id"`
+}
+
 type HouseLists struct {
 	Houses []House `json:"houses"`
 	Page   int     `json:"page"`
@@ -48,5 +57,16 @@ func (c *HouseLists) BuildResponse(houses []entity.House, page int, limit int, t
 		Page:   page,
 		Limit:  limit,
 		Total:  total,
+	}
+}
+
+func (c *HouseProfile) BuildResponse(house entity.HouseProfile) *HouseProfile {
+	return &HouseProfile{
+		Name:        house.Name,
+		Price:       house.Price,
+		Description: house.Description,
+		Location:    house.Location,
+		UserID:      house.UserID,
+		CityID:      house.CityID,
 	}
 }

@@ -72,15 +72,6 @@ import (
 
 func (h *Handler) TopUp(c *gin.Context) {
 	var topUpRequest = new(dto.TopUpRequest)
-	userCtx, ok := c.Get("user")
-	if !ok {
-		httperror.UnauthorizedError()
-	}
-
-	topUpRequest.Sender = userCtx.(dto.UserJWT).ID
-	topUpRequest.Recipient = userCtx.(dto.UserJWT).ID
-	
-
 	if err := c.ShouldBindJSON(&topUpRequest); err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
@@ -89,6 +80,13 @@ func (h *Handler) TopUp(c *gin.Context) {
 		serverErr := httperror.InternalServerError(err.Error())
 		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
 	}
+	userCtx, ok := c.Get("user")
+	if !ok {
+		httperror.UnauthorizedError()
+	}
+
+	topUpRequest.Sender = userCtx.(dto.UserJWT).ID
+	topUpRequest.Recipient = userCtx.(dto.UserJWT).ID
 
 	topUpResponse, err := h.walletTransaction.TopUp(*topUpRequest)
 	if err != nil {
@@ -102,7 +100,6 @@ func (h *Handler) TopUp(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": http.StatusOK,
-		"data":       topUpResponse,
+		"data":        topUpResponse,
 	})
 }
-
