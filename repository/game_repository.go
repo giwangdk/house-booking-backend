@@ -32,7 +32,7 @@ func NewPostgresGameRepository(c PostgresGameRepositoryConfig) GameRepository {
 func (r *postgresGameRepository) CreateGame(userId int) (*entity.Game, error) {
 	u := entity.Game{
 		Chance: decimal.NewFromInt(0),
-		GamesPlayed: 0,
+		TotalGamesPlayed: 0,
 		UserId: userId,
 	}
 
