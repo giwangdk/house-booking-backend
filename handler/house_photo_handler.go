@@ -10,6 +10,16 @@ import (
 )
 
 func (h *Handler) CreateHousePhoto(c *gin.Context) {
+    formHeader, err := c.FormFile("photo")
+	if err != nil {
+		httperror.InternalServerError(err.Error())
+	}
+
+    formFile, err := formHeader.Open()
+	if err != nil {
+		httperror.InternalServerError(err.Error())
+	}
+
 	house := new(dto.CreateHousePhotoRequest)
 	if err := c.ShouldBindJSON(house); err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
@@ -23,7 +33,7 @@ func (h *Handler) CreateHousePhoto(c *gin.Context) {
 
 	req := dto.CreateHousePhotoRequest{
 		HouseID: houseId,
-		Photo:   house.Photo,
+		Photo:   formFile,
 	}
 
 	houseRes, err := h.housePhotoUsecase.CreateHousePhoto(req)

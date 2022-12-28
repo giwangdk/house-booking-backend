@@ -3,8 +3,8 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/helper"
 	"final-project-backend/repository"
-	"fmt"
 )
 
 type HousePhotoUsecase interface {
@@ -28,11 +28,14 @@ func NewHousePhotoUseCase(c HousePhotoUsecaseImplementationConfig) HousePhotoUse
 
 func (u *HousePhotoUsecaseImplementation) CreateHousePhoto(r dto.CreateHousePhotoRequest) (*dto.CreateHousePhotoResponse, error) {
 
-	fmt.Println(r)
+	uploadUrl, err:= helper.ImageUploadHelper(r.Photo)
+	if err != nil {
+		return nil, err
+	}
 
 	entityHousePhoto := entity.HousePhoto{
 		HouseID: r.HouseID,
-		Photo:   r.Photo,
+		Photo:   uploadUrl,
 	}
 
 	housePhoto, err := u.repository.CreateHousePhoto(entityHousePhoto)

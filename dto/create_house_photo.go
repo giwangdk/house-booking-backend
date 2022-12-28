@@ -1,10 +1,13 @@
 package dto
 
-import "final-project-backend/entity"
+import (
+	"final-project-backend/entity"
+	"mime/multipart"
+)
 
 type CreateHousePhotoRequest struct {
 	HouseID int    `json:"house_id"`
-	Photo   string `json:"photo" binding:"required"`
+	Photo   multipart.File   `json:"photo" form:"file" binding:"required"`
 }
 
 type CreateHousePhotoResponse struct {
