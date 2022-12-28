@@ -211,3 +211,27 @@ func (h *Handler) GetHousesHost(c *gin.Context) {
 		"data":        houses,
 	})
 }
+
+func (h *Handler) DeleteHouse(c *gin.Context) {
+	id := c.Param("id")
+
+	houseId, err := strconv.Atoi(id)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
+
+	err = h.houseUsecase.DeleteHouse(houseId)
+	if err != nil {
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status_code": http.StatusOK,
+		"data":        "Delete house successfully",
+	})
+}

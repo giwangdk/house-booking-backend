@@ -5,7 +5,6 @@ import (
 	"final-project-backend/httperror"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type HouseDetailRepository interface {
@@ -39,14 +38,7 @@ func (r *postgresHouseDetailRepository) GetHouseDetailById(id int) (*entity.Hous
 }
 
 func (r *postgresHouseDetailRepository) CreateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error) {
-	res := r.db.Clauses(clause.OnConflict{
-		DoNothing: true,
-	})
-
-	if res.RowsAffected == 0 && res.Error == nil {
-		return nil, httperror.BadRequestError("HouseDetail for this house id already exist", "HOUSE_DETAIL_ALREADY_EXIST")
-	}
-
+	res := r.db.Create(&u)
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_HOUSE_DETAIL")
 	}

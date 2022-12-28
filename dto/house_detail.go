@@ -3,6 +3,7 @@ package dto
 import "final-project-backend/entity"
 
 type HouseDetail struct {
+	ID 			   uint   `json:"id"`
 	MaxGuest            int    `json:"max_guest"`
 	Bedrooms            int    `json:"bedrooms"`
 	Beds                int    `json:"beds"`
@@ -15,6 +16,7 @@ type HouseDetail struct {
 
 func (h *HouseDetail) BuildResponse(entity entity.HouseDetail) *HouseDetail {
 	return &HouseDetail{
+		ID:              entity.ID,
 		Bedrooms:        entity.Bedrooms,
 		Beds:            entity.Beds,
 		Baths:           entity.Baths,

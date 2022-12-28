@@ -1,11 +1,14 @@
 package entity
 
-import "gorm.io/gorm"
+import (
+	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
+)
 
 type HouseProfile struct {
 	gorm.Model
 	Name        string `json:"name"`
-	Price       int    `json:"price"`
+	Price       decimal.Decimal    `json:"price"`
 	Description string `json:"description"`
 	Location    string `json:"location"`
 	UserID      int    `json:"user_id"`
@@ -17,7 +20,7 @@ type HouseProfile struct {
 type House struct {
 	gorm.Model
 	Name        string       `json:"name"`
-	Price       int          `json:"price"`
+	Price       decimal.Decimal          `json:"price"`
 	Description string       `json:"description"`
 	Location    string       `json:"location"`
 	UserID      int          `json:"user_id"`
