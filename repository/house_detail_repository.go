@@ -10,7 +10,7 @@ import (
 type HouseDetailRepository interface {
 	CreateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error)
 	GetHouseDetailById(id int) (*entity.HouseDetail, error)
-	UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error)
+	UpdateHouseDetail(u entity.HouseDetail, houseId int) (*entity.HouseDetail, error)
 }
 
 type postgresHouseDetailRepository struct {
@@ -46,8 +46,9 @@ func (r *postgresHouseDetailRepository) CreateHouseDetail(u entity.HouseDetail) 
 	return &u, nil
 }
 
-func (r *postgresHouseDetailRepository) UpdateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error) {
-	err := r.db.Where("id = ?", u.ID).Updates(&u).Error
+func (r *postgresHouseDetailRepository) UpdateHouseDetail(u entity.HouseDetail, houseId int) (*entity.HouseDetail, error) {
+	
+	err := r.db.Where("id = ?", houseId).Updates(&u).Error
 
 	if err != nil {
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE_DETAIL")

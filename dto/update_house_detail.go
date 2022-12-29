@@ -1,24 +1,28 @@
 package dto
 
-import "final-project-backend/entity"
+import (
+	"final-project-backend/entity"
+
+	"github.com/shopspring/decimal"
+)
 
 type UpdateHouseDetailRequest struct {
-	MaxGuest            int    `json:"max_guest" binding:"required"`
-	Bedrooms            int    `json:"bedrooms" binding:"required"`
-	Beds                int    `json:"beds" binding:"required"`
-	Baths               int    `json:"baths" binding:"required"`
-	HouseFacilities     string `json:"house_facilities" binding:"required"`
+	MaxGuest            decimal.Decimal    `json:"max_guest"`
+	Bedrooms            decimal.Decimal    `json:"bedrooms"`
+	Beds                decimal.Decimal    `json:"beds"`
+	Baths               decimal.Decimal    `json:"baths"`
+	HouseFacilities     string `json:"house_facilities"`
 	HouseRules          string `json:"house_rules"`
 	HouseServices       string `json:"house_services"`
 	BathroomsFacilities string `json:"bathrooms_facilities"`
-	HouseID             int    `json:"house_id"`
+	HouseID             int  `json:"house_id"`
 }
 
 type UpdateHouseDetailResponse struct {
-	MaxGuest            int    `json:"max_guest"`
-	Bedrooms            int    `json:"bedrooms"`
-	Beds                int    `json:"beds"`
-	Baths               int    `json:"baths"`
+	MaxGuest            decimal.Decimal    `json:"max_guest"`
+	Bedrooms            decimal.Decimal    `json:"bedrooms"`
+	Beds                decimal.Decimal    `json:"beds"`
+	Baths               decimal.Decimal    `json:"baths"`
 	HouseFacilities     string `json:"house_facilities"`
 	HouseRules          string `json:"house_rules"`
 	HouseServices       string `json:"house_services"`

@@ -1,16 +1,19 @@
 package entity
 
-import "gorm.io/gorm"
+import (
+	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
+)
 
 type HouseDetail struct {
 	gorm.Model
-	MaxGuest            int    `json:"max_guest"`
-	Bedrooms            int    `json:"bedrooms"`
-	Beds                int    `json:"beds"`
-	Baths               int    `json:"baths"`
+	MaxGuest           decimal.Decimal   `json:"max_guest"`
+	Bedrooms           decimal.Decimal   `json:"bedrooms"`
+	Beds               decimal.Decimal   `json:"beds"`
+	Baths              decimal.Decimal   `json:"baths"`
 	HouseFacilities     string `json:"house_facilities"`
 	HouseRules          string `json:"house_rules"`
 	HouseServices       string `json:"house_services"`
 	BathroomsFacilities string `json:"bathrooms_facilities"`
-	HouseID             int    `json:"house_id"`
+	HouseID            int   `json:"house_id"`
 }

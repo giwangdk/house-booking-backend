@@ -8,6 +8,7 @@ import (
 
 type PickupUsecase interface {
 	CreatePickup(r dto.CreatePickupRequest) (*dto.CreatePickupResponse, error)
+	UpdateStatusPickup(id int, statusID int) (*entity.Pickup, error)
 }
 
 type PickupUsecaseImplementation struct {

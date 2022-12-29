@@ -74,6 +74,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.DELETE("/house-photo/:id", h.DeleteHousePhoto)
 
 	r.Use(middleware.IsAdmin)
+	r.PUT("/pickup/:id", h.UpdateStatusPickup)
 
 	return r
 }

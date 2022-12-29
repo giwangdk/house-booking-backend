@@ -1,13 +1,17 @@
 package dto
 
-import "final-project-backend/entity"
+import (
+	"final-project-backend/entity"
+
+	"github.com/shopspring/decimal"
+)
 
 type HouseDetail struct {
-	ID 			   uint   `json:"id"`
-	MaxGuest            int    `json:"max_guest"`
-	Bedrooms            int    `json:"bedrooms"`
-	Beds                int    `json:"beds"`
-	Baths               int    `json:"baths"`
+	ID 			   uint  `json:"id"`
+	MaxGuest            decimal.Decimal   `json:"max_guest"`
+	Bedrooms            decimal.Decimal   `json:"bedrooms"`
+	Beds                decimal.Decimal   `json:"beds"`
+	Baths               decimal.Decimal   `json:"baths"`
 	HouseFacilities     string `json:"house_facilities"`
 	HouseRules          string `json:"house_rules"`
 	HouseServices       string `json:"house_services"`

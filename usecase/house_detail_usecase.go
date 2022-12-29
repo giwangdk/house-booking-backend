@@ -29,6 +29,7 @@ func NewHouseDetailUseCase(c HouseDetailUsecaseImplementationConfig) HouseDetail
 func (u *HouseDetailUsecaseImplementation) CreateHouseDetail(r dto.CreateHouseDetailRequest) (*dto.CreateHouseDetailResponse, error) {
 
 	entityHouseDetail := entity.HouseDetail{
+		MaxGuest: 		  r.MaxGuest,
 		Bedrooms:            r.Bedrooms,
 		Beds:                r.Beds,
 		Baths:               r.Baths,
@@ -78,7 +79,7 @@ func (u *HouseDetailUsecaseImplementation) UpdateHouseDetail(r dto.UpdateHouseDe
 		BathroomsFacilities: r.BathroomsFacilities,
 	}
 
-	updatedUser, err := u.repository.UpdateHouseDetail(entity)
+	updatedUser, err := u.repository.UpdateHouseDetail(entity, houseDetailId)
 	if err != nil {
 		return nil, err
 	}

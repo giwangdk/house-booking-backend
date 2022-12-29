@@ -54,7 +54,6 @@ func (h *Handler) CreateHouseDetail(c *gin.Context) {
 }
 
 func (h *Handler) UpdateHouseDetail(c *gin.Context) {
-
 	house := new(dto.UpdateHouseDetailRequest)
 	if err := c.ShouldBindJSON(house); err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
@@ -68,18 +67,9 @@ func (h *Handler) UpdateHouseDetail(c *gin.Context) {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
-	req := dto.UpdateHouseDetailRequest{
-		MaxGuest:            house.MaxGuest,
-		Bedrooms:            house.Bedrooms,
-		Beds:                house.Beds,
-		Baths:               house.Baths,
-		HouseFacilities:     house.HouseFacilities,
-		HouseRules:          house.HouseRules,
-		HouseServices:       house.HouseServices,
-		BathroomsFacilities: house.BathroomsFacilities,
-	}
+	fmt.Println(house)
 
-	houseRes, err := h.houseDetailUsecase.UpdateHouseDetail(req, houseId)
+	houseRes, err := h.houseDetailUsecase.UpdateHouseDetail(*house, houseId)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
