@@ -17,7 +17,9 @@ type ReservationUsecase interface {
 	GetReservationByBookingCode(code string) (*dto.ReservationDetail, error)
 	UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error)
 	GetReservationById(id int) (*entity.Reservation, error)
+	GetReservationByUserId(userId int) (*dto.ReservationList, error)
 }
+
 
 type ReservationUsecaseImplementation struct {
 	repository    repository.ReservationRepository
@@ -167,4 +169,15 @@ func (u *ReservationUsecaseImplementation) UpdateStatusReservation(id int, statu
 		return nil, err
 	}
 	return reservation, nil
+}
+
+func (u *ReservationUsecaseImplementation) GetReservationByUserId(userId int) (*dto.ReservationList, error) {
+	reservations, err := u.repository.GetReservationByUserID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	res:= (&dto.ReservationList{}).BuildResponse(reservations)
+	
+	return res, nil
 }

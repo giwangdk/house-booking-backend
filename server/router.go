@@ -66,6 +66,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.PUT("/game", h.UpdateGame)
 	r.POST("/topup", h.TopUp)
 	r.POST("/host", h.CreateHost)
+	r.GET("/reservations", h.GetReservationsByUserId)
 
 	r.PUT("/pickup/:id", h.UpdateStatusPickup, middleware.IsAdmin)
 	r.Use(middleware.IsHost)

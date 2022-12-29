@@ -14,6 +14,7 @@ type ReservationRepository interface {
 	GetReservationByBookingCode(code string) (*entity.Reservation, error)
 	UpdateStatus(id int, status int) (*entity.Reservation, error)
 	GetReservationById(id int) (*entity.Reservation, error)
+	GetReservationByUserID(userId int)([]*entity.Reservation, error)
 }
 
 type postgresReservationRepository struct {
@@ -86,4 +87,12 @@ func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entit
 	return &u, nil
 }
 
+func (r *postgresReservationRepository) GetReservationByUserID(userId int)([]*entity.Reservation, error){
+	var reservations []*entity.Reservation
+	res:= r.db.Model(entity.Reservation{}).Where("reservations.user_id = ?", userId).Find(&reservations)
+	if res.Error != nil {
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
+	}
+	return reservations, nil
+}
 
