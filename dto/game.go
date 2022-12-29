@@ -13,7 +13,7 @@ type GameDetail struct {
 }
 
 type PlayGame struct {
-	IsWin bool `json:"is_win" binding:"required"`
+	IsWin bool `json:"is_win"`
 }
 
 func (c *GameDetail) BuildResponse(game entity.Game) *GameDetail {

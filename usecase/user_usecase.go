@@ -15,7 +15,8 @@ type UserUsecase interface {
 	GetUser(userID int) (*dto.UserDetail, error)
 	UpdateUser(u dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error)
 	UpdateRole(email string, role string) (*entity.User, error)
-	IsUserExistByEmail(email string) (*entity.User, bool)
+	IsUserExistByEmail(email string) (*entity.User, bool) 
+	ChangePassword(r dto.ChangePasswordRequest, userId int) (*dto.UpdateUserResponse, error)
 }
 
 type userUsecaseImplementation struct {
@@ -102,6 +103,28 @@ func (u *userUsecaseImplementation) GetUser(userID int) (*dto.UserDetail, error)
 }
 
 func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error) {
+	_, err := u.repository.GetUser(userId)
+	if err != nil {
+		return nil, err
+	}
+
+
+	reqUser := entity.User{
+		Fullname: r.Fullname,
+		Address:  r.Address,
+	}
+
+	updatedUser, err := u.repository.UpdateUser(reqUser, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
+
+	return res, nil
+}
+
+func (u *userUsecaseImplementation) ChangePassword(r dto.ChangePasswordRequest, userId int) (*dto.UpdateUserResponse, error) {
 	user, err := u.repository.GetUser(userId)
 	if err != nil {
 		return nil, err
@@ -118,8 +141,8 @@ func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId i
 	}
 
 	reqUser := entity.User{
-		Fullname: r.Fullname,
-		Address:  r.Address,
+		Fullname: user.Fullname,
+		Address:  user.Address,
 		Password: hashedPass,
 	}
 

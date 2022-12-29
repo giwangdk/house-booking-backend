@@ -49,10 +49,12 @@ func (h *Handler) UpdateGame(c *gin.Context) {
 
 	game, err := h.gameUsecase.UpdateGame(userId, *req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
+		if appErr, isAppError := err.(httperror.AppError); isAppError {
+			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
+			return
+		}
+		serverErr := httperror.InternalServerError(err.Error())
+		c.AbortWithStatusJSON(serverErr.StatusCode, serverErr)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": http.StatusOK,

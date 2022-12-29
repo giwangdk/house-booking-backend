@@ -18,7 +18,7 @@ func main() {
 		fmt.Println("error while connecting to database", dbErr)
 	}
 	s := gocron.NewScheduler(time.Local)
-	_, _ = s.Every(10).Seconds().Do(helper.GoCronScheduler)
+	s.Every(10).Seconds().Do(helper.GoCronScheduler)
 
 	defer s.Stop()
 
