@@ -66,6 +66,7 @@ func initRouter() *gin.Engine {
 
 	gameUsecase := usecase.NewGameUseCase(usecase.GameUsecaseImplementationConfig{
 		Repository: gameRepo,
+		WalletUsecase: walletUsecase,
 	})
 
 	houseUsecase := usecase.NewHouseUseCase(usecase.HouseUsecaseImplementationConfig{

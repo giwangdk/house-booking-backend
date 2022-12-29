@@ -60,6 +60,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.PUT("/user", h.UpdateUser)
 	r.GET("/wallet", h.GetWalletByUserID)
 	r.GET("/game", h.GetGameByUserID)
+	r.PUT("/game", h.UpdateGame)
 	r.POST("/topup", h.TopUp)
 	r.POST("/host", h.CreateHost)
 

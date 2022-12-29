@@ -3,6 +3,7 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 
 	"github.com/shopspring/decimal"
@@ -10,24 +11,29 @@ import (
 
 type GameUsecase interface {
 	CreateGame(userID int) (*entity.Game, error)
-	IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
-	DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
-	GetGameByUserID(userId int) (*dto.GameDetail, error)
+	IncreaseChance(chance int, Game entity.Game) (*entity.Game, error)
+	DecreaseChance(chance int, Game entity.Game) (*entity.Game, error)
+	GetGameByUserID(userId int) (*dto.GameDetail, error) 
+	UpdateGame(userId int, req dto.PlayGame ) (*entity.Game, error)
 }
 
 type GameUsecaseImplementation struct {
 	repository repository.GameRepository
+	walletUsecase WalletUsecase
 }
 
 type GameUsecaseImplementationConfig struct {
 	Repository repository.GameRepository
+	WalletUsecase WalletUsecase
 }
 
 func NewGameUseCase(c GameUsecaseImplementationConfig) GameUsecase {
 	return &GameUsecaseImplementation{
 		repository: c.Repository,
+		walletUsecase: c.WalletUsecase,
 	}
 }
+
 
 func (u *GameUsecaseImplementation) CreateGame(userId int) (*entity.Game, error) {
 
@@ -39,29 +45,77 @@ func (u *GameUsecaseImplementation) CreateGame(userId int) (*entity.Game, error)
 	return w, nil
 }
 
-
-
-func (u *GameUsecaseImplementation) GetGameByUserID(userId int) (*dto.GameDetail, error) {
-	w, err := u.repository.GetGameByUserID(userId)
+func (u *GameUsecaseImplementation) UpdateGame(userId int, req dto.PlayGame ) (*entity.Game, error) {
+	game, err := u.repository.GetGameByUserID(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	res:= (&dto.GameDetail{}).BuildResponse(*w)
+	if game.Chance.LessThanOrEqual(decimal.NewFromInt(0)) {
+		return nil, httperror.BadRequestError("You don't have enough chance to play", "FAILED_UPDATE_GAME")
+	}
+	
+	wallet, err:= u.walletUsecase.GetWalletByUserID(userId)
+	if err != nil {
+		return nil, err
+	}
+	
+	if req.IsWin{
+		_, err = u.walletUsecase.IncreaseBalance(decimal.NewFromInt(100000),*wallet)
+		if err != nil {
+			return nil, err
+		}
+	}else{
+		_, err = u.walletUsecase.IncreaseBalance(decimal.NewFromInt(1000),*wallet)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if game.TotalGamesPlayed.Mod(decimal.NewFromInt(10)).Equal(decimal.NewFromInt(0)) && game.TotalGamesPlayed.GreaterThan(decimal.NewFromInt(10)) {
+		game, err = u.IncreaseChance(1,*game)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+
+	game, err = u.DecreaseChance(1,*game)
+	if err != nil {
+		return nil, err
+	}
+	game, err = u.repository.IncreaseTotalGamesPlayed(*game)
+	if err != nil {
+		return nil, err
+	}
+
+	return game, nil
+}
+
+
+
+func (u *GameUsecaseImplementation) GetGameByUserID(userId int) (*dto.GameDetail, error) {
+	g, err := u.repository.GetGameByUserID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+
+	res:= (&dto.GameDetail{}).BuildResponse(*g)
 
 	return res, nil
 }
 
-func (u *GameUsecaseImplementation) IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error) {
-	w, err := u.repository.IncreaseChance(amount, Game)
+func (u *GameUsecaseImplementation) IncreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
+	w, err := u.repository.IncreaseChance(chance, Game)
 	if err != nil {
 		return nil, err
 	}
 
 	return w, nil
 }
-func (u *GameUsecaseImplementation) DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error) {
-	w, err := u.repository.DecreaseChance(amount, Game)
+func (u *GameUsecaseImplementation) DecreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
+	w, err := u.repository.DecreaseChance(chance, Game)
 	if err != nil {
 		return nil, err
 	}

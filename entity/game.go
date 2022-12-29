@@ -8,6 +8,6 @@ import (
 type Game struct{
 	gorm.Model
 	Chance decimal.Decimal `json:"chance"`
-	TotalGamesPlayed int `json:"total_games_played"`
+	TotalGamesPlayed decimal.Decimal `json:"total_games_played"`
 	UserId int `json:"user_id"`
 }

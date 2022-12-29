@@ -9,7 +9,11 @@ import (
 type GameDetail struct {
 	ID 		uint    `json:"id"`
 	Chance       decimal.Decimal `json:"chance"`
-	TotalGamesPlayed  int     `json:"total_games_played"`
+	TotalGamesPlayed  decimal.Decimal     `json:"total_games_played"`
+}
+
+type PlayGame struct {
+	IsWin bool `json:"is_win" binding:"required"`
 }
 
 func (c *GameDetail) BuildResponse(game entity.Game) *GameDetail {
@@ -19,3 +23,4 @@ func (c *GameDetail) BuildResponse(game entity.Game) *GameDetail {
 		TotalGamesPlayed: game.TotalGamesPlayed,
 	}
 }
+

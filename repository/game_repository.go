@@ -10,10 +10,10 @@ import (
 
 type GameRepository interface {
 	CreateGame(userId int) (*entity.Game, error)
-	IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
-	DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error)
-	IsValidChance(amount decimal.Decimal, Game entity.Game) bool
+	IncreaseChance(chance int, Game entity.Game) (*entity.Game, error)
+	DecreaseChance(chance int, Game entity.Game) (*entity.Game, error)
 	GetGameByUserID(userId int) (*entity.Game, error)
+	IncreaseTotalGamesPlayed(Game entity.Game) (*entity.Game, error)
 }
 
 type postgresGameRepository struct {
@@ -32,7 +32,7 @@ func NewPostgresGameRepository(c PostgresGameRepositoryConfig) GameRepository {
 func (r *postgresGameRepository) CreateGame(userId int) (*entity.Game, error) {
 	u := entity.Game{
 		Chance: decimal.NewFromInt(0),
-		TotalGamesPlayed: 0,
+		TotalGamesPlayed: decimal.NewFromInt(0),
 		UserId: userId,
 	}
 
@@ -56,14 +56,10 @@ func (r *postgresGameRepository) GetGameByUserID(userId int) (*entity.Game, erro
 	return &u, nil
 }
 
-func (r *postgresGameRepository) IsValidChance(amount decimal.Decimal, Game entity.Game) bool {
-	return Game.Chance.GreaterThanOrEqual(amount)
-}
 
-func (r *postgresGameRepository) IncreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error) {
-	Game.Chance = Game.Chance.Add(amount)
+func (r *postgresGameRepository) IncreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
 
-	err := r.db.Save(&Game).Error
+	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("chance", Game.Chance.Add(decimal.NewFromInt(int64(chance)))).Error
 	if err != nil {
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
 	}
@@ -71,11 +67,19 @@ func (r *postgresGameRepository) IncreaseChance(amount decimal.Decimal, Game ent
 	return &Game, nil
 }
 
-func (r *postgresGameRepository) DecreaseChance(amount decimal.Decimal, Game entity.Game) (*entity.Game, error) {
+func (r *postgresGameRepository) DecreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
 
-	Game.Chance = Game.Chance.Sub(amount)
+	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("chance", Game.Chance.Sub(decimal.NewFromInt(int64(chance)))).Error
+	if err != nil {
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
+	}
 
-	err := r.db.Save(&Game).Error
+	return &Game, nil
+}
+
+func (r *postgresGameRepository) IncreaseTotalGamesPlayed(Game entity.Game) (*entity.Game, error) {
+
+	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("total_games_played", Game.TotalGamesPlayed.Add(decimal.NewFromInt(1))).Error
 	if err != nil {
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
 	}
