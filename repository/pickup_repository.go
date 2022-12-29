@@ -39,7 +39,7 @@ func (r *postgresPickupRepository) CreatePickup(u entity.Pickup) (*entity.Pickup
 
 func (r *postgresPickupRepository) UpdateStatus(id int, status int) (*entity.Pickup, error) {
 	var u entity.Pickup
-	res := r.db.Model(&u).Where("id = ?", id).Update("status_id", status)
+	res := r.db.Model(&u).Where("id = ?", id).Update("pickup_status_id", status).First(&u)
 
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")

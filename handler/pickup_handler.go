@@ -36,21 +36,20 @@ func (h *Handler) CreatePickup(c *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdateStatusPickup(c *gin.Context) {
-	id:= c.Param("id")
-
-	pickupId, err := strconv.Atoi(id)
-	if err != nil {
-		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
-	}
+func (h *Handler) UpdateStatusPickup(c *gin.Context) {	
 
 	pickup := new(dto.UpdateStatusPickupRequest)
 	if err := c.ShouldBindJSON(pickup); err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
+	id:= c.Param("id")
+	pickupId, err := strconv.Atoi(id)
+	if err != nil {
+		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
+	}
 
-	pickupRes, err := h.pickupUsecase.UpdateStatusPickup(pickup.Status, pickupId)
+	pickupRes, err := h.pickupUsecase.UpdateStatusPickup(pickupId,pickup.PickupStatusID)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)

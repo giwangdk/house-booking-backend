@@ -1,10 +1,10 @@
 package dto
 
 type UpdateStatusPickupRequest struct {
-	Status int `json:"status"`
+	PickupStatusID int `json:"pickup_status_id"`
 }
 
 type UpdateStatusPickupResponse struct {
 	ID     int    `json:"id"`
-	Status int `json:"status"`
+	PickupStatusID int `json:"pickup_status_id"`
 }

@@ -132,6 +132,7 @@ func initRouter() *gin.Engine {
 		ReservationUsecase: reservationUsecase,
 		TransactionUsecase: transactionUsecase,
 		WalletTransactionUsecase: walletTransactionUsecase,
+		PickupUsecase : pickupUsecase,
 	})
 	return r
 }
