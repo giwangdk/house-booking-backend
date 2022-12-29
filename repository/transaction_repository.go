@@ -9,6 +9,7 @@ import (
 
 type TransactionRepository interface {
 	CreateTransaction(u entity.Transaction) (*entity.Transaction, error)
+	GetTransactionByBookingCode(bookingCode string) (*entity.Transaction, error)
 }
 
 type postgresTransactionRepository struct {
@@ -36,6 +37,18 @@ func (r *postgresTransactionRepository) CreateTransaction(u entity.Transaction) 
 	return &u, nil
 }
 
+
+func (r *postgresTransactionRepository) GetTransactionByBookingCode(bookingCode string) (*entity.Transaction, error) {
+	var transaction entity.Transaction
+	subQuery := r.db.Table("reservations").Select("id").Where("booking_code = ?", bookingCode)
+
+	res:= r.db.Where("reservation_id IN (?)", subQuery).First(&transaction)
+	if res.Error != nil {
+		return nil, httperror.NotFoundError(res.Error.Error())
+	}
+
+	return &transaction, nil
+}
 
 
 

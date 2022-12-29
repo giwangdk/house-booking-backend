@@ -3,6 +3,7 @@ package handler
 import (
 	"final-project-backend/dto"
 	"final-project-backend/httperror"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,8 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
+
+	fmt.Println(transaction)
 
 	transactionRes, err := h.transactionUsecase.CreateTransaction(*transaction)	
 	if err != nil {

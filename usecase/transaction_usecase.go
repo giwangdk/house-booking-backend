@@ -61,23 +61,17 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-	transaction, err := u.repository.CreateTransaction(entity.Transaction{
-		ReservationID: int(reservation.ID),
-		HouseID:       int(house.ID),
-		UserID:        reservation.UserID,
-	})
-	if err != nil {
-		return nil, err
-	}
 
 	walletRecipient, err := u.walletUsecase.GetWalletByUserID(16)
 	if err != nil {
 		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
 	}
 
+
+
 	if r.IsGuest {
 		entity := entity.WalletTransaction{
-			Sender:      0,
+			Sender:      int64(walletRecipient.ID),
 			Recipient:   int64(walletRecipient.ID),
 			Amount:      decimal.NewFromInt(int64(reservation.TotalPrice)),
 			Description: "Reservation",
@@ -95,11 +89,24 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		if err != nil {
 			return nil, err
 		}
+		tx, err:= u.repository.GetTransactionByBookingCode(r.BookingCode)
+		if err != nil {
+			return nil, err
+		}
 
-		res := (&dto.CreateTransactionResponse{}).BuildResponse(*transaction)
+		res := (&dto.CreateTransactionResponse{}).BuildResponse(*tx)
 
 		return res, nil
 
+	}
+
+	transaction, err := u.repository.CreateTransaction(entity.Transaction{
+		ReservationID: int(reservation.ID),
+		HouseID:       int(house.ID),
+		UserID:        reservation.UserID,
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	walletSender, err := u.walletUsecase.GetWalletByUserID(reservation.UserID)
