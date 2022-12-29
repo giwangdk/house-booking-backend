@@ -3,6 +3,7 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/helper"
 	"final-project-backend/httperror"
 	"final-project-backend/repository"
 
@@ -11,6 +12,7 @@ import (
 
 type TransactionUsecase interface {
 	CreateTransaction(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
+	CreateTransactionRequestGuest(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
 }
 
 type TransactionUsecaseImplementation struct {
@@ -127,6 +129,56 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 	}
 
 	_, err = u.reservationUsecase.UpdateStatusReservation(reservation.ID, 2)
+	if err != nil {
+		return nil, err
+	}
+
+	res := (&dto.CreateTransactionResponse{}).BuildResponse(*transaction)
+
+	return res, nil
+
+}
+
+func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error) {
+
+	reservation, err := u.reservationUsecase.GetReservationByBookingCode(r.BookingCode)
+	if err != nil {
+		return nil, err
+	}
+
+	if reservation.StatusID == 3 {
+		return nil, httperror.BadRequestError("Reservation has been canceled!", "ERROR_RESERVATION_CANCELED")
+	}
+
+	if reservation.StatusID == 2 {
+		return nil, httperror.BadRequestError("Reservation has been paid!", "ERROR_RESERVATION_PAID")
+	}
+
+	if reservation.StatusID == 4 {
+		return nil, httperror.BadRequestError("Your payment is waiting for confirmation!", "ERROR_RESERVATION_PAID")
+	}
+
+	house, err := u.houseUsecase.GetHouseById(reservation.HouseID)
+	if err != nil {
+		return nil, err
+	}
+
+	uploadUrl, err:= helper.ImageUploadHelper(r.TransferSlip)
+	if err != nil {
+		return nil, err
+	}
+
+	transaction, err := u.repository.CreateTransaction(entity.Transaction{
+		ReservationID: int(reservation.ID),
+		HouseID:       int(house.ID),
+		UserID:        reservation.UserID,
+		TransferSlip:  uploadUrl,
+
+	})
+	if err != nil {
+		return nil, err
+	}
+	_, err = u.reservationUsecase.UpdateStatusReservation(reservation.ID, 4)
 	if err != nil {
 		return nil, err
 	}
