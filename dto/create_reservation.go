@@ -3,12 +3,14 @@ package dto
 import (
 	"final-project-backend/entity"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type CreateReservationRequest struct {
 	CheckIn         string `json:"check_in" binding:"required"`
 	CheckOut        string `json:"check_out" binding:"required"`
-	TotalPrice      int    `json:"total_price" binding:"required"`
+	TotalPrice      decimal.Decimal    `json:"total_price" binding:"required"`
 	Fullname        string `json:"fullname" binding:"required"`
 	Email           string `json:"email" binding:"required"`
 	CityID          int    `json:"city_id" binding:"required"`
@@ -19,7 +21,7 @@ type CreateReservationRequest struct {
 type CreateReservationResponse struct {
 	CheckIn     string    `json:"check_in"`
 	CheckOut    string    `json:"check_out"`
-	TotalPrice  int       `json:"total_price"`
+	TotalPrice  decimal.Decimal       `json:"total_price"`
 	HouseID     int       `json:"house_id"`
 	StatusID    int       `json:"status_id"`
 	UserID      int       `json:"user_id"`

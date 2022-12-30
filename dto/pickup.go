@@ -7,7 +7,7 @@ type Pickup struct {
 	ReservationID  int `json:"reservation_id"`
 	UserID         int `json:"user_id"`
 	PickupStatusID int `json:"pickup_status_id"`
-	PickupStatus   entity.PickupStatus `json:"pickup_status"`
+	PickupStatus   PickupStatus `json:"pickup_status"`
 }
 
 type PickupLists struct {
@@ -20,25 +20,20 @@ type PickupLists struct {
 
 
 func (p *Pickup) BuildResponse(pickup entity.Pickup) *Pickup {
+	pickupRes:= *(&PickupStatus{}).BuildResponse(pickup.PickupStatus)
 	return &Pickup{
 		ID:             int(pickup.ID),
 		ReservationID:  pickup.ReservationID,
 		UserID:         pickup.UserID,
 		PickupStatusID: pickup.PickupStatusID,
-		PickupStatus:   pickup.PickupStatus,
+		PickupStatus:   pickupRes,
 	}
 }
 
 func (p *PickupLists) BuildResponse(pickups []entity.Pickup, page int, limit int, total int) *PickupLists {
 	var pickupList []Pickup
 	for _, pickup := range pickups {
-		pickupList = append(pickupList, Pickup{
-			ID:             int(pickup.ID),
-			ReservationID:  pickup.ReservationID,
-			UserID:         pickup.UserID,
-			PickupStatusID: pickup.PickupStatusID,
-			PickupStatus:   pickup.PickupStatus,
-		})
+		pickupList = append(pickupList, *(&Pickup{}).BuildResponse(pickup))
 	}
 	return &PickupLists{
 		Pickups: pickupList,

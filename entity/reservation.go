@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
@@ -10,7 +11,7 @@ type Reservation struct{
 	gorm.Model
 	CheckIn string `json:"check_in"`
 	CheckOut string `json:"check_out"`
-	TotalPrice int `json:"total_price"`
+	TotalPrice decimal.Decimal `json:"total_price"`
 	Expired time.Time `json:"expired"`
 	HouseID int `json:"house_id"`
 	UserID int `json:"user_id"`

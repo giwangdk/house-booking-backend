@@ -14,18 +14,8 @@ func (h *Handler) CreateReservation(c *gin.Context) {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
-	req := dto.CreateReservationRequest{
-		CheckIn:         reservation.CheckIn,
-		CheckOut:        reservation.CheckOut,
-		TotalPrice:      reservation.TotalPrice,
-		Fullname:        reservation.Fullname,
-		Email:           reservation.Email,
-		CityID:          reservation.CityID,
-		HouseID:         reservation.HouseID,
-		IsRequestPickup: reservation.IsRequestPickup,
-	}
 
-	reservationRes, err := h.reservationUsecase.CreateReservationWithUser(req)
+	reservationRes, err := h.reservationUsecase.CreateReservationWithUser(*reservation)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)

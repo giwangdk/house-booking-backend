@@ -25,14 +25,14 @@ func (h *Handler) GetPickups(c *gin.Context) {
 	}
 
 	if limit == "" {
-		limitInt = 0
+		limitInt = 10
 	}
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 	if page == "" {
-		pageInt = 0
+		pageInt = 1
 	}
 
 	pickupStatusIdInt, err := strconv.Atoi(pickupStatusId)

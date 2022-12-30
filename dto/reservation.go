@@ -3,13 +3,15 @@ package dto
 import (
 	"final-project-backend/entity"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type Reservation struct{
 	ID int `json:"id"`
 	CheckIn string `json:"check_in"`
 	CheckOut string `json:"check_out"`
-	TotalPrice int `json:"total_price"`
+	TotalPrice decimal.Decimal `json:"total_price"`
 	Expired time.Time `json:"expired"`
 	HouseID int `json:"house_id"`
 	UserID int `json:"user_id"`

@@ -50,11 +50,10 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 		res = res.Where("city_id = ?", filterByCity)
 	}
 
+	if searchBy != "" {
+		res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Count(&total)
 
-	res.Limit(limit).Offset(page)
-		
-	res.Where("LOWER(name) LIKE LOWER(?)", "%"+searchBy+"%").Or("city_id IN (?)", subQuery).Count(&total)
-
+	}
 	if checkIn != "" && checkOut != "" {
 		res.Where("houses.id NOT IN (?)", subQuery2)
 	}
@@ -64,7 +63,7 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 	}
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
 
-	if err := res.Find(&houses).Error; err != nil {
+	if err := res.Limit(limit).Offset(page-1).Find(&houses).Error; err != nil {
 		return nil, 0, err
 	}
 

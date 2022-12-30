@@ -6,8 +6,6 @@ import (
 	"final-project-backend/helper"
 	"final-project-backend/httperror"
 	"final-project-backend/repository"
-
-	"github.com/shopspring/decimal"
 )
 
 type TransactionUsecase interface {
@@ -70,7 +68,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		entity := entity.WalletTransaction{
 			Sender:      int64(walletRecipient.ID),
 			Recipient:   int64(walletRecipient.ID),
-			Amount:      decimal.NewFromInt(int64(reservation.TotalPrice)),
+			Amount:      reservation.TotalPrice,
 			Description: "Reservation",
 		}
 
@@ -78,7 +76,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		if err != nil {
 			return nil, err
 		}
-		_, err = u.walletUsecase.IncreaseBalance(decimal.NewFromInt(int64(reservation.TotalPrice)), *walletRecipient)
+		_, err = u.walletUsecase.IncreaseBalance(reservation.TotalPrice, *walletRecipient)
 		if err != nil {
 			return nil, err
 		}
@@ -113,7 +111,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 	entity := entity.WalletTransaction{
 		Sender:      int64(walletSender.ID),
 		Recipient:   int64(walletRecipient.ID),
-		Amount:      decimal.NewFromInt(int64(reservation.TotalPrice)),
+		Amount:      reservation.TotalPrice,
 		Description: "Reservation",
 	}
 
@@ -122,11 +120,11 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-	_, err = u.walletUsecase.IncreaseBalance(decimal.NewFromInt(int64(reservation.TotalPrice)), *walletRecipient)
+	_, err = u.walletUsecase.IncreaseBalance(reservation.TotalPrice, *walletRecipient)
 	if err != nil {
 		return nil, err
 	}
-	_, err = u.walletUsecase.DecreaseBalance(decimal.NewFromInt(int64(reservation.TotalPrice)), *walletSender)
+	_, err = u.walletUsecase.DecreaseBalance(reservation.TotalPrice, *walletSender)
 	if err != nil {
 		return nil, err
 	}
