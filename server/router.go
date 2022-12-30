@@ -70,6 +70,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.GET("/reservations", h.GetReservationsByUserId)
 
 	r.PUT("/pickup/:id", h.UpdateStatusPickup, middleware.IsAdmin)
+	r.GET("/pickups", h.GetPickups, middleware.IsAdmin)
 	r.Use(middleware.IsHost)
 	r.GET("/host/houses", h.GetHousesHost)
 	r.POST("/house", h.CreateHouse)

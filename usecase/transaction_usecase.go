@@ -61,13 +61,10 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-
 	walletRecipient, err := u.walletUsecase.GetWalletByUserID(16)
 	if err != nil {
 		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
 	}
-
-
 
 	if r.IsGuest {
 		entity := entity.WalletTransaction{
@@ -97,7 +94,6 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		res := (&dto.CreateTransactionResponse{}).BuildResponse(*tx)
 
 		return res, nil
-
 	}
 
 	transaction, err := u.repository.CreateTransaction(entity.Transaction{

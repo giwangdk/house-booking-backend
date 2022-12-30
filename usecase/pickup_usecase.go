@@ -7,6 +7,7 @@ import (
 )
 
 type PickupUsecase interface {
+	GetPickups(page int, limit int, sortBy string, sort string, searchBy string, filterByStatus int) (*dto.PickupLists, error)
 	CreatePickup(r dto.CreatePickupRequest) (*dto.CreatePickupResponse, error)
 	UpdateStatusPickup(id int, statusID int) (*dto.CreatePickupResponse, error)
 }
@@ -23,6 +24,17 @@ func NewPickupUseCase(c PickupUsecaseImplementationConfig) PickupUsecase {
 	return &PickupUsecaseImplementation{
 		repository:         c.Repository,
 	}
+}
+
+func (u *PickupUsecaseImplementation) GetPickups(page int, limit int, sortBy string, sort string, searchBy string, filterByStatus int) (*dto.PickupLists, error) {
+	pickups,total,  err := u.repository.GetPickups(page, limit, sortBy, sort, searchBy, filterByStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	res := (&dto.PickupLists{}).BuildResponse(pickups, page, limit, total)
+
+	return res, nil
 }
 
 func (u *PickupUsecaseImplementation) CreatePickup(r dto.CreatePickupRequest) (*dto.CreatePickupResponse, error) {

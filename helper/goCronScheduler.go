@@ -13,7 +13,6 @@ func GoCronScheduler() {
 	var reservationID []string
 
 	err:= db.Model(entity.Reservation{}).Select("id").Where("status_id = 1 AND expired < ?", time.Now()).Find(&reservationID).Error
-	fmt.Println(reservationID)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
