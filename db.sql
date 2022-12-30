@@ -59,7 +59,7 @@ CREATE TABLE houses (
    	city_id INT,
     user_id INT,
    	price INT,
-    description VARCHAR(100),
+    description VARCHAR,
     location VARCHAR(100),
    	FOREIGN KEY (city_id)
      REFERENCES cities (id),

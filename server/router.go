@@ -22,6 +22,7 @@ type RouterConfig struct {
 	TransactionUsecase       usecase.TransactionUsecase
 	WalletTransactionUsecase usecase.WalletTransactionUsecase
 	PickupUsecase 		  usecase.PickupUsecase
+	PickupStatusUsecase 		  usecase.PickupStatusUsecase
 }
 
 func CreateRouter(c *RouterConfig) *gin.Engine {
@@ -39,6 +40,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 		TransactionUsecase: c.TransactionUsecase,
 		WalletTransaction:  c.WalletTransactionUsecase,
 		PickupUsecase: c.PickupUsecase,
+		PickupStatusUsecase: c.PickupStatusUsecase,
 	})
 
 	r := gin.Default()
@@ -71,6 +73,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 
 	r.PUT("/pickup/:id", h.UpdateStatusPickup, middleware.IsAdmin)
 	r.GET("/pickups", h.GetPickups, middleware.IsAdmin)
+	r.GET("/pickup-status", h.GetPickupStatus, middleware.IsAdmin)
 	r.Use(middleware.IsHost)
 	r.GET("/host/houses", h.GetHousesHost)
 	r.POST("/house", h.CreateHouse)

@@ -27,7 +27,7 @@ func (h *Handler) GetHouses(c *gin.Context) {
 	}
 
 	if limit == "" {
-		limitInt = 10
+		limitInt = 8
 	}
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {

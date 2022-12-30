@@ -2,6 +2,7 @@ package repository
 
 import (
 	"final-project-backend/entity"
+	"final-project-backend/helper"
 	"final-project-backend/httperror"
 
 	"gorm.io/gorm"
@@ -35,15 +36,20 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 
 	var total int64
 
-	subQuery := r.db.Debug().Select("id").Table("cities").Where("name LIKE ?", "%"+searchBy+"%")
+	subQuery := r.db.Debug().Select("id").Table("cities").Where("LOWER(name) LIKE lOWER(?)", "%"+searchBy+"%")
 
 	subQuery2 := r.db.Debug().Select("house_id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ? and status_id != 3", checkIn, checkOut, checkIn, checkOut)
 
 	res := r.db.Model(entity.House{})
 
-	res.Preload("Photos").Preload("City").Select("houses.*, house_details.*")
-	if sortBy != "" || sort != "" {
-		res = res.Order(sortBy + " " + sort)
+	res.Preload("Photos").Preload("City").Preload("User").Select("houses.*, house_details.*")
+
+	if sortBy != "" && sort != "" {
+
+		if sortBy == "city"{
+			res.Order("cities.name " + sort)
+		}
+		res.Order(sortBy + " " + sort)
 	}
 
 	if filterByCity != 0 {
@@ -61,9 +67,11 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 	if userId != 0 {
 		res = res.Where("houses.user_id = ?", userId)
 	}
+	res.Count(&total)
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
+	res.Scopes(helper.Paginate(page, limit),)
 
-	if err := res.Limit(limit).Offset(page-1).Find(&houses).Error; err != nil {
+	if err := res.Find(&houses).Error; err != nil {
 		return nil, 0, err
 	}
 

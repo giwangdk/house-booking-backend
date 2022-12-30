@@ -44,6 +44,9 @@ func initRouter() *gin.Engine {
 	pickupRepo := repository.NewPostgresPickupRepository(repository.PostgresPickupRepositoryConfig{
 		DB: db.Get(),
 	})
+	pickupStatusRepo := repository.NewPostgresPickupStatusRepository(repository.PostgresPickupStatusRepositoryConfig{
+		DB: db.Get(),
+	})
 	walletTransactionRepo := repository.NewPostgresWalletTransactionRepository(repository.PostgresWalletTransactionRepositoryConfig{
 		DB: db.Get(),
 	})
@@ -102,6 +105,10 @@ func initRouter() *gin.Engine {
 		Repository: pickupRepo,
 	})
 
+	pickupStatusUsecase:= usecase.NewPickupStatusUseCase(usecase.PickupStatusUsecaseImplementationConfig{
+		Repository: pickupStatusRepo,
+	})
+
 	reservationUsecase := usecase.NewReservationUseCase(usecase.ReservationUsecaseImplementationConfig{
 		Repository:    reservationRepo,
 		UserUsecase:   userUsecase,
@@ -133,6 +140,7 @@ func initRouter() *gin.Engine {
 		TransactionUsecase: transactionUsecase,
 		WalletTransactionUsecase: walletTransactionUsecase,
 		PickupUsecase : pickupUsecase,
+		PickupStatusUsecase: pickupStatusUsecase,
 	})
 	return r
 }
