@@ -8,6 +8,7 @@ type Pickup struct {
 	UserID         int `json:"user_id"`
 	PickupStatusID int `json:"pickup_status_id"`
 	PickupStatus   PickupStatus `json:"pickup_status"`
+	Reservation ReservationDetail `json:"reservation"`
 }
 
 type PickupLists struct {
@@ -27,6 +28,7 @@ func (p *Pickup) BuildResponse(pickup entity.Pickup) *Pickup {
 		UserID:         pickup.UserID,
 		PickupStatusID: pickup.PickupStatusID,
 		PickupStatus:   pickupRes,
+		Reservation:   *(&ReservationDetail{}).BuildResponse(pickup.Reservation),
 	}
 }
 

@@ -124,6 +124,7 @@ func initRouter() *gin.Engine {
 	walletTransactionUsecase:= usecase.NewWalletTransactionUseCase(usecase.WalletTransactionUsecaseImplementationConfig{
 		Repository: walletTransactionRepo,
 		WalletUsecase: walletUsecase,
+		GameRepository: gameRepo,
 	})
 
 	r := CreateRouter(&RouterConfig{

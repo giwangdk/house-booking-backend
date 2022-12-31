@@ -21,6 +21,7 @@ type HouseDetail struct {
 func (h *HouseDetail) BuildResponse(entity entity.HouseDetail) *HouseDetail {
 	return &HouseDetail{
 		ID:              entity.ID,
+		MaxGuest: 	  entity.MaxGuest,
 		Bedrooms:        entity.Bedrooms,
 		Beds:            entity.Beds,
 		Baths:           entity.Baths,

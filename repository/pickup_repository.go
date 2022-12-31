@@ -33,6 +33,7 @@ func (r *postgresPickupRepository) GetPickups(page int, limit int, sortBy string
 
 	
 	subQuery := r.db.Select("id").Table("reservations").Where("booking_code LIKE ?", "%"+searchBy+"%")
+	subQuery2 := r.db.Select("id").Table("reservations").Where("status_id = 2")
 	res := r.db.Model(entity.Pickup{})
 
 	if filterByStatus != 0 {
@@ -42,10 +43,12 @@ func (r *postgresPickupRepository) GetPickups(page int, limit int, sortBy string
 		res = res.Order(sortBy + " " + sort)
 	}
 
-	res.Preload("PickupStatus").Count(&total)
-	res.Where("reservation_id IN (?)", subQuery)
 
-	if err := res.Limit(limit).Offset(page-1).Find(&pickups).Error; err != nil {
+	res.Preload("PickupStatus").Preload("Reservation").Count(&total)
+	res.Where("reservation_id IN (?)", subQuery2)
+	res.Where("reservation_id IN (?)", subQuery)
+	res.Limit(limit).Offset(page-1)
+	if err := res.Find(&pickups).Error; err != nil {
 		return nil,0, httperror.BadRequestError(err.Error(), "ERROR_GET_PICKUPS")
 	}
 	return pickups,int(total), nil

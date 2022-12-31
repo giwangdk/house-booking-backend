@@ -59,7 +59,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-	walletRecipient, err := u.walletUsecase.GetWalletByUserID(16)
+	walletRecipient, err := u.walletUsecase.GetWalletByUserID(1)
 	if err != nil {
 		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
 	}
@@ -106,6 +106,11 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 	walletSender, err := u.walletUsecase.GetWalletByUserID(reservation.UserID)
 	if err != nil {
 		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
+	}
+
+	isValid:= u.walletUsecase.IsValidBalance(reservation.TotalPrice, *walletSender)
+	if !isValid {
+		return nil, httperror.BadRequestError("Insufficient balance!", "ERROR_INSUFFICIENT_BALANCE")
 	}
 
 	entity := entity.WalletTransaction{

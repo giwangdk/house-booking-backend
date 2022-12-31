@@ -74,10 +74,11 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 	r.PUT("/pickup/:id", h.UpdateStatusPickup, middleware.IsAdmin)
 	r.GET("/pickups", h.GetPickups, middleware.IsAdmin)
 	r.GET("/pickup-status", h.GetPickupStatus, middleware.IsAdmin)
+	r.DELETE("/house/:id", h.DeleteHouse, middleware.IsAdmin)
+	
 	r.Use(middleware.IsHost)
 	r.GET("/host/houses", h.GetHousesHost)
 	r.POST("/house", h.CreateHouse)
-	r.DELETE("/house/:id", h.DeleteHouse)
 	r.PUT("/house/:id", h.UpdateHouse)
 	r.POST("/house-detail/:id", h.CreateHouseDetail)
 	r.PUT("/house-detail/:id", h.UpdateHouseDetail)

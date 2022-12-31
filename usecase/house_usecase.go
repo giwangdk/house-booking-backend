@@ -3,7 +3,9 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
+	"time"
 )
 
 type HouseUsecase interface {
@@ -98,6 +100,7 @@ func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, house
 }
 
 func (u *HouseUsecaseImplementation) GetHousesHost(userId int, page int, limit int, sortBy string, sort string, searchBy string) (*dto.HouseLists, error) {
+	
 	houses, total, err := u.repository.GetHouses(userId, page, limit, sortBy, sort, searchBy, 0, "", "")
 
 	if err != nil {
@@ -113,6 +116,11 @@ func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) error {
 	_, err := u.GetHouseById(houseId)
 	if err != nil {
 		return err
+	}
+
+	err= u.repository.IsBooked(houseId, time.Now())
+	if err != nil  {
+		return httperror.BadRequestError("There is reservation ongoing!", "FAILED_DELETE_HOUSE")
 	}
 
 	err = u.repository.DeleteHouse(houseId)

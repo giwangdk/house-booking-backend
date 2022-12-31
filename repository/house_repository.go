@@ -4,6 +4,7 @@ import (
 	"final-project-backend/entity"
 	"final-project-backend/helper"
 	"final-project-backend/httperror"
+	"time"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,6 +16,7 @@ type HouseRepository interface {
 	GetHouseById(id int) (*entity.House, error)
 	UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error)
 	DeleteHouse(id int) error
+	IsBooked(id int, deletedTime time.Time) (error)
 }
 
 type postgresHouseRepository struct {
@@ -41,9 +43,9 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 	subQuery2 := r.db.Debug().Select("house_id").Table("reservations").Where("check_in between ? and ? or check_out between ? and ? and status_id != 3", checkIn, checkOut, checkIn, checkOut)
 
 	res := r.db.Model(entity.House{})
-
 	res.Preload("Photos").Preload("City").Preload("User").Select("houses.*, house_details.*")
 
+	
 	if sortBy != "" && sort != "" {
 
 		if sortBy == "city"{
@@ -133,5 +135,14 @@ func (r *postgresHouseRepository) DeleteHouse(id int) error {
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
+	return nil
+}
+
+func (r *postgresHouseRepository) IsBooked(id int, deletedTime time.Time) (error) {
+	var reservation entity.Reservation
+	err := r.db.Where("house_id = ? AND check_out > ?  AND status_id != 3", id, deletedTime).First(&reservation).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

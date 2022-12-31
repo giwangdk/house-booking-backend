@@ -18,17 +18,20 @@ type WalletTransactionUsecase interface {
 type walletTransactionUsecaseImplementation struct {
 	repository    repository.WalletTransactionRepository
 	walletUsecase WalletUsecase
+	gameRepository repository.GameRepository
 }
 
 type WalletTransactionUsecaseImplementationConfig struct {
 	Repository    repository.WalletTransactionRepository
 	WalletUsecase WalletUsecase
+	GameRepository repository.GameRepository
 }
 
 func NewWalletTransactionUseCase(c WalletTransactionUsecaseImplementationConfig) WalletTransactionUsecase {
 	return &walletTransactionUsecaseImplementation{
 		repository:    c.Repository,
 		walletUsecase: c.WalletUsecase,
+		gameRepository: c.GameRepository,
 	}
 }
 
@@ -60,6 +63,17 @@ func (u *walletTransactionUsecaseImplementation) TopUp(t dto.TopUpRequest) (*dto
 	if !u.isValidAmountTopUp(t.Amount) {
 		return nil, httperror.BadRequestError("Invalid amount minimum Rp.50.000 max Rp. 10 million", "INVALID_AMOUNT")
 	}
+
+	game, err:= u.gameRepository.GetGameByUserID(t.Recipient)
+	if err != nil {
+		return nil, httperror.BadRequestError("Game is not found!", "ERROR_GETTING_GAME")
+	}
+
+
+	if t.Amount.GreaterThanOrEqual(decimal.NewFromInt(500000)){
+		count:= t.Amount.Div(decimal.NewFromInt(500000))
+		u.gameRepository.IncreaseChance(int(count.IntPart()), *game)
+	} 
 
 
 	wallet, err := u.walletUsecase.GetWalletByUserID(t.Recipient)

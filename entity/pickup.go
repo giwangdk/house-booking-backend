@@ -8,4 +8,5 @@ type Pickup struct {
 	UserID         int          `json:"user_id"`
 	PickupStatusID int          `json:"pickup_status_id"`
 	PickupStatus   PickupStatus `json:"pickup_status"`
+	Reservation	Reservation  `json:"reservation"`
 }
