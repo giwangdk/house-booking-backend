@@ -37,9 +37,8 @@ func NewWalletTransactionUseCase(c WalletTransactionUsecaseImplementationConfig)
 
 func (u *walletTransactionUsecaseImplementation) GetWalletTransactionsUser(walletID int) (*[]entity.WalletTransaction, error) {
 	Wallettransactions, err := u.repository.GetWalletTransactionsUser(walletID)
-
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Wallet Transaction is not found!")
 	}
 
 	return Wallettransactions, nil
@@ -48,7 +47,7 @@ func (u *walletTransactionUsecaseImplementation) GetWalletTransactionsUser(walle
 func (u *walletTransactionUsecaseImplementation) GetWalletTransactions(s string, sortBy string, sort string, limit int, page int) ( *[]entity.WalletTransaction, error) {
 	Wallettransactions, err := u.repository.GetWalletTransactions(s, sortBy, sort, limit, page)
 	if err != nil {
-		return  nil, err
+		return  nil, httperror.NotFoundError("Wallet Transaction is not found!")
 	}
 
 
@@ -66,7 +65,7 @@ func (u *walletTransactionUsecaseImplementation) TopUp(t dto.TopUpRequest) (*dto
 
 	game, err:= u.gameRepository.GetGameByUserID(t.Recipient)
 	if err != nil {
-		return nil, httperror.BadRequestError("Game is not found!", "ERROR_GETTING_GAME")
+		return nil, err
 	}
 
 
@@ -78,7 +77,7 @@ func (u *walletTransactionUsecaseImplementation) TopUp(t dto.TopUpRequest) (*dto
 
 	wallet, err := u.walletUsecase.GetWalletByUserID(t.Recipient)
 	if err != nil {
-		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
+		return nil, err
 	}
 
 
@@ -92,7 +91,7 @@ func (u *walletTransactionUsecaseImplementation) TopUp(t dto.TopUpRequest) (*dto
 	
 	transaction, err := u.repository.CreateWalletTransaction(entity)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Error creating wallet transaction", "ERROR_CREATING_WALLET_TRANSACTION")
 	}
 
 	_, err = u.walletUsecase.IncreaseBalance(t.Amount, *wallet)

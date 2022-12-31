@@ -3,6 +3,7 @@ package usecase
 import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 )
 
@@ -45,7 +46,7 @@ func (u *PickupUsecaseImplementation) CreatePickup(r dto.CreatePickupRequest) (*
 		PickupStatusID: 1,
 	})
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to create pickup", "FAILED_CREATE_PICKUP")
 	}
 
 	res := (&dto.CreatePickupResponse{}).BuildResponse(*pickup)
@@ -57,7 +58,7 @@ func (u *PickupUsecaseImplementation) CreatePickup(r dto.CreatePickupRequest) (*
 func (u *PickupUsecaseImplementation) UpdateStatusPickup(id int, statusID int) (*dto.CreatePickupResponse, error) {
 	pickup, err := u.repository.UpdateStatus(id, statusID)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to update status", "ERROR_UPDATE_STATUS")
 	}
 	res := (&dto.CreatePickupResponse{}).BuildResponse(*pickup)
 

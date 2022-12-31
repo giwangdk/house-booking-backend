@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"final-project-backend/entity"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 
 	"github.com/shopspring/decimal"
@@ -33,7 +34,7 @@ func (u *walletUsecaseImplementation) CreateWallet(userId int) (*entity.Wallet, 
 
 	w, err := u.repository.CreateWallet(userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to create wallet", "ERROR_FAILED_CREATE_WALLET")
 	}
 
 	return w, nil
@@ -45,7 +46,7 @@ func (u *walletUsecaseImplementation) IsValidBalance(amount decimal.Decimal, wal
 func (u *walletUsecaseImplementation) GetWalletByUserID(userId int) (*entity.Wallet, error) {
 	w, err := u.repository.GetWalletByUserID(userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Wallet is not found!")
 	}
 
 	return w, nil
@@ -54,7 +55,7 @@ func (u *walletUsecaseImplementation) GetWalletByUserID(userId int) (*entity.Wal
 func (u *walletUsecaseImplementation) IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error) {
 	w, err := u.repository.IncreaseBalance(amount, wallet)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to increase balance", "ERROR_FAILED_INCREASE_BALANCE")
 	}
 
 	return w, nil
@@ -62,7 +63,7 @@ func (u *walletUsecaseImplementation) IncreaseBalance(amount decimal.Decimal, wa
 func (u *walletUsecaseImplementation) DecreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error) {
 	w, err := u.repository.DecreaseBalance(amount, wallet)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to decrease balance", "ERROR_FAILED_DECREASE_BALANCE")
 	}
 
 	return w, nil

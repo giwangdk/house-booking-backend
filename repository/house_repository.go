@@ -16,7 +16,7 @@ type HouseRepository interface {
 	GetHouseById(id int) (*entity.House, error)
 	UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error)
 	DeleteHouse(id int) error
-	IsBooked(id int, deletedTime time.Time) (error)
+	IsBooked(id int, deletedTime time.Time) (bool)
 }
 
 type postgresHouseRepository struct {
@@ -138,11 +138,11 @@ func (r *postgresHouseRepository) DeleteHouse(id int) error {
 	return nil
 }
 
-func (r *postgresHouseRepository) IsBooked(id int, deletedTime time.Time) (error) {
-	var reservation entity.Reservation
-	err := r.db.Where("house_id = ? AND check_out > ?  AND status_id != 3", id, deletedTime).First(&reservation).Error
+func (r *postgresHouseRepository) IsBooked(id int, deletedTime time.Time) (bool) {
+	var count int64
+	err := r.db.Model(entity.Reservation{}).Where("house_id = ? and check_in >= ? and status_id != 3", id, deletedTime).Count(&count).Error
 	if err != nil {
-		return err
+		return false
 	}
-	return nil
+	return count !=0
 }

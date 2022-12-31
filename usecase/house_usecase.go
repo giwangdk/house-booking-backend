@@ -56,7 +56,7 @@ func (u *HouseUsecaseImplementation) CreateHouse(r dto.CreateHouseRequest) (*dto
 
 	house, err := u.repository.CreateHouse(entityHouse)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to create house!", "FAILED_CREATE_HOUSE")
 	}
 
 	res := (&dto.CreateHouseResponse{}).BuildResponse(*house)
@@ -68,7 +68,7 @@ func (u *HouseUsecaseImplementation) CreateHouse(r dto.CreateHouseRequest) (*dto
 func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, error) {
 	house, err := u.repository.GetHouseById(houseId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("House not found!")
 	}
 
 	res := (&dto.House{}).BuildResponse(*house)
@@ -92,7 +92,7 @@ func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, house
 
 	updatedUser, err := u.repository.UpdateHouse(entity, houseId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to update house!", "FAILED_UPDATE_HOUSE")
 	}
 
 	res := (&dto.UpdateHouseResponse{}).BuildResponse(*updatedUser)
@@ -118,14 +118,14 @@ func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) error {
 		return err
 	}
 
-	err= u.repository.IsBooked(houseId, time.Now())
-	if err != nil  {
+	isBooked := u.repository.IsBooked(houseId, time.Now())
+	if isBooked  {
 		return httperror.BadRequestError("There is reservation ongoing!", "FAILED_DELETE_HOUSE")
 	}
 
 	err = u.repository.DeleteHouse(houseId)
 	if err != nil {
-		return err
+		return httperror.BadRequestError("Failed to delete house!", "FAILED_DELETE_HOUSE")
 	}
 
 	return nil

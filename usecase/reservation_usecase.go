@@ -64,9 +64,23 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 
 	code := uuid.New()
 
-	user, isExist := u.userUsecase.IsUserExistByEmail(r.Email)
+	// layoutFormat := "21-10-2006"
+	// formattedCheckout, err := time.Parse(layoutFormat, r.CheckOut)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	fmt.Println(user, isExist)
+	// formattedCheckin, err := time.Parse("01-02-2006", r.CheckIn)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// if formattedCheckout.Before(formattedCheckin) {
+	// 	return nil, httperror.BadRequestError("Check out must be after check in", "ERROR_CHECKOUT_BEFORE_CHECKIN")	
+	// }
+
+
+	user, isExist := u.userUsecase.IsUserExistByEmail(r.Email)
 
 	if !isExist {
 		userCreated, err := u.userUsecase.CreateUser(entity.User{
@@ -92,12 +106,11 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 
 		reservation, err := u.CreateReservation(reservationUnregisteredAcc)
 		if err != nil {
-			return nil, err
+			return nil, httperror.BadRequestError("failed to create reservation", "ERROR_CREATE_RESERVATION")
 		}
 
 		res := (&dto.CreateReservationResponse{}).BuildResponse(*reservation)
 
-		fmt.Println("hihi")
 
 		if !r.IsRequestPickup {
 			return res, nil
@@ -126,7 +139,7 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 	}
 	reservationCreated, err := u.CreateReservation(reservation)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("failed to create reservation", "ERROR_CREATE_RESERVATION")
 	}
 	res := (&dto.CreateReservationResponse{}).BuildResponse(*reservationCreated)
 
@@ -149,7 +162,7 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 func (u *ReservationUsecaseImplementation) GetReservationByBookingCode(code string) (*dto.ReservationDetail, error) {
 	reservation, err := u.repository.GetReservationByBookingCode(code)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Reservation not found")
 	}
 
 	res := (&dto.ReservationDetail{}).BuildResponse(*reservation)
@@ -159,14 +172,14 @@ func (u *ReservationUsecaseImplementation) GetReservationByBookingCode(code stri
 func (u *ReservationUsecaseImplementation) GetReservationById(id int) (*entity.Reservation, error) {
 	reservation, err := u.repository.GetReservationById(id)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Reservation not found")
 	}
 	return reservation, nil
 }
 func (u *ReservationUsecaseImplementation) UpdateStatusReservation(id int, statusID int) (*entity.Reservation, error) {
 	reservation, err := u.repository.UpdateStatus(id, statusID)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to update status", "ERROR_UPDATE_STATUS")
 	}
 	return reservation, nil
 }
@@ -174,7 +187,7 @@ func (u *ReservationUsecaseImplementation) UpdateStatusReservation(id int, statu
 func (u *ReservationUsecaseImplementation) GetReservationByUserId(userId int) (*dto.ReservationList, error) {
 	reservations, err := u.repository.GetReservationByUserID(userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Reservation not found")
 	}
 
 	res:= (&dto.ReservationList{}).BuildResponse(reservations)

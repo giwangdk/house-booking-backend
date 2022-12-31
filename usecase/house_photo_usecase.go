@@ -4,6 +4,7 @@ import (
 	"final-project-backend/dto"
 	"final-project-backend/entity"
 	"final-project-backend/helper"
+	"final-project-backend/httperror"
 	"final-project-backend/repository"
 )
 
@@ -30,7 +31,7 @@ func (u *HousePhotoUsecaseImplementation) CreateHousePhoto(r dto.CreateHousePhot
 
 	uploadUrl, err:= helper.ImageUploadHelper(r.Photo)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to upload image", "FAILED_UPLOAD_IMAGE")
 	}
 
 	entityHousePhoto := entity.HousePhoto{
@@ -40,7 +41,7 @@ func (u *HousePhotoUsecaseImplementation) CreateHousePhoto(r dto.CreateHousePhot
 
 	housePhoto, err := u.repository.CreateHousePhoto(entityHousePhoto)
 	if err != nil {
-		return nil, err
+		return nil, httperror.InternalServerError("Failed to create house photo")
 	}
 
 	res := (&dto.CreateHousePhotoResponse{}).BuildResponse(*housePhoto)

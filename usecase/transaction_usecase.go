@@ -43,7 +43,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 
 	reservation, err := u.reservationUsecase.GetReservationByBookingCode(r.BookingCode)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("Reservation is not found!" )
 	}
 
 	if reservation.StatusID == 3 {
@@ -86,7 +86,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		}
 		tx, err:= u.repository.GetTransactionByBookingCode(r.BookingCode)
 		if err != nil {
-			return nil, err
+			return nil, httperror.BadRequestError("Transaction is not found!", "ERROR_TRANSACTION_NOT_FOUND")
 		}
 
 		res := (&dto.CreateTransactionResponse{}).BuildResponse(*tx)
@@ -105,7 +105,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 
 	walletSender, err := u.walletUsecase.GetWalletByUserID(reservation.UserID)
 	if err != nil {
-		return nil, httperror.BadRequestError("Recipient wallet is not found!", "ERROR_GETTING_WALLET")
+		return nil, err
 	}
 
 	isValid:= u.walletUsecase.IsValidBalance(reservation.TotalPrice, *walletSender)
@@ -171,7 +171,7 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 
 	uploadUrl, err:= helper.ImageUploadHelper(r.TransferSlip)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to upload image!", "ERROR_UPLOADING_IMAGE")
 	}
 
 	transaction, err := u.repository.CreateTransaction(entity.Transaction{
@@ -182,7 +182,7 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 
 	})
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to create transaction!", "ERROR_CREATING_TRANSACTION")
 	}
 	_, err = u.reservationUsecase.UpdateStatusReservation(reservation.ID, 4)
 	if err != nil {

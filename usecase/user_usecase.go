@@ -105,7 +105,7 @@ func (u *userUsecaseImplementation) GetUser(userID int) (*dto.UserDetail, error)
 func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId int) (*dto.UpdateUserResponse, error) {
 	_, err := u.repository.GetUser(userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.NotFoundError("User not found")
 	}
 
 
@@ -116,7 +116,7 @@ func (u *userUsecaseImplementation) UpdateUser(r dto.UpdateUserRequest, userId i
 
 	updatedUser, err := u.repository.UpdateUser(reqUser, userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to update user", "BAD_REQUEST")
 	}
 
 	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
@@ -148,7 +148,7 @@ func (u *userUsecaseImplementation) ChangePassword(r dto.ChangePasswordRequest, 
 
 	updatedUser, err := u.repository.UpdateUser(reqUser, userId)
 	if err != nil {
-		return nil, err
+		return nil, httperror.BadRequestError("Failed to update user", "BAD_REQUEST")
 	}
 
 	res := (&dto.UpdateUserResponse{}).BuildResponse(*updatedUser)
