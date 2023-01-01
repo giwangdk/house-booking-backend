@@ -11,6 +11,7 @@ import (
 type TransactionUsecase interface {
 	CreateTransaction(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
 	CreateTransactionRequestGuest(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
+	GetTransactionsGuest() (*dto.TransactionLits, error)
 }
 
 type TransactionUsecaseImplementation struct {
@@ -194,3 +195,15 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 	return res, nil
 
 }
+
+func (u *TransactionUsecaseImplementation) GetTransactionsGuest() (*dto.TransactionLits, error) {
+
+	transactions, err := u.repository.GetTransactionsGuest()
+	if err != nil {
+		return nil, err
+	}
+
+	res:= (&dto.TransactionLits{}).BuildResponse(transactions)
+
+	return res, nil
+	}

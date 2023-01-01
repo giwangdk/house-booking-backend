@@ -14,7 +14,7 @@ type HouseUsecase interface {
 	GetHouseById(houseId int) (*dto.House, error)
 	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
 	GetHousesHost(userId int, page int, limit int, sortBy string, sort string, searchBy string) (*dto.HouseLists, error)
-	DeleteHouse(houseId int) error
+	DeleteHouse(houseId int) (*dto.House, error)
 }
 
 type HouseUsecaseImplementation struct {
@@ -112,21 +112,22 @@ func (u *HouseUsecaseImplementation) GetHousesHost(userId int, page int, limit i
 	return &resHouses, nil
 }
 
-func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) error {
-	_, err := u.GetHouseById(houseId)
+func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) (*dto.House, error) {
+	house, err := u.GetHouseById(houseId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	isBooked := u.repository.IsBooked(houseId, time.Now())
-	if isBooked  {
-		return httperror.BadRequestError("There is reservation ongoing!", "FAILED_DELETE_HOUSE")
+	isBooked, _ := u.repository.IsBooked(houseId, time.Now())
+	if !isBooked  {
+		return nil, httperror.BadRequestError("There is reservation ongoing!", "FAILED_DELETE_HOUSE")
 	}
 
 	err = u.repository.DeleteHouse(houseId)
 	if err != nil {
-		return httperror.BadRequestError("Failed to delete house!", "FAILED_DELETE_HOUSE")
+		return nil, err
 	}
 
-	return nil
+
+	return house, nil
 }

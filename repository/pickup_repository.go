@@ -44,9 +44,9 @@ func (r *postgresPickupRepository) GetPickups(page int, limit int, sortBy string
 	}
 
 
-	res.Preload("PickupStatus").Preload("Reservation").Count(&total)
+	res.Preload("PickupStatus").Preload("Reservation")
 	res.Where("reservation_id IN (?)", subQuery2)
-	res.Where("reservation_id IN (?)", subQuery)
+	res.Where("reservation_id IN (?)", subQuery).Count(&total)
 	res.Limit(limit).Offset(page-1)
 	if err := res.Find(&pickups).Error; err != nil {
 		return nil,0, httperror.BadRequestError(err.Error(), "ERROR_GET_PICKUPS")

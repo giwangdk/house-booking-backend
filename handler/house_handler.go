@@ -220,7 +220,7 @@ func (h *Handler) DeleteHouse(c *gin.Context) {
 		httperror.BadRequestError(err.Error(), "BAD_REQUEST")
 	}
 
-	err = h.houseUsecase.DeleteHouse(houseId)
+	house, err := h.houseUsecase.DeleteHouse(houseId)
 	if err != nil {
 		if appErr, isAppError := err.(httperror.AppError); isAppError {
 			c.AbortWithStatusJSON(appErr.StatusCode, appErr)
@@ -232,6 +232,6 @@ func (h *Handler) DeleteHouse(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": http.StatusOK,
-		"data":        "Delete house successfully",
+		"data":        house,
 	})
 }

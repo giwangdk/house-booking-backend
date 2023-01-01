@@ -8,4 +8,5 @@ type Transaction struct {
 	UserID int `json:"user_id"`
 	HouseID int `json:"house_id"`
 	TransferSlip string `json:"transfer_slip"`
+	Reservation Reservation `json:"reservation"`
 }
