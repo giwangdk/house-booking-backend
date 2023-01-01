@@ -76,6 +76,7 @@ func (r *postgresReservationRepository) GetReservationById(id int) (*entity.Rese
 	return &u, nil
 }
 
+
 func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entity.Reservation, error) {
 	var u entity.Reservation
 	res := r.db.Model(&u).Where("id = ?", id).Update("status_id", status)
@@ -89,7 +90,7 @@ func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entit
 
 func (r *postgresReservationRepository) GetReservationByUserID(userId int)([]*entity.Reservation, error){
 	var reservations []*entity.Reservation
-	res:= r.db.Model(entity.Reservation{}).Where("reservations.user_id = ?", userId).Find(&reservations)
+	res:= r.db.Model(entity.Reservation{}).Where("reservations.user_id = ? AND status_id != 3", userId).Find(&reservations)
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
 	}
