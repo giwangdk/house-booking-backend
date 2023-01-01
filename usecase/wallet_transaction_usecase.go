@@ -35,6 +35,7 @@ func NewWalletTransactionUseCase(c WalletTransactionUsecaseImplementationConfig)
 	}
 }
 
+
 func (u *walletTransactionUsecaseImplementation) GetWalletTransactionsUser(walletID int) (*[]entity.WalletTransaction, error) {
 	Wallettransactions, err := u.repository.GetWalletTransactionsUser(walletID)
 	if err != nil {

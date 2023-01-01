@@ -38,7 +38,7 @@ func NewAuthUsecase(a AuthUsecaseImplementationConfig) AuthUsecase {
 func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.RegisterResponse, error) {
 	hashedPassword, err := a.authUsecase.HashAndSalt(u.Password)
 	if err != nil {
-		return nil, err
+	return nil, err
 	}
 
 	entityUser := entity.User{

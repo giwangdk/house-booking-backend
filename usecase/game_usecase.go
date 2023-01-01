@@ -20,17 +20,20 @@ type GameUsecase interface {
 type GameUsecaseImplementation struct {
 	repository repository.GameRepository
 	walletUsecase WalletUsecase
+	WalletTxRepo repository.WalletTransactionRepository
 }
 
 type GameUsecaseImplementationConfig struct {
 	Repository repository.GameRepository
 	WalletUsecase WalletUsecase
+	WalletTxRepo repository.WalletTransactionRepository
 }
 
 func NewGameUseCase(c GameUsecaseImplementationConfig) GameUsecase {
 	return &GameUsecaseImplementation{
 		repository: c.Repository,
 		walletUsecase: c.WalletUsecase,
+		WalletTxRepo: c.WalletTxRepo,
 	}
 }
 
@@ -65,8 +68,32 @@ func (u *GameUsecaseImplementation) UpdateGame(userId int, req dto.PlayGame ) (*
 		if err != nil {
 			return nil, err
 		}
-	}else{
+		entity := entity.WalletTransaction{
+			Sender:      int64(wallet.ID),
+			Recipient:  int64(wallet.ID),
+			Amount:      decimal.NewFromInt(100000),
+			Description: "Redeem Money from game",
+		}
+	
+		
+		_, err := u.WalletTxRepo.CreateWalletTransaction(entity)
+		if err != nil {
+			return nil, err
+		}
+		}else{
 		_, err = u.walletUsecase.IncreaseBalance(decimal.NewFromInt(1000),*wallet)
+		if err != nil {
+			return nil, err
+		}
+		entity := entity.WalletTransaction{
+			Sender:      int64(wallet.ID),
+			Recipient:  int64(wallet.ID),
+			Amount:      decimal.NewFromInt(1000),
+			Description: "Redeem Money from game ",
+		}
+	
+		
+		_, err := u.WalletTxRepo.CreateWalletTransaction(entity)
 		if err != nil {
 			return nil, err
 		}

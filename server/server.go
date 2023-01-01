@@ -52,6 +52,7 @@ func initRouter() *gin.Engine {
 	})
 	//duration, err := strconv.Atoi(config.Config.AuthConfig.Duration)
 
+	
 	auth := helper.NewAuthUtil(helper.AuthUtilImplConfig{
 		HmacSampleSecret: config.Config.AuthConfig.HmacSampleSecret,
 		//Duration:         *jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(1) * time.Minute)),
@@ -70,6 +71,7 @@ func initRouter() *gin.Engine {
 	gameUsecase := usecase.NewGameUseCase(usecase.GameUsecaseImplementationConfig{
 		Repository: gameRepo,
 		WalletUsecase: walletUsecase,
+		WalletTxRepo: walletTransactionRepo,
 	})
 
 	houseUsecase := usecase.NewHouseUseCase(usecase.HouseUsecaseImplementationConfig{
