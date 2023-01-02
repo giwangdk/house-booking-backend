@@ -54,12 +54,12 @@ INSERT INTO pickup_status VALUES
 (5, 'Completed')
 
 INSERT INTO users (email, fullname, password, address, role, city_id) VALUES 
-('admin@gmail.com', 'admin giwang', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'Perum Baros', 'admin', '1'),
-('host@gmail.com', 'host giwang', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'jl. Masjid Darussalam No. 11', 'host', '2'),
-('user@gmail.com', 'user giwang', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'jl. Masjid Yerussalem No. 11', 'user', '4'),
-('giwangdk@gmail.com', 'user 1', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'jl. Soeku Yerussalem No. 21', 'user', '3'),
-('gidwikintan@gmail.com', 'user 2', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'jl. Penjaittan Yerussalem No. 01', 'user', '6'),
-('host2@gmail.com', 'host2 giwang', '$2a$10$itR/9copEoG1cNdaMJfhDOMDGOf6yBmTxOBfWbc7PrqSHrZEn4/kC ', 'jl. Masjid Darussalam No. 11', 'host', '10')
+('admin@gmail.com', 'admin giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Perum Baros', 'admin', '1'),
+('host@gmail.com', 'host giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Darussalam No. 11', 'host', '2'),
+('user@gmail.com', 'user giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Yerussalem No. 11', 'user', '4'),
+('giwangdk@gmail.com', 'user 1', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Soeku Yerussalem No. 21', 'user', '3'),
+('gidwikintan@gmail.com', 'user 2', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Penjaittan Yerussalem No. 01', 'user', '6'),
+('host2@gmail.com', 'host2 giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Darussalam No. 11', 'host', '10')
 
 
 

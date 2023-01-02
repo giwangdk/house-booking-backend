@@ -146,7 +146,7 @@ CREATE TABLE transactions(
     deleted_at TIMESTAMPTZ
 );
 
-CREATE TABLE pickup_status(
+CREATE TABLE pickup_statuses(
     id BIGSERIAL PRIMARY KEY,
     status VARCHAR(50),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
