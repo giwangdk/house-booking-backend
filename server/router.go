@@ -62,6 +62,7 @@ func CreateRouter(c *RouterConfig) *gin.Engine {
 
 	r.Use(middleware.Authorize)
 	r.GET("/user", h.GetUser)
+	r.GET("/transactions", h.GetTransactionsUser)
 	r.PUT("/user", h.UpdateUser)
 	r.PUT("/change-password", h.ChangePassword)
 	r.GET("/wallet", h.GetWalletByUserID)

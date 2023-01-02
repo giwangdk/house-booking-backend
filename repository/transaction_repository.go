@@ -11,6 +11,7 @@ type TransactionRepository interface {
 	CreateTransaction(u entity.Transaction) (*entity.Transaction, error)
 	GetTransactionByBookingCode(bookingCode string) (*entity.Transaction, error)
 	GetTransactionsGuest() ([]entity.Transaction, error)
+	GetTransactionsUser(userId int) ([]entity.Transaction, error)
 }
 
 type postgresTransactionRepository struct {
@@ -50,6 +51,16 @@ func (r * postgresTransactionRepository) GetTransactionsGuest() ([]entity.Transa
 
 	return transactions, nil
 }
+
+func (r * postgresTransactionRepository) GetTransactionsUser(userId int) ([]entity.Transaction, error) {
+	var transactions []entity.Transaction
+	res:= r.db.Where("user_id = ?", userId).Preload("Reservation").Find(&transactions)
+	if res.Error != nil {
+		return nil, httperror.NotFoundError(res.Error.Error())
+	}
+	return transactions, nil
+}
+
 
 
 func (r *postgresTransactionRepository) GetTransactionByBookingCode(bookingCode string) (*entity.Transaction, error) {

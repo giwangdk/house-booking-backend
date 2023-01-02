@@ -19,15 +19,18 @@ type HouseUsecase interface {
 
 type HouseUsecaseImplementation struct {
 	repository repository.HouseRepository
+	reservationRepo repository.ReservationRepository
 }
 
 type HouseUsecaseImplementationConfig struct {
 	Repository repository.HouseRepository
+	ReservationRepo repository.ReservationRepository
 }
 
 func NewHouseUseCase(c HouseUsecaseImplementationConfig) HouseUsecase {
 	return &HouseUsecaseImplementation{
 		repository: c.Repository,
+		reservationRepo: c.ReservationRepo,
 	}
 }
 
@@ -71,7 +74,14 @@ func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, erro
 		return nil, httperror.NotFoundError("House not found!")
 	}
 
-	res := (&dto.House{}).BuildResponse(*house)
+	dates, err := u.reservationRepo.GetBookedDatesByHouseID(houseId)
+
+	if err != nil {
+		return nil, err
+	}
+
+
+	res := (&dto.House{}).BuildResponse(*house, dates)
 
 	return res, nil
 }

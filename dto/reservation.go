@@ -17,6 +17,7 @@ type Reservation struct{
 	UserID int `json:"user_id"`
 	StatusID int `json:"status_id"`
 	BookingCode string `json:"booking_code"`
+	House HouseProfile `json:"house"`
 }
 
 type ReservationList struct {
@@ -24,6 +25,7 @@ type ReservationList struct {
 }
 
 func (r *Reservation) BuildResponse(reservation entity.Reservation) *Reservation {
+	house:= *(&HouseProfile{}).BuildResponse(reservation.House)
 	return &Reservation{
 		ID : int(reservation.ID),
 		CheckIn: reservation.CheckIn,
@@ -34,6 +36,7 @@ func (r *Reservation) BuildResponse(reservation entity.Reservation) *Reservation
 		UserID: reservation.UserID,
 		StatusID: reservation.StatusID,
 		BookingCode: reservation.BookingCode,
+		House: house,
 	}
 }
 

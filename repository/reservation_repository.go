@@ -15,6 +15,7 @@ type ReservationRepository interface {
 	UpdateStatus(id int, status int) (*entity.Reservation, error)
 	GetReservationById(id int) (*entity.Reservation, error)
 	GetReservationByUserID(userId int)([]*entity.Reservation, error)
+	GetBookedDatesByHouseID(houseID int)([]string, error)
 }
 
 type postgresReservationRepository struct {
@@ -90,10 +91,21 @@ func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entit
 
 func (r *postgresReservationRepository) GetReservationByUserID(userId int)([]*entity.Reservation, error){
 	var reservations []*entity.Reservation
-	res:= r.db.Model(entity.Reservation{}).Where("reservations.user_id = ? AND status_id != 3", userId).Find(&reservations)
+	res:= r.db.Model(entity.Reservation{}).Where("reservations.user_id = ? AND status_id != 3", userId).Preload("House", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped() 
+	 }).Find(&reservations)
 	if res.Error != nil {
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
 	}
 	return reservations, nil
 }
 
+
+func (r *postgresReservationRepository) GetBookedDatesByHouseID(houseID int)([]string, error){
+	var dates []string
+	res := r.db.Model(entity.Reservation{}).Where("house_id = ? AND status_id != 3", houseID).Pluck("check_in", &dates)
+	if res.Error != nil {
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_GET_RESERVATION")
+	}
+	return dates, nil
+}

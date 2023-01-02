@@ -76,6 +76,7 @@ func initRouter() *gin.Engine {
 
 	houseUsecase := usecase.NewHouseUseCase(usecase.HouseUsecaseImplementationConfig{
 		Repository: houseRepo,
+		ReservationRepo: reservationRepo,
 	})
 
 	houseDetailUsecase := usecase.NewHouseDetailUseCase(usecase.HouseDetailUsecaseImplementationConfig{
