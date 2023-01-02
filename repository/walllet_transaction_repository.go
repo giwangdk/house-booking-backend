@@ -28,9 +28,22 @@ func NewPostgresWalletTransactionRepository(c PostgresWalletTransactionRepositor
 }
 
 func (r *postgresWalletTransactionRepository) CreateWalletTransaction(u entity.WalletTransaction) (*entity.WalletTransaction, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATE_WALLET_TRANSACTION")
+	}
 	err := r.db.Create(&u).Error
 
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_WALLET_TRANSACTION")
 	}
 

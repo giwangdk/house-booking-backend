@@ -30,6 +30,18 @@ func NewPostgresWalletRepository(c PostgresWalletRepositoryConfig) WalletReposit
 }
 
 func (r *postgresWalletRepository) CreateWallet(userId int) (*entity.Wallet, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATING_WALLET")
+	}
 	u := entity.Wallet{
 		Balance: decimal.NewFromInt(0),
 		UserId: userId,
@@ -37,6 +49,7 @@ func (r *postgresWalletRepository) CreateWallet(userId int) (*entity.Wallet, err
 
 	err := r.db.Debug().Create(&u).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_WALLET")
 	}
 
@@ -60,10 +73,23 @@ func (r *postgresWalletRepository) IsValidBalance(amount decimal.Decimal, wallet
 }
 
 func (r *postgresWalletRepository) IncreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_UPDATING_WALLET")
+	}
 	wallet.Balance = wallet.Balance.Add(amount)
 
 	err := r.db.Save(&wallet).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_WALLET")
 	}
 
@@ -71,11 +97,23 @@ func (r *postgresWalletRepository) IncreaseBalance(amount decimal.Decimal, walle
 }
 
 func (r *postgresWalletRepository) DecreaseBalance(amount decimal.Decimal, wallet entity.Wallet) (*entity.Wallet, error) {
+	tx:= r.db.Begin()
 
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_UPDATING_WALLET")
+	}
 	wallet.Balance = wallet.Balance.Sub(amount)
 
 	err := r.db.Save(&wallet).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_WALLET")
 	}
 

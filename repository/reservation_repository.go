@@ -35,8 +35,21 @@ func NewPostgresReservationRepository(c PostgresReservationRepositoryConfig) Res
 
 
 func (r *postgresReservationRepository) CreateReservation(u entity.Reservation) (*entity.Reservation, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATE_RESERVATION")
+	}
 	res := r.db.Create(&u)
 	if res.Error != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_RESERVATION")
 	}
 
@@ -80,10 +93,23 @@ func (r *postgresReservationRepository) GetReservationById(id int) (*entity.Rese
 
 func (r *postgresReservationRepository) UpdateStatus(id int, status int) (*entity.Reservation, error) {
 	var u entity.Reservation
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_UPDATE_RESERVATION")
+	}
 	res := r.db.Model(&u).Where("id = ?", id).Update("status_id", status)
 
 	if res.Error != nil {
-		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+		tx.Rollback()
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_UPDATE_RESERVATION")
 	}
 
 	return &u, nil

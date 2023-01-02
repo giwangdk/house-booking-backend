@@ -30,6 +30,19 @@ func NewPostgresGameRepository(c PostgresGameRepositoryConfig) GameRepository {
 }
 
 func (r *postgresGameRepository) CreateGame(userId int) (*entity.Game, error) {
+
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_Game")
+	}
+
 	u := entity.Game{
 		Chance: decimal.NewFromInt(0),
 		TotalGamesPlayed: decimal.NewFromInt(0),
@@ -38,6 +51,7 @@ func (r *postgresGameRepository) CreateGame(userId int) (*entity.Game, error) {
 
 	err := r.db.Debug().Create(&u).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_Game")
 	}
 
@@ -58,9 +72,21 @@ func (r *postgresGameRepository) GetGameByUserID(userId int) (*entity.Game, erro
 
 
 func (r *postgresGameRepository) IncreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
+	tx:= r.db.Begin()
 
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_Game")
+	}
 	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("chance", Game.Chance.Add(decimal.NewFromInt(int64(chance)))).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
 	}
 
@@ -68,9 +94,22 @@ func (r *postgresGameRepository) IncreaseChance(chance int, Game entity.Game) (*
 }
 
 func (r *postgresGameRepository) DecreaseChance(chance int, Game entity.Game) (*entity.Game, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_Game")
+	}
 
 	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("chance", Game.Chance.Sub(decimal.NewFromInt(int64(chance)))).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
 	}
 
@@ -78,9 +117,22 @@ func (r *postgresGameRepository) DecreaseChance(chance int, Game entity.Game) (*
 }
 
 func (r *postgresGameRepository) IncreaseTotalGamesPlayed(Game entity.Game) (*entity.Game, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATING_Game")
+	}
 
 	err := r.db.Model(&Game).Where("id = ?", Game.ID).Update("total_games_played", Game.TotalGamesPlayed.Add(decimal.NewFromInt(1))).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATING_Game")
 	}
 

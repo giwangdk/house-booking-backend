@@ -31,8 +31,21 @@ func NewPostgresTransactionRepository(c PostgresTransactionRepositoryConfig) Tra
 
 
 func (r *postgresTransactionRepository) CreateTransaction(u entity.Transaction) (*entity.Transaction, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATE_TRANSACTION")
+	}
 	res := r.db.Create(&u)
 	if res.Error != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_TRANSACTION")
 	}
 

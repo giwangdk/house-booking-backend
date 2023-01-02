@@ -38,8 +38,21 @@ func (r *postgresHouseDetailRepository) GetHouseDetailById(id int) (*entity.Hous
 }
 
 func (r *postgresHouseDetailRepository) CreateHouseDetail(u entity.HouseDetail) (*entity.HouseDetail, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_HOUSE_DETAIL")
+	}
 	res := r.db.Create(&u)
 	if res.Error != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_HOUSE_DETAIL")
 	}
 
@@ -47,10 +60,21 @@ func (r *postgresHouseDetailRepository) CreateHouseDetail(u entity.HouseDetail) 
 }
 
 func (r *postgresHouseDetailRepository) UpdateHouseDetail(u entity.HouseDetail, houseId int) (*entity.HouseDetail, error) {
-	
-	err := r.db.Where("id = ?", houseId).Updates(&u).Error
+	tx:= r.db.Begin()
 
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE_DETAIL")
+	}
+	err := r.db.Where("id = ?", houseId).Updates(&u).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE_DETAIL")
 	}
 

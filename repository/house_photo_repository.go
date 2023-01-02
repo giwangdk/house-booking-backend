@@ -27,9 +27,21 @@ func NewPostgresHousePhotoRepository(c PostgresHousePhotoRepositoryConfig) House
 }
 
 func (r *postgresHousePhotoRepository) CreateHousePhoto(u entity.HousePhoto) (*entity.HousePhoto, error) {
-	err := r.db.Create(&u).Error
+	tx:= r.db.Begin()
 
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_HOUSE_PHOTO")
+	}
+	err := r.db.Create(&u).Error
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_HOUSE_PHOTO")
 	}
 
@@ -37,9 +49,22 @@ func (r *postgresHousePhotoRepository) CreateHousePhoto(u entity.HousePhoto) (*e
 }
 
 func (r *postgresHousePhotoRepository) DeleteHousePhoto(id int) error {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE_PHOTO")
+	}
 	res := r.db.Delete(&entity.HousePhoto{}, id)
 
 	if res.Error != nil {
+		tx.Rollback()
 		return httperror.BadRequestError(res.Error.Error(), "ERROR_DELETE_HOUSE_PHOTO")
 	}
 

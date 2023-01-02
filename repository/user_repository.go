@@ -43,15 +43,29 @@ func (r *postgresUserRepository) GetUserByEmail(email string) (*entity.User, err
 }
 
 func (r *postgresUserRepository) CreateUser(u entity.User) (*entity.User, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATE_USER")
+	}
 	res := r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "email"}},
 		DoNothing: true,
 	}).Create(&u)
 
 	if res.RowsAffected == 0 && res.Error == nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError("Email already exist", "EMAIL_ALREADY_EXIST")
 	}
 	if res.Error != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
 	}
 
@@ -59,6 +73,18 @@ func (r *postgresUserRepository) CreateUser(u entity.User) (*entity.User, error)
 }
 
 func (r *postgresUserRepository) CreateUserAdmin(u entity.User) (*entity.User, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_CREATE_USER_ADMIN")
+	}
 	res := r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "email"}},
 		DoNothing: true,
@@ -67,22 +93,37 @@ func (r *postgresUserRepository) CreateUserAdmin(u entity.User) (*entity.User, e
 	if res.RowsAffected == 0 && res.Error == nil {
 		err := r.db.Model(&u).Where("email = ?", u.Email).Update("role", "admin").Error
 		if err != nil {
+			tx.Rollback()
 			return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_USER_ADMIN")
 		}
 	}
 	if res.Error != nil {
-		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+		tx.Rollback()
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER_ADMIN")
 	}
 
 	return &u, nil
 }
 
 func (r *postgresUserRepository) UpdateRole(email string, role string) (*entity.User, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_UPDATE_USER")
+	}
 	var u entity.User
 	res := r.db.Model(&u).Where("email = ?", email).Update("role", role)
 
 	if res.Error != nil {
-		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_USER")
+		tx.Rollback()
+		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_UPDATE_USER")
 	}
 
 	return &u, nil
@@ -99,9 +140,22 @@ func (r *postgresUserRepository) GetUser(userID int) (*entity.User, error) {
 }
 
 func (r *postgresUserRepository) UpdateUser(u entity.User, userId int) (*entity.User, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  nil,httperror.BadRequestError(err.Error(), "ERROR_UPDATE_USER")
+	}
 	err := r.db.Where("id = ?", userId).Updates(&u).Error
 
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_USER")
 	}
 

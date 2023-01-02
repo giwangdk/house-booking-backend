@@ -93,14 +93,28 @@ func (r *postgresHouseRepository) GetHouseById(id int) (*entity.House, error) {
 }
 
 func (r *postgresHouseRepository) CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_CREATE_HOUSE")
+	}
 	res := r.db.Clauses(clause.OnConflict{
 		DoNothing: true,
 	}).Create(&u)
 
 	if res.RowsAffected == 0 && res.Error == nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError("House Name already Exist!", "HOUSE_ALREADY_EXIST")
 	}
 	if res.Error != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(res.Error.Error(), "ERROR_CREATE_HOUSE")
 	}
 
@@ -108,9 +122,22 @@ func (r *postgresHouseRepository) CreateHouse(u entity.HouseProfile) (*entity.Ho
 }
 
 func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error) {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")
+	}
 	err := r.db.Where("id = ?", userId).Updates(&u).Error
 
 	if err != nil {
+		tx.Rollback()
 		return nil, httperror.BadRequestError(err.Error(), "ERROR_UPDATE_HOUSE")
 	}
 
@@ -119,19 +146,34 @@ func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int)
 
 
 func (r *postgresHouseRepository) DeleteHouse(id int) error {
+	tx:= r.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		tx.Rollback()
+		return  httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
+	}
 	err := r.db.Where("id = ?", id).Delete(&entity.House{}).Error
 	if err != nil {
+		tx.Rollback()
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
 	err= r.db.Where("house_id = ?", id).Delete(&entity.HouseDetail{}).Error
 	if err != nil {
+		tx.Rollback()
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
 	err= r.db.Where("house_id = ?", id).Delete(&entity.HousePhoto{}).Error
 
 	if err != nil {
+		tx.Rollback()
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
