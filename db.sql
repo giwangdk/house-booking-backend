@@ -14,7 +14,6 @@ CREATE TABLE users (
 	  fullname varchar(50) NOT NULL,
    	password VARCHAR(225) NOT NULL,
     address VARCHAR(100),
-    photo VARCHAR(200),
     role VARCHAR(20) NOT NULL,
   	city_id INT,
    	FOREIGN KEY (city_id)
@@ -65,8 +64,6 @@ CREATE TABLE houses (
      REFERENCES cities (id),
    	FOREIGN KEY (user_id)
      REFERENCES users (id),
-   	FOREIGN KEY (category_id)
-     REFERENCES categories (id),
    	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   	updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
    	deleted_at TIMESTAMPTZ
@@ -90,8 +87,6 @@ CREATE TABLE house_details(
     deleted_at TIMESTAMPTZ
 );
 
-INSERT INTO house_details VALUES
-(1, 10, 3, 4, "dasdasda, dasdasda", "", "", "", 1)
 
 CREATE TABLE house_photos(
     id BIGSERIAL PRIMARY KEY,
@@ -144,7 +139,7 @@ CREATE TABLE transactions(
      REFERENCES reservations (id),
     FOREIGN KEY (user_id)
      REFERENCES users (id),
-    FOREIGN KEY (hosue_id)
+    FOREIGN KEY (house_id)
      REFERENCES houses (id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
