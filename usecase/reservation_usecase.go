@@ -64,21 +64,23 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 
 	code := uuid.New()
 
-	// layoutFormat := "21-10-2006"
-	// formattedCheckout, err := time.Parse(layoutFormat, r.CheckOut)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	formattedCheckin, err := time.Parse("2006-01-02", r.CheckIn)
+	if err != nil {
+		return nil, httperror.BadRequestError("Check in must be in format yyyy-mm-dd", "ERROR_CHECKIN_FORMAT")
+	}
 
-	// formattedCheckin, err := time.Parse("01-02-2006", r.CheckIn)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	formattedCheckout, err := time.Parse("2006-01-02", r.CheckOut)
+	if err != nil {
+		return nil, httperror.BadRequestError("Check out must be in format yyyy-mm-dd", "ERROR_CHECKOUT_FORMAT")
+	}
 
-	// if formattedCheckout.Before(formattedCheckin) {
-	// 	return nil, httperror.BadRequestError("Check out must be after check in", "ERROR_CHECKOUT_BEFORE_CHECKIN")	
-	// }
+	if formattedCheckout.Before(formattedCheckin) {
+		return nil, httperror.BadRequestError("Check out must be after check in", "ERROR_CHECKOUT_BEFORE_CHECKIN")	
+	}
 
+	if formattedCheckin.Before(time.Now()) {
+		return nil, httperror.BadRequestError("Check in must be after today", "ERROR_CHECKIN_BEFORE_TODAY")
+	}
 
 	user, isExist := u.userUsecase.IsUserExistByEmail(r.Email)
 

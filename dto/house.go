@@ -16,7 +16,6 @@ type House struct {
 	City        City               `json:"city"`
 	Photos      []HousePhotoDetail `json:"photos"`
 	HouseDetail `json:"detail"`
-	Dates []string `json:"dates"`
 }
 
 type HouseProfile struct {
@@ -33,10 +32,9 @@ type HouseLists struct {
 	Page   int     `json:"page"`
 	Limit  int     `json:"limit"`
 	Total  int     `json:"total"`
-	Dates []string `json:"dates"`
 }
 
-func (c *House) BuildResponse(house entity.House, dates []string) *House {
+func (c *House) BuildResponse(house entity.House) *House {
 	user := *(&UserDetail{}).BuildResponse(house.User)
 	city := *(&City{}).BuildResponse(house.City)
 	photos := *(&HousePhotoLists{}).BuildResponse(house.Photos)
@@ -50,14 +48,13 @@ func (c *House) BuildResponse(house entity.House, dates []string) *House {
 		City:        city,
 		Photos:      photos,
 		HouseDetail: *(&HouseDetail{}).BuildResponse(house.HouseDetail),
-		Dates: dates,
 	}
 }
 
 func (c *HouseLists) BuildResponse(houses []entity.House, page int, limit int, total int) *HouseLists {
 	var res []House
 	for _, house := range houses {
-		res = append(res, *(&House{}).BuildResponse(house, []string{}))
+		res = append(res, *(&House{}).BuildResponse(house))
 	}
 	return &HouseLists{
 		Houses: res,

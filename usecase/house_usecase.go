@@ -74,14 +74,13 @@ func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, erro
 		return nil, httperror.NotFoundError("House not found!")
 	}
 
-	dates, err := u.reservationRepo.GetBookedDatesByHouseID(houseId)
 
 	if err != nil {
 		return nil, err
 	}
 
 
-	res := (&dto.House{}).BuildResponse(*house, dates)
+	res := (&dto.House{}).BuildResponse(*house)
 
 	return res, nil
 }
