@@ -59,6 +59,52 @@ func (_m *TransactionUsecase) CreateTransactionRequestGuest(r dto.CreateTransact
 	return r0, r1
 }
 
+// GetTransactionsGuest provides a mock function with given fields:
+func (_m *TransactionUsecase) GetTransactionsGuest() (*dto.TransactionLits, error) {
+	ret := _m.Called()
+
+	var r0 *dto.TransactionLits
+	if rf, ok := ret.Get(0).(func() *dto.TransactionLits); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.TransactionLits)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetTransactionsUser provides a mock function with given fields: userId
+func (_m *TransactionUsecase) GetTransactionsUser(userId int) (*dto.TransactionLits, error) {
+	ret := _m.Called(userId)
+
+	var r0 *dto.TransactionLits
+	if rf, ok := ret.Get(0).(func(int) *dto.TransactionLits); ok {
+		r0 = rf(userId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.TransactionLits)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 type mockConstructorTestingTNewTransactionUsecase interface {
 	mock.TestingT
 	Cleanup(func())

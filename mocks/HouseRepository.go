@@ -106,7 +106,7 @@ func (_m *HouseRepository) GetHouses(userId int, page int, limit int, sortBy str
 }
 
 // IsBooked provides a mock function with given fields: id, deletedTime
-func (_m *HouseRepository) IsBooked(id int, deletedTime time.Time) bool {
+func (_m *HouseRepository) IsBooked(id int, deletedTime time.Time) (bool, *entity.House) {
 	ret := _m.Called(id, deletedTime)
 
 	var r0 bool
@@ -116,7 +116,16 @@ func (_m *HouseRepository) IsBooked(id int, deletedTime time.Time) bool {
 		r0 = ret.Get(0).(bool)
 	}
 
-	return r0
+	var r1 *entity.House
+	if rf, ok := ret.Get(1).(func(int, time.Time) *entity.House); ok {
+		r1 = rf(id, deletedTime)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*entity.House)
+		}
+	}
+
+	return r0, r1
 }
 
 // UpdateHouse provides a mock function with given fields: u, userId

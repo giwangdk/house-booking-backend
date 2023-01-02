@@ -36,6 +36,29 @@ func (_m *ReservationRepository) CreateReservation(u entity.Reservation) (*entit
 	return r0, r1
 }
 
+// GetBookedDatesByHouseID provides a mock function with given fields: houseID
+func (_m *ReservationRepository) GetBookedDatesByHouseID(houseID int) ([]string, error) {
+	ret := _m.Called(houseID)
+
+	var r0 []string
+	if rf, ok := ret.Get(0).(func(int) []string); ok {
+		r0 = rf(houseID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(houseID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetReservationByBookingCode provides a mock function with given fields: code
 func (_m *ReservationRepository) GetReservationByBookingCode(code string) (*entity.Reservation, error) {
 	ret := _m.Called(code)

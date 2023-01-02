@@ -37,17 +37,26 @@ func (_m *HouseUsecase) CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseR
 }
 
 // DeleteHouse provides a mock function with given fields: houseId
-func (_m *HouseUsecase) DeleteHouse(houseId int) error {
+func (_m *HouseUsecase) DeleteHouse(houseId int) (*dto.House, error) {
 	ret := _m.Called(houseId)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
+	var r0 *dto.House
+	if rf, ok := ret.Get(0).(func(int) *dto.House); ok {
 		r0 = rf(houseId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.House)
+		}
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(houseId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // GetHouseById provides a mock function with given fields: houseId

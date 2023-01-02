@@ -10,6 +10,7 @@ import (
 type AuthUsecase interface {
 	Register(request dto.RegisterRequest) (*dto.RegisterResponse, error)
 	Login(request dto.LoginRequest) (*dto.LoginResponse, error)
+	
 }
 
 type AuthUsecaseImplementation struct {
@@ -34,6 +35,8 @@ func NewAuthUsecase(a AuthUsecaseImplementationConfig) AuthUsecase {
 		gameUsecase: a.GameUsecase,
 	}
 }
+
+
 
 func (a *AuthUsecaseImplementation) Register(u dto.RegisterRequest) (*dto.RegisterResponse, error) {
 	hashedPassword, err := a.authUsecase.HashAndSalt(u.Password)
