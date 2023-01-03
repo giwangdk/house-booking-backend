@@ -11,8 +11,8 @@ import (
 type TransactionUsecase interface {
 	CreateTransaction(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
 	CreateTransactionRequestGuest(r dto.CreateTransactionRequest) (*dto.CreateTransactionResponse, error)
-	GetTransactionsGuest() (*dto.TransactionLits, error)
-	GetTransactionsUser(userId int) (*dto.TransactionLits, error)
+	GetTransactionsGuest() (*dto.TransactionList, error)
+	GetTransactionsUser(userId int) (*dto.TransactionList, error)
 }
 
 type TransactionUsecaseImplementation struct {
@@ -45,7 +45,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 
 	reservation, err := u.reservationUsecase.GetReservationByBookingCode(r.BookingCode)
 	if err != nil {
-		return nil, httperror.NotFoundError("Reservation is not found!" )
+		return nil, httperror.NotFoundError("Reservation is not found!")
 	}
 
 	if reservation.StatusID == 3 {
@@ -73,6 +73,10 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 			Amount:      reservation.TotalPrice,
 			Description: "Reservation",
 		}
+		tx, err := u.repository.GetTransactionByBookingCode(r.BookingCode)
+		if err != nil {
+			return nil, httperror.BadRequestError("Transaction is not found!", "ERROR_TRANSACTION_NOT_FOUND")
+		}
 
 		_, err = u.walletTxRepo.CreateWalletTransaction(entity)
 		if err != nil {
@@ -85,10 +89,6 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		_, err = u.reservationUsecase.UpdateStatusReservation(reservation.ID, 2)
 		if err != nil {
 			return nil, err
-		}
-		tx, err:= u.repository.GetTransactionByBookingCode(r.BookingCode)
-		if err != nil {
-			return nil, httperror.BadRequestError("Transaction is not found!", "ERROR_TRANSACTION_NOT_FOUND")
 		}
 
 		res := (&dto.CreateTransactionResponse{}).BuildResponse(*tx)
@@ -110,7 +110,7 @@ func (u *TransactionUsecaseImplementation) CreateTransaction(r dto.CreateTransac
 		return nil, err
 	}
 
-	isValid:= u.walletUsecase.IsValidBalance(reservation.TotalPrice, *walletSender)
+	isValid := u.walletUsecase.IsValidBalance(reservation.TotalPrice, *walletSender)
 	if !isValid {
 		return nil, httperror.BadRequestError("Insufficient balance!", "ERROR_INSUFFICIENT_BALANCE")
 	}
@@ -171,7 +171,7 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 		return nil, err
 	}
 
-	uploadUrl, err:= helper.ImageUploadHelper(r.TransferSlip)
+	uploadUrl, err := helper.ImageUploadHelper(r.TransferSlip)
 	if err != nil {
 		return nil, httperror.BadRequestError("Failed to upload image!", "ERROR_UPLOADING_IMAGE")
 	}
@@ -181,7 +181,6 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 		HouseID:       int(house.ID),
 		UserID:        reservation.UserID,
 		TransferSlip:  uploadUrl,
-
 	})
 	if err != nil {
 		return nil, httperror.BadRequestError("Failed to create transaction!", "ERROR_CREATING_TRANSACTION")
@@ -197,26 +196,26 @@ func (u *TransactionUsecaseImplementation) CreateTransactionRequestGuest(r dto.C
 
 }
 
-func (u *TransactionUsecaseImplementation) GetTransactionsGuest() (*dto.TransactionLits, error) {
+func (u *TransactionUsecaseImplementation) GetTransactionsGuest() (*dto.TransactionList, error) {
 
 	transactions, err := u.repository.GetTransactionsGuest()
 	if err != nil {
 		return nil, err
 	}
 
-	res:= (&dto.TransactionLits{}).BuildResponse(transactions)
+	res := (&dto.TransactionList{}).BuildResponse(transactions)
 
 	return res, nil
+}
+
+func (u *TransactionUsecaseImplementation) GetTransactionsUser(userId int) (*dto.TransactionList, error) {
+
+	transactions, err := u.repository.GetTransactionsUser(userId)
+	if err != nil {
+		return nil, err
 	}
 
-	func (u *TransactionUsecaseImplementation) GetTransactionsUser(userId int) (*dto.TransactionLits, error) {
+	res := (&dto.TransactionList{}).BuildResponse(transactions)
 
-		transactions, err := u.repository.GetTransactionsUser(userId )
-		if err != nil {
-			return nil, err
-		}
-	
-		res:= (&dto.TransactionLits{}).BuildResponse(transactions)
-	
-		return res, nil
-		}
+	return res, nil
+}
