@@ -5,7 +5,7 @@ import "final-project-backend/entity"
 type RegisterRequest struct {
 	Fullname string `binding:"required"`
 	Email    string `binding:"required,email"`
-	Address  string `binding:"required"`
+	Address  string 
 	Password string `binding:"required"`
 	CityId   int    `binding:"required" json:"city_id"`
 	
