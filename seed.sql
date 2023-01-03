@@ -46,7 +46,7 @@ INSERT INTO reservation_status VALUES
 (4, 'WAITING CONFIRMATION')
 
 
-INSERT INTO pickup_status VALUES 
+INSERT INTO pickup_statuses VALUES 
 (1, 'Pending Admin'),
 (2, 'Awaiting Check-in Date'),
 (3, 'On the Way Pickup'),
@@ -168,7 +168,7 @@ It has four Bedrooms and 2.5 Bathrooms and two large living areas opening onto h
  2,
 3500000,
 'The villa sits in an elevated postion in one of the last remaining untouched parts of the island.',
-  'Buyu')
+  'Buyu');
 
 
 

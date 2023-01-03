@@ -1,4 +1,4 @@
-CREATE DATABASE house_booking_giwang;
+
 
 CREATE TABLE cities (
    	id BIGSERIAL PRIMARY KEY,
@@ -105,7 +105,7 @@ CREATE TABLE reservation_status(
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMPTZ
-)
+);
 
 
 CREATE TABLE reservations(
@@ -164,7 +164,7 @@ CREATE TABLE pickups(
     FOREIGN KEY (user_id)
      REFERENCES users (id),
     FOREIGN KEY (pickup_status_id)
-     REFERENCES pickup_status (id),
+     REFERENCES pickup_statuses(id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMPTZ
