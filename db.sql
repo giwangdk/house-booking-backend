@@ -72,7 +72,7 @@ CREATE TABLE houses (
 CREATE TABLE house_details(
     id BIGSERIAL PRIMARY KEY,
     max_guest INT NOT NULL,
-    beddroms INT NOT NULL,
+    bedrooms INT NOT NULL,
     beds INT NOT NULL,
     baths INT NOT NULL,
     house_facilities VARCHAR(200),
