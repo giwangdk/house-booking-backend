@@ -39,7 +39,7 @@ func Authorize(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(strings.Trim(str[1]), "")
+	fmt.Println(strings.Trim(str[1], ""))
 	decodedToken := strings.Trim(str[1], " ")
 	fmt.Println(decodedToken)
 
