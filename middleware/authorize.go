@@ -18,7 +18,7 @@ func validateToken(token string) (*jwt.Token, error) {
 		if _, isValid := t.Method.(*jwt.SigningMethodHMAC); !isValid {
 
 			//todo create sentinel error or http error
-			fmt.Println(token)
+			fmt.Println("hihhiihi",token)
 			return nil, errors.New("invalid token signature")
 		}
 		return []byte("very-secret"), nil
