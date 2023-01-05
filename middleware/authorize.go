@@ -32,14 +32,16 @@ func Authorize(c *gin.Context) {
 	}
 	authHeader := c.GetHeader("Authorization")
 
-	str := strings.Split(authHeader, "Bearer  ")
-	fmt.Println(str)
+	str := strings.Split(authHeader, "Bearer ")
 	if len(str) < 2 {
 		err := httperror.UnauthorizedError()
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
 	}
-	decodedToken := str[1]
+
+	fmt.Println(strings.Trim(str[1]))
+	decodedToken := strings.Trim(str[1])
+	fmt.Println(decodedToken)
 
 	t, err := validateToken(decodedToken)
 	if err != nil || !t.Valid {
