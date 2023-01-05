@@ -45,10 +45,9 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 	res := r.db.Model(entity.House{})
 	res.Preload("Photos").Preload("City").Preload("User").Select("houses.*, house_details.*")
 
-	
 	if sortBy != "" && sort != "" {
 
-		if sortBy == "city"{
+		if sortBy == "city" {
 			res.Order("cities.name " + sort)
 		}
 		res.Order(sortBy + " " + sort)
@@ -71,7 +70,7 @@ func (r *postgresHouseRepository) GetHouses(userId int, page int, limit int, sor
 	}
 	res.Count(&total)
 	res.Joins("LEFT JOIN house_details ON house_details.house_id = houses.id")
-	res.Scopes(helper.Paginate(page, limit),)
+	res.Scopes(helper.Paginate(page, limit))
 
 	if err := res.Find(&houses).Error; err != nil {
 		return nil, 0, err
@@ -93,7 +92,7 @@ func (r *postgresHouseRepository) GetHouseById(id int) (*entity.House, error) {
 }
 
 func (r *postgresHouseRepository) CreateHouse(u entity.HouseProfile) (*entity.HouseProfile, error) {
-	tx:= r.db.Begin()
+	tx := r.db.Begin()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -122,7 +121,7 @@ func (r *postgresHouseRepository) CreateHouse(u entity.HouseProfile) (*entity.Ho
 }
 
 func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int) (*entity.HouseProfile, error) {
-	tx:= r.db.Begin()
+	tx := r.db.Begin()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -144,9 +143,8 @@ func (r *postgresHouseRepository) UpdateHouse(u entity.HouseProfile, userId int)
 	return &u, nil
 }
 
-
 func (r *postgresHouseRepository) DeleteHouse(id int) error {
-	tx:= r.db.Begin()
+	tx := r.db.Begin()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -156,7 +154,7 @@ func (r *postgresHouseRepository) DeleteHouse(id int) error {
 
 	if err := tx.Error; err != nil {
 		tx.Rollback()
-		return  httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
+		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 	err := r.db.Where("id = ?", id).Delete(&entity.House{}).Error
 	if err != nil {
@@ -164,13 +162,13 @@ func (r *postgresHouseRepository) DeleteHouse(id int) error {
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
-	err= r.db.Where("house_id = ?", id).Delete(&entity.HouseDetail{}).Error
+	err = r.db.Where("house_id = ?", id).Delete(&entity.HouseDetail{}).Error
 	if err != nil {
 		tx.Rollback()
 		return httperror.BadRequestError(err.Error(), "ERROR_DELETE_HOUSE")
 	}
 
-	err= r.db.Where("house_id = ?", id).Delete(&entity.HousePhoto{}).Error
+	err = r.db.Where("house_id = ?", id).Delete(&entity.HousePhoto{}).Error
 
 	if err != nil {
 		tx.Rollback()
@@ -180,14 +178,11 @@ func (r *postgresHouseRepository) DeleteHouse(id int) error {
 	return nil
 }
 
-func (r *postgresHouseRepository) IsBooked(id int, deletedTime time.Time) (bool, *entity.House){
+func (r *postgresHouseRepository) IsBooked(id int, deletedTime time.Time) (bool, *entity.House) {
 	var house entity.House
 	var count int64
 
-	subQuery1:= r.db.Debug().Select("house_id").Table("reservations").Where("status_id !=3 and check_out > ?", deletedTime)
-
-	err:= r.db.Debug().Where("id = ?", id).Where("id IN (?)", subQuery1).Count(&count).Error
-
+	err := r.db.Debug().Select("count(*)").Table("reservations").Where("house_id = ? and status_id !=3 and check_out >= ? and check_in >= ?", id, deletedTime, deletedTime).Count(&count).Error
 	if err != nil {
 		return false, nil
 	}

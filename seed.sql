@@ -43,15 +43,14 @@ INSERT INTO reservation_status VALUES
 (1, 'PENDING'),
 (2, 'SETTLEMENT'),
 (3, 'FAILURE'),
-(4, 'WAITING CONFIRMATION')
+(4, 'WAITING CONFIRMATION');
 
-
-INSERT INTO pickup_status VALUES 
+INSERT INTO pickup_statuses VALUES 
 (1, 'Pending Admin'),
 (2, 'Awaiting Check-in Date'),
 (3, 'On the Way Pickup'),
 (4, 'On the Way Reservation'),
-(5, 'Completed')
+(5, 'Completed');
 
 INSERT INTO users (email, fullname, password, address, role, city_id) VALUES 
 ('admin@gmail.com', 'admin giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Perum Baros', 'admin', '1'),
@@ -59,12 +58,16 @@ INSERT INTO users (email, fullname, password, address, role, city_id) VALUES
 ('user@gmail.com', 'user giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Yerussalem No. 11', 'user', '4'),
 ('giwangdk@gmail.com', 'user 1', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Soeku Yerussalem No. 21', 'user', '3'),
 ('gidwikintan@gmail.com', 'user 2', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Penjaittan Yerussalem No. 01', 'user', '6'),
-('host2@gmail.com', 'host2 giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Darussalam No. 11', 'host', '10')
+('host2@gmail.com', 'host2 giwang', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'jl. Masjid Darussalam No. 11', 'host', '10'),
+('tifany@gmail.com', 'Tifany Angelia', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Jl. Malang Buana', 'user', '21'),
+('angelia@gmail.com', 'Tifany Angelia 2', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Perum Bumi perumahan', 'user', '11'),
+('sekar@gmail.com', 'Sekar Nityasa', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Sekuran Jalan', 'user', '21'),
+('cikal@gmail.com', 'Cikal Tania', '$2a$04$mBFHO40jsIJmrLFHRGV4s.e62YbJ58MgU2WQnoUGExFxfb2inxe2a', 'Jl. Leuwiliang', 'host', '7');
 
 
 
 INSERT INTO wallets(balance, user_id) VALUES
-( 1000000, 1),( 1000000, 2),( 1000000, 3),( 1000000, 4),( 1000000, 5), ( 100000, 6)
+( 1000000, 1),( 1000000, 2),( 1000000, 3),( 1000000, 4),( 1000000, 5), ( 10000000, 6), ( 1000000, 7), ( 10000000, 8), ( 1000000, 9), ( 10000000, 10);
 
 INSERT INTO games (user_id, chance, total_games_played) VALUES
 ( 1, 10, 0),
@@ -72,7 +75,11 @@ INSERT INTO games (user_id, chance, total_games_played) VALUES
 ( 3, 10, 0),
 ( 4, 10, 0),
 ( 5, 10, 0),
-( 6, 10, 0)
+( 6, 10, 0),
+( 7, 10, 0),
+( 8, 10, 0),
+( 9, 10, 0),
+( 10, 10, 0);
 
 
 INSERT INTO houses (name, city_id, user_id, price, description, location) VALUES 
@@ -82,21 +89,24 @@ INSERT INTO houses (name, city_id, user_id, price, description, location) VALUES
  2,
 3600000, 
 'Aura house is a beautiful & unique eco bamboo house built on the west bank of the River Ayung facing east to catch sunrise. Aura House is situated 25min away from Ubud, and 35min away from Canggu.',
-'Canggu'),
+'Canggu'
+),
 (
  'Lespoir II - ocean view+huge pool+ butler', 
  11,
  2,
 5600000, 
 'Villa Lespoir II - Open on 20th Feb. 2020, our 2nd villa which is just about 40m away from Villa Lespoir I. Again luxury PANORAMIC view villa in tranquil northern Bali. It is at where the green vineyards and rice fields meet the ocean.',
-'Seririt'),
+'Seririt'
+),
 (
  'Villa Saluka - Romantic & Serene with Sunset View', 
  12,
  6,
 3600000, 
 'Dear future guests, thank you so much for coming across our page. A little bit about Villa Saluka: the name is from my lovely little family. SAtria (my husband), LUise (me), KAi (my son). I initially built this house for us, but for a few reasons, we couldn’t live there. ',
- 'Bantul'),
+ 'Bantul'
+ ),
 (
  'Ginza Bungalow Yogyakarta', 
  12,
@@ -107,21 +117,24 @@ Sleeps 4 adults
 King size bed and double mattress in loft 
 Lap swim pool
 Covered large entertaining deck areas',
- 'Banguntapan'),
+ 'Banguntapan'
+ ),
 (
  'Luxury 1 bedroom at parahyangan residence', 
 4,
  6,
 3600000, 
 'Kick back and relax in this calm, stylish space.',
- 'Cidadap'),
+ 'Cidadap'
+ ),
 (
  'Brand New Bright Studio @ Landmark City Centre', 
  25,
  2,
 2600000, 
 'Our bright and lively brand new studio apartment at lv 12 in Landmark Residence is located strategically in the heart of Bandung. You will be close to everything when you stay at this centrally-located place. The complex is one of Bandungs most verdant and prestigious residence. ',
- 'Canggu'),
+ 'Canggu'
+ ),
 (
  'Oribu Kidul, Direct Sunrise view of Mount Gede', 
  26,
@@ -130,45 +143,114 @@ Covered large entertaining deck areas',
 'Relax, unwind, or even working. This tiny villa is a place for all. 
  Nestled in the feet of Mount Salak overviewing Mount Pangrango and our own garden. 
  Your solution for short getaway from citys hustle, 70 minutes away from Jakarta.',
- 'Cigombong'),
+ 'Cigombong'
+ ),
  (
  'Villa Pusat kota Batu 2br,3menit dari Alun2 Batu', 
  9,
  6,
 100000, 
-'
-Gaya industrial minimalis',
- 'Bitu'),
+'Gaya industrial minimalis',
+ 'Bitu'
+ ),
  (
  'RiceField Villa Bukit Lawang', 
  2,
  6,
 150000, 
-'
-It is a house of stone, bamboo and wood. Built 100% by hand with local materials in 2015. It is in the middle of a rice plantation in the rural area of Bukit Lawang and just 10 minutes walk from the bus station. Perfect for relaxing as a couple or with friends. It has mountain, sunset and sunrise views. A unique and authentic house in Bukit Lawang',
- 'Bohorok'),
+'It is a house of stone, bamboo and wood. Built 100% by hand with local materials in 2015. It is in the middle of a rice plantation in the rural area of Bukit Lawang and just 10 minutes walk from the bus station. Perfect for relaxing as a couple or with friends. It has mountain, sunset and sunrise views. A unique and authentic house in Bukit Lawang',
+ 'Bohorok'
+ ),
 (
  'New Home with own beach frontage', 
  26,
  6,
 150000, 
-'
-It has four Bedrooms and 2.5 Bathrooms and two large living areas opening onto huge decks to allow for relaxed outdoor beach-side living. Furnishing and decor is  modern and minimalist. Fully air-conditioned, fans, WiFi, TV and sound system.',
-  'Pelabuhan Ratu'),
+'It has four Bedrooms and 2.5 Bathrooms and two large living areas opening onto huge decks to allow for relaxed outdoor beach-side living. Furnishing and decor is  modern and minimalist. Fully air-conditioned, fans, WiFi, TV and sound system.',
+  'Pelabuhan Ratu'
+),
 (
  'Quiet Villa and Pool with Mt. and Lake Batur View', 
  11,
  6,
 6500000,
 'This villa is located in Batur Kintamani Bali. Located right at the foot of Mount Batur so you can enjoy the beauty of Mount Batur and Lake Batur. The villa environment is very comfortable, the atmosphere is very calm, and the air is still fresh and far from the crowds of the city. You can enjoy the beautiful views of the mountains and lakes while swimming.',
-  'Bangli'),
+  'Bangli'
+),
 (
  '180° VIEW, PRIVATE POOL VILLA..', 
  5,
  2,
 3500000,
 'The villa sits in an elevated postion in one of the last remaining untouched parts of the island.',
-  'Buyu')
+  'Buyu'
+  ),
+  (
+ 'Villa Asi', 
+ 11,
+ 10,
+7000000,
+'This spectacular home on Koh Samui is situated in a quiet enclave along the east coast near Bophut and Chaweng. Perched on elevated land about five kilometers from the beach, the villa gazes out on panoramic views of Chaweng Bay. Its superb architectural design features tiered terraces cascading down the lush hillside, including a split-level infinity swimming pool fused by a central waterfall',
+  'Phuket'
+  ),
+   (
+ 'Samujana Seventeen', 
+ 21,
+ 10,
+4000000,
+'Blurring indoor and outdoor spaces in the most spectacular fashion, this private luxury villa is the perfect atmosphere for enjoying Thailand’s beautiful ocean environment. Located on the hillside of the Samujana Estate, Villa Seventeen boasts some of the areas most spectacular ocean views.',
+  'Phuket'
+  ),
+(
+ 'Bali Bamboo House | Rescape Ubud - Resound Villa', 
+ 11,
+ 10,
+3000000,
+'Rescape (retreat/ escape) Ubud is an uniquely designed villa built by bamboo, allowing guests to unwind and escape from all the daily hassle. This stay is perfect for couples, young families, artists, musicians and everyone who loves to fully embrace the nature. ',
+  'Ubud'
+  ),
+(
+ 'Noku Beach House', 
+ 4,
+ 10,
+3000000,
+'A 30-foot infinity pool reaches toward the sea at this wood-clad villa on Seminyak Beach. A walled garden and attentive staff look onto the scene, with interiors by Alex Zabotto-Bentley adding potted plants, maritime sculptures, and designer furnishings. ',
+  'Badunk'
+  ),
+(
+ 'Breakneck Gorge Oikos - Multi-Award Winning Luxury Retreat!', 
+ 22,
+ 10,
+6000000,
+'Set on a startlingly beautiful elevation on the sprawling 18-hectare property of Breakneck Gorge, and just minutes from the main street of Daylesford, Oikos was designed as an indulgent retreat from the city. ',
+  'Brisbanr'
+  ),
+(
+ 'Regal Residence!', 
+ 9,
+ 2,
+8000000,
+'he beach, the bay, and Chania Town are only overshadowed by the ocean sunset in the panoramic vista from this amazing hilltop villa. Soak it all in from the swimming pool, while enjoying alfresco meals, or relaxing on a plush day bed. ',
+  'Yuhi'
+  ),
+(
+ 'the naked house', 
+ 3,
+ 2,
+3000000,
+'Quarantining, social distancing and remote working is what this house is perfect for. Please ask us about special covid rates. It is an architectural villa on the south side of Koh Samui, private and in a natural environment, it has sweeping ocean views and has a great salt water lap pool. Half way up a hill, it gets natural breezes, whithout mozzies even at dusk. ',
+  'Yuhi'
+  ),
+  (
+ 'Penthouse 180m from beachfront with pool and sauna', 
+ 17,
+ 2,
+9000000,
+'Slowly exhale at the end of a day and watch the sun set into the sea. Arise in the morning with 360 degrees views of the mountains and coastline. Walk to Camps Bay beach with all the top restaurants and outdoor bars. ',
+  'Jiula'
+  );
+
+
 
 
 
@@ -235,4 +317,237 @@ INSERT INTO house_photos(house_id, photo) VALUES
 (12 ,'https://a0.muscache.com/im/pictures/666eeff6-12f5-4a94-a2d7-fc727c95e5cf.jpg?im_w=1440'),
 (12, 'https://a0.muscache.com/im/pictures/miso/Hosting-4694846/original/f1404137-8d55-4b27-a18a-e689302178c2.jpeg?im_w=1200'),
 (12,'https://a0.muscache.com/im/pictures/miso/Hosting-4694846/original/e38e4660-04fc-4e78-a792-7b9b6952cac8.jpeg?im_w=1440'),
-(12, 'https://a0.muscache.com/im/pictures/miso/Hosting-4694846/original/687e24c5-6873-4976-8a21-fb653c2accff.jpeg?im_w=1440')
+(12, 'https://a0.muscache.com/im/pictures/miso/Hosting-4694846/original/687e24c5-6873-4976-8a21-fb653c2accff.jpeg?im_w=1440'),
+(13, 'https://a0.muscache.com/im/pictures/3ca8c58e-2cac-431a-ae68-dc609127ecf3.jpg?im_w=1200'),
+(13, 'https://a0.muscache.com/im/pictures/da4b24a0-f847-488f-8ebe-9a0aa8146b00.jpg?im_w=1440'),
+(13, 'https://a0.muscache.com/im/pictures/e9cc3c26-d7af-489d-829f-1c930114cfb1.jpg?im_w=1200'),
+(13, 'https://a0.muscache.com/im/pictures/a3627d6d-1366-4fc3-8976-e54369f8cc6d.jpg?im_w=1200'),
+(13, 'https://a0.muscache.com/im/pictures/5f0fac15-3f51-4569-9ced-75e37b9e5409.jpg?im_w=1200'),
+(14, 'https://a0.muscache.com/im/pictures/b1a3d1c1-d3cc-4dda-bec6-4d8e4e6d4822.jpg?im_w=1440'),
+(14, 'https://a0.muscache.com/im/pictures/785b8961-97a4-4709-ba83-fad35ef4560c.jpg?im_w=1200'),
+(14, 'https://a0.muscache.com/im/pictures/f0d7bfcc-ec41-41df-9b0b-b24729f9ce4c.jpg?im_w=1440'),
+(14, 'https://a0.muscache.com/im/pictures/1c005d35-7e9b-4fd6-9991-ecd38365e1e0.jpg?im_w=1440'),
+(14, 'https://a0.muscache.com/im/pictures/62498408-849a-4a04-93ca-3c35abf29e66.jpg?im_w=1440'),
+(15, 'https://a0.muscache.com/im/pictures/miso/Hosting-46665306/original/a8277635-638c-4a8f-a472-a1ce6a6dd301.jpeg?im_w=1200'),
+(15, 'https://a0.muscache.com/im/pictures/miso/Hosting-46665306/original/0770ee8c-2bb7-454b-815a-e8da87581c59.jpeg?im_w=1200'),
+(15, 'https://a0.muscache.com/im/pictures/miso/Hosting-46665306/original/42a04016-5b11-4bd5-8c19-c6099ab58de0.jpeg?im_w=720'),
+(15, 'https://a0.muscache.com/im/pictures/4b5c22fc-387c-4778-bfdc-142ab2ff0191.jpg?im_w=720'),
+(15, 'https://a0.muscache.com/im/pictures/miso/Hosting-46665306/original/772ba654-23ad-494d-b736-fc14539da2bb.jpeg?im_w=1200'),
+(16, 'https://a0.muscache.com/im/pictures/monet/Luxury-28540017/original/42cde801-3346-41c6-a63a-40bd5a2d5867?im_w=720'),
+(16, 'https://a0.muscache.com/im/pictures/60b844b5-0e39-4b5b-88a6-389a6bb56a5e.jpg?im_w=1200'),
+(16, 'https://a0.muscache.com/im/pictures/2a7fe38e-185d-46c3-903b-c8005b270ca5.jpg?im_w=1200'),
+(16, 'https://a0.muscache.com/im/pictures/71d00c5c-82a6-4592-a49f-c4a8c5e22ef7.jpg?im_w=1200'),
+(16, 'https://a0.muscache.com/im/pictures/24fc1fd5-44b4-4cdb-a53b-3f452201d6e1.jpg?im_w=720'),
+(17, 'https://a0.muscache.com/im/pictures/prohost-api/Hosting-28765303/original/b86e5fa1-bd03-47fc-a98c-d86a4270782d.jpeg?im_w=1200'),
+(17, 'https://a0.muscache.com/im/pictures/prohost-api/Hosting-28765303/original/56d48262-0e4a-4b57-bc19-ee80fb5eb321.jpeg?im_w=1200'),
+(17, 'https://a0.muscache.com/im/pictures/prohost-api/Hosting-28765303/original/e0eac00d-b63f-466a-8942-57e7428cc4d7.jpeg?im_w=720'),
+(17, 'https://a0.muscache.com/im/pictures/prohost-api/Hosting-28765303/original/6d7799c6-e328-4a55-b6e1-c86aff61cf1a.jpeg?im_w=1200'),
+(17, 'https://a0.muscache.com/im/pictures/prohost-api/Hosting-28765303/original/86ad51d4-af47-4af0-9cb3-177914f6441e.jpeg?im_w=720'),
+(18, 'https://a0.muscache.com/im/pictures/e3b5a0cf-03f2-483b-8c3a-c4ce16beb7cd.jpg?im_w=1200'),
+(18, 'https://a0.muscache.com/im/pictures/dfe828a7-921c-48f0-abdb-aebf8ee6f7f7.jpg?im_w=1200'),
+(18, 'https://a0.muscache.com/im/pictures/c9210953-2b53-4b10-9886-34271315c853.jpg?im_w=1200'),
+(18, 'https://a0.muscache.com/im/pictures/a61ed86b-441d-47d7-9f1f-be3d5cbf84e5.jpg?im_w=720'),
+(18, 'https://a0.muscache.com/im/pictures/0f06fcce-13cc-44ea-9b4e-966a9ab81ab3.jpg?im_w=1200'),
+(19, 'https://a0.muscache.com/im/pictures/14152ff7-28fa-48cc-9c90-ac787fb5bb6b.jpg?im_w=1200'),
+(19, 'https://a0.muscache.com/im/pictures/5f927ac6-1030-4eea-b34d-0da5bebcdaad.jpg?im_w=1200'),
+(19, 'https://a0.muscache.com/im/pictures/a940b3cc-3f2e-4ba1-9fda-0c82cbd4b37a.jpg?im_w=720'),
+(19, 'https://a0.muscache.com/im/pictures/4d6a08d6-cdc6-45f2-b582-439361274f08.jpg?im_w=1200'),
+(19, 'https://a0.muscache.com/im/pictures/8619574d-a507-4df4-b55e-2b2c16d99893.jpg?im_w=1200'),
+(20, 'https://a0.muscache.com/im/pictures/da1a1f70-5d49-4811-b5b9-d28d48f84fc7.jpg?im_w=1200'),
+(20, 'https://a0.muscache.com/im/pictures/a54076b6-86a2-4d3f-8ee5-965712a8b240.jpg?im_w=1200'),
+(20, 'https://a0.muscache.com/im/pictures/16760ffe-d134-47ab-96c4-bb8fc8d0684d.jpg?im_w=720'),
+(20, 'https://a0.muscache.com/im/pictures/ac461f31-4046-4535-b7e5-01dda7c10b40.jpg?im_w=1200'),
+(20, 'https://a0.muscache.com/im/pictures/dd200f0c-d7aa-4110-8b82-c05d01b150f4.jpg?im_w=720');
+
+
+
+INSERT INTO house_details (max_guest, bedrooms, beds, baths, house_facilities, house_services, house_rules, bathrooms_facilities, house_id)
+VALUES
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 1
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 2
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 3
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 4
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 5
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 6
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 7
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 8
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 9
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 10
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 11
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 12
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 13
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 14
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 15
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 16
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 17
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 18
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 19
+),
+(15, 5,5, 5, 
+ 'Elevator, 24-hour room service, Restaurant, Room service, Safety deposit box, WiFi in public area, TV',
+ 'Bellhop, Welcoming drinks, Concierge, Money changer, Doorman, 24-hour security',
+ 'Operational Hours	From 14:00 - Before 12:00',
+ 'Separate shower and tub, Shower, Bathrobe, Bathtub', 
+ 20
+);
+
+
+
+
+INSERT INTO reservations(house_id, user_id, check_in, check_out, total_price, status_id, booking_code, expired) VALUES
+(1, 3,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed727fdsad66', '2023-01-03 19:42:34.872514+07'),
+(2, 4,'2023-02-03', '2023-02-04', 5600000, 2 , '7f810786-c257-4c6e-8ab3-823657eoihni1xxx6', '2023-01-03 19:42:34.872514+07'),
+(3, 5,'2023-02-03', '2023-02-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823hdsdga9ni1daq6', '2023-01-03 19:42:34.872514+07'),
+(4, 5,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823hoooooooovfso6', '2023-01-03 19:42:34.872514+07'),
+(1, 5,'2023-02-03', '2023-02-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823hdsdga9xqqani16', '2023-01-03 19:42:34.872514+07'),
+(6, 7,'2023-01-13', '2023-01-24', 9000000, 2 , '7f810786-c257-4c6e-8ab3-823hotrwooooo6iktyt', '2023-01-03 19:42:34.872514+07'),
+(7, 8,'2023-01-13', '2023-01-24', 9000000, 2 , '7f810786-c257-4c6e-8ab3-823hotrwopppo6557', '2023-01-03 19:42:34.872514+07'),
+(8, 9,'2023-01-13', '2023-01-24', 9000000, 2 , '7f810786-c257-4c6e-8ab3-823hotxxusooo6kky', '2023-01-03 19:42:34.872514+07'),
+(9, 5,'2023-01-13', '2023-01-24', 9000000, 2 , '7f810786-c257-4c6e-8ab3-823hotxxuso788oo6', '2023-01-03 19:42:34.872514+07'),
+(10, 3,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed727f6632323', '2023-01-03 19:42:34.872514+07'),
+(11, 8,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x122e26', '2023-01-03 19:42:34.872514+07'),
+(12, 9,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x6rwqrq', '2023-01-03 19:42:34.872514+07'),
+(13, 3,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x6ewqrq', '2023-01-03 19:42:34.872514+07'),
+(14, 5,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x6rqqq', '2023-01-03 19:42:34.872514+07'),
+(15, 4,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x6ddcxx', '2023-01-03 19:42:34.872514+07'),
+(16, 4,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2732ffw6', '2023-01-03 19:42:34.872514+07'),
+(17, 5,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-823657ed2775x6112', '2023-01-03 19:42:34.872514+07'),
+(18, 7,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-8232fed2775x6ffs', '2023-01-03 19:42:34.872514+07'),
+(19, 8,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-82365wd2775x6', '2023-01-03 19:42:34.872514+07'),
+(20, 9,'2023-01-03', '2023-01-04', 3600000, 2 , '7f810786-c257-4c6e-8ab3-82365teed2775x6', '2023-01-03 19:42:34.872514+07');
+
+
+INSERT INTO transactions(reservation_id,  house_id,user_id) VALUES
+(1, 1, 3),
+(2, 2, 4),
+(3, 3, 5),
+(4, 4, 5),
+(5, 1, 5),
+(6, 6, 7),
+(7, 7, 8),
+(8, 8, 9),
+(9, 9, 5),
+(10, 10, 3),
+(11, 11, 8),
+(12, 12, 9),
+(13, 13, 3),
+(14, 14, 5),
+(15, 15, 4),
+(16, 16, 4),
+(17, 17, 5),
+(18, 18, 7),
+(19, 19, 8),
+(20, 20, 9);

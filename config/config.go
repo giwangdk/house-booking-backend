@@ -28,8 +28,6 @@ type AppConfig struct {
 
 func getENV(key, defaultVal string) string {
 
-
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -58,21 +56,21 @@ var Config = AppConfig{
 }
 
 func EnvCloudName() string {
-	
-	return getENV("CLOUDINARY_CLOUD_NAME","")
+
+	return getENV("CLOUDINARY_CLOUD_NAME", "")
 }
 
 func EnvCloudAPIKey() string {
 
-	return getENV("CLOUDINARY_API_KEY","")
+	return getENV("CLOUDINARY_API_KEY", "")
 }
 
 func EnvCloudAPISecret() string {
 
-	return getENV("CLOUDINARY_API_SECRET","")
+	return getENV("CLOUDINARY_API_SECRET", "")
 }
 
 func EnvCloudUploadFolder() string {
 
-	return getENV("CLOUDINARY_UPLOAD_FOLDER","")
+	return getENV("CLOUDINARY_UPLOAD_FOLDER", "")
 }

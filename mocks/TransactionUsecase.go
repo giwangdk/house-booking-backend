@@ -60,15 +60,15 @@ func (_m *TransactionUsecase) CreateTransactionRequestGuest(r dto.CreateTransact
 }
 
 // GetTransactionsGuest provides a mock function with given fields:
-func (_m *TransactionUsecase) GetTransactionsGuest() (*dto.TransactionLits, error) {
+func (_m *TransactionUsecase) GetTransactionsGuest() (*dto.TransactionList, error) {
 	ret := _m.Called()
 
-	var r0 *dto.TransactionLits
-	if rf, ok := ret.Get(0).(func() *dto.TransactionLits); ok {
+	var r0 *dto.TransactionList
+	if rf, ok := ret.Get(0).(func() *dto.TransactionList); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.TransactionLits)
+			r0 = ret.Get(0).(*dto.TransactionList)
 		}
 	}
 
@@ -83,15 +83,15 @@ func (_m *TransactionUsecase) GetTransactionsGuest() (*dto.TransactionLits, erro
 }
 
 // GetTransactionsUser provides a mock function with given fields: userId
-func (_m *TransactionUsecase) GetTransactionsUser(userId int) (*dto.TransactionLits, error) {
+func (_m *TransactionUsecase) GetTransactionsUser(userId int) (*dto.TransactionList, error) {
 	ret := _m.Called(userId)
 
-	var r0 *dto.TransactionLits
-	if rf, ok := ret.Get(0).(func(int) *dto.TransactionLits); ok {
+	var r0 *dto.TransactionList
+	if rf, ok := ret.Get(0).(func(int) *dto.TransactionList); ok {
 		r0 = rf(userId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.TransactionLits)
+			r0 = ret.Get(0).(*dto.TransactionList)
 		}
 	}
 

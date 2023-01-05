@@ -20,7 +20,6 @@ type ReservationUsecase interface {
 	GetReservationByUserId(userId int) (*dto.ReservationList, error)
 }
 
-
 type ReservationUsecaseImplementation struct {
 	repository    repository.ReservationRepository
 	userUsecase   UserUsecase
@@ -75,10 +74,10 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 	}
 
 	if formattedCheckout.Before(formattedCheckin) {
-		return nil, httperror.BadRequestError("Check out must be after check in", "ERROR_CHECKOUT_BEFORE_CHECKIN")	
+		return nil, httperror.BadRequestError("Check out must be after check in", "ERROR_CHECKOUT_BEFORE_CHECKIN")
 	}
 
-	if formattedCheckin.Before(time.Now()) {
+	if (formattedCheckin.Add(24 * time.Hour)).Before(time.Now()) {
 		return nil, httperror.BadRequestError("Check in must be after today", "ERROR_CHECKIN_BEFORE_TODAY")
 	}
 
@@ -112,7 +111,6 @@ func (u *ReservationUsecaseImplementation) CreateReservationWithUser(r dto.Creat
 		}
 
 		res := (&dto.CreateReservationResponse{}).BuildResponse(*reservation)
-
 
 		if !r.IsRequestPickup {
 			return res, nil
@@ -192,7 +190,7 @@ func (u *ReservationUsecaseImplementation) GetReservationByUserId(userId int) (*
 		return nil, httperror.NotFoundError("Reservation not found")
 	}
 
-	res:= (&dto.ReservationList{}).BuildResponse(reservations)
-	
+	res := (&dto.ReservationList{}).BuildResponse(reservations)
+
 	return res, nil
 }

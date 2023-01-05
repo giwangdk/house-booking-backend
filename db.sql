@@ -1,4 +1,4 @@
-CREATE DATABASE house_booking_giwang;
+
 
 CREATE TABLE cities (
    	id BIGSERIAL PRIMARY KEY,
@@ -54,7 +54,7 @@ CREATE TABLE games(
 
 CREATE TABLE houses (
    	id BIGSERIAL PRIMARY KEY,
-    name varchar(50) UNIQUE NOT NULL,
+    name varchar(225) UNIQUE NOT NULL,
    	city_id INT,
     user_id INT,
    	price INT,
@@ -72,7 +72,7 @@ CREATE TABLE houses (
 CREATE TABLE house_details(
     id BIGSERIAL PRIMARY KEY,
     max_guest INT NOT NULL,
-    beddroms INT NOT NULL,
+    bedrooms INT NOT NULL,
     beds INT NOT NULL,
     baths INT NOT NULL,
     house_facilities VARCHAR(200),
@@ -105,7 +105,7 @@ CREATE TABLE reservation_status(
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMPTZ
-)
+);
 
 
 CREATE TABLE reservations(
@@ -164,7 +164,7 @@ CREATE TABLE pickups(
     FOREIGN KEY (user_id)
      REFERENCES users (id),
     FOREIGN KEY (pickup_status_id)
-     REFERENCES pickup_status (id),
+     REFERENCES pickup_statuses(id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deleted_at TIMESTAMPTZ

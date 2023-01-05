@@ -9,7 +9,7 @@ import (
 )
 
 type HouseUsecase interface {
-	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int,checkin string, checkout string) (*dto.HouseLists, error)
+	GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkin string, checkout string) (*dto.HouseLists, error)
 	CreateHouse(r dto.CreateHouseRequest) (*dto.CreateHouseResponse, error)
 	GetHouseById(houseId int) (*dto.House, error)
 	UpdateHouse(r dto.UpdateHouseRequest, houseId int) (*dto.UpdateHouseResponse, error)
@@ -18,24 +18,24 @@ type HouseUsecase interface {
 }
 
 type HouseUsecaseImplementation struct {
-	repository repository.HouseRepository
+	repository      repository.HouseRepository
 	reservationRepo repository.ReservationRepository
 }
 
 type HouseUsecaseImplementationConfig struct {
-	Repository repository.HouseRepository
+	Repository      repository.HouseRepository
 	ReservationRepo repository.ReservationRepository
 }
 
 func NewHouseUseCase(c HouseUsecaseImplementationConfig) HouseUsecase {
 	return &HouseUsecaseImplementation{
-		repository: c.Repository,
+		repository:      c.Repository,
 		reservationRepo: c.ReservationRepo,
 	}
 }
 
 func (u *HouseUsecaseImplementation) GetHouses(page int, limit int, sortBy string, sort string, searchBy string, filterByCity int, checkin string, checkout string) (*dto.HouseLists, error) {
-	houses, total, err := u.repository.GetHouses(0,page, limit, sortBy, sort, searchBy, filterByCity, checkin, checkout)
+	houses, total, err := u.repository.GetHouses(0, page, limit, sortBy, sort, searchBy, filterByCity, checkin, checkout)
 
 	if err != nil {
 		return nil, err
@@ -74,11 +74,9 @@ func (u *HouseUsecaseImplementation) GetHouseById(houseId int) (*dto.House, erro
 		return nil, httperror.NotFoundError("House not found!")
 	}
 
-
 	if err != nil {
 		return nil, err
 	}
-
 
 	res := (&dto.House{}).BuildResponse(*house)
 
@@ -109,7 +107,7 @@ func (u *HouseUsecaseImplementation) UpdateHouse(r dto.UpdateHouseRequest, house
 }
 
 func (u *HouseUsecaseImplementation) GetHousesHost(userId int, page int, limit int, sortBy string, sort string, searchBy string) (*dto.HouseLists, error) {
-	
+
 	houses, total, err := u.repository.GetHouses(userId, page, limit, sortBy, sort, searchBy, 0, "", "")
 
 	if err != nil {
@@ -128,7 +126,7 @@ func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) (*dto.House, error
 	}
 
 	isBooked, _ := u.repository.IsBooked(houseId, time.Now())
-	if !isBooked  {
+	if isBooked {
 		return nil, httperror.BadRequestError("There is reservation ongoing!", "FAILED_DELETE_HOUSE")
 	}
 
@@ -136,7 +134,6 @@ func (u *HouseUsecaseImplementation) DeleteHouse(houseId int) (*dto.House, error
 	if err != nil {
 		return nil, err
 	}
-
 
 	return house, nil
 }
