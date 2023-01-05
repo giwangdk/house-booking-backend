@@ -27,7 +27,7 @@ type AuthUtilImplConfig struct {
 
 func NewAuthUtil(a AuthUtilImplConfig) AuthUtil {
 	return &authUtilImpl{
-		hmacSampleSecret: a.HmacSampleSecret,
+		hmacSampleSecret: "very-secret",
 		duration:         *jwt.NewNumericDate(jwt.TimeFunc().Add(time.Duration(1) * time.Minute)),
 	}
 }
