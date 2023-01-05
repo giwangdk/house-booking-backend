@@ -46,6 +46,7 @@ func Authorize(c *gin.Context) {
 	fmt.Println(decodedToken)
 
 	t, err := validateToken(decodedToken)
+	fmt.Println("validate", t, err)
 	if err != nil || !t.Valid {
 		err := httperror.UnauthorizedError()
 		c.AbortWithStatusJSON(err.StatusCode, err)
