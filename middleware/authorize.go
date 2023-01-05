@@ -32,7 +32,7 @@ func Authorize(c *gin.Context) {
 	}
 	authHeader := c.GetHeader("Authorization")
 
-	str := strings.Split(authHeader, "Bearer ")
+	str := strings.Split(authHeader, "Bearer  ")
 	fmt.Println(str)
 	if len(str) < 2 {
 		err := httperror.UnauthorizedError()
