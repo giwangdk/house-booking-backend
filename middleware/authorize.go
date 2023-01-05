@@ -53,6 +53,9 @@ func Authorize(c *gin.Context) {
 	}
 	claims, ok := t.Claims.(jwt.MapClaims)
 
+	fmt.Println("hiyayya", ok)
+	fmt.Println("hiyayya", claims)
+	
 	if !ok {
 		err := httperror.UnauthorizedError()
 		c.AbortWithStatusJSON(err.StatusCode, err)
