@@ -21,6 +21,8 @@ func validateToken(token string) (*jwt.Token, error) {
 			fmt.Println("hihhiihi",token)
 			return nil, errors.New("invalid token signature")
 		}
+
+			fmt.Println("hihhiihi",token)
 		return []byte("very-secret"), nil
 	})
 }
