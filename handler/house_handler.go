@@ -70,6 +70,7 @@ func (h *Handler) CreateHouse(c *gin.Context) {
 	}
 
 	userCtx, ok := c.Get("user")
+	fmt.Println("user nix", userCtx)
 	if !ok {
 		err := httperror.UnauthorizedError()
 		c.AbortWithStatusJSON(err.StatusCode, err)
