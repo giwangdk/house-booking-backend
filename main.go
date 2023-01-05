@@ -14,6 +14,8 @@ func main() {
 	dbErr := db.Connect()
 
 	
+	fmt.Println("startttt")
+
 	if dbErr != nil {
 		fmt.Println("error while connecting to database", dbErr)
 	}
